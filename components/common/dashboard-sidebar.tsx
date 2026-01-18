@@ -31,9 +31,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth/client";
-import { useRouter, usePathname } from "next/navigation";
 import type { OrganizationWithRole } from "@/types";
 import type { Session } from "@/lib/auth";
 
@@ -48,7 +47,7 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const basePath = `/${locale}/${organization.slug}`;
+  const basePath = `/${organization.slug}`;
 
   const navItems = [
     {
@@ -75,7 +74,7 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
 
   async function handleSignOut() {
     await authClient.signOut();
-    router.push(`/${locale}/login`);
+    router.push("/login", { locale });
   }
 
   function getInitials(name: string | null | undefined) {
@@ -102,19 +101,20 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
           <SidebarGroupLabel>{t("dashboard.nav.menu")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.href}
-                  >
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                const isActive =
+                  pathname === item.href || pathname?.startsWith(`${item.href}/`);
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={item.href}>
+                        <item.icon className="size-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -119,5 +119,41 @@
       "description": "En son eklenen müşteriler",
       "empty": "Henüz müşteri eklenmedi"
     }
+  },
+  "invoices": {
+    "title": "Faturalar",
+    "description": "Tüm faturalarınızı yönetin ve takip edin",
+    "create": "Fatura Oluştur",
+    "list": {
+      "title": "Tüm Faturalar",
+      "description": "Faturalarınızı görüntüleyin ve yönetin",
+      "empty": "Henüz fatura oluşturulmadı. Başlamak için ilk faturanızı oluşturun."
+    }
+  },
+  "customers": {
+    "title": "Müşteriler",
+    "description": "Müşteri veritabanınızı yönetin",
+    "create": "Müşteri Ekle",
+    "list": {
+      "title": "Tüm Müşteriler",
+      "description": "Müşterilerinizi görüntüleyin ve yönetin",
+      "empty": "Henüz müşteri eklenmedi. Başlamak için ilk müşterinizi ekleyin."
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "description": "Organizasyon ve hesap ayarlarınızı yönetin",
+    "organization": {
+      "title": "Organizasyon Ayarları",
+      "description": "Organizasyon bilgilerinizi yönetin",
+      "name": "Organizasyon Adı",
+      "slug": "URL Kısaltması"
+    },
+    "account": {
+      "title": "Hesap Ayarları",
+      "description": "Hesap bilgileriniz",
+      "name": "İsim",
+      "email": "E-posta"
+    }
   }
 }

@@ -26,8 +26,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY package.json bun.lock* ./
 COPY prisma ./prisma/
 
-# Generate Prisma Client
-RUN bunx prisma generate
+# Generate Prisma Client (needed for migrate deploy)
+RUN bunx prisma generate || (echo "Prisma generate failed" && exit 1)
 
 # ============================================
 # Stage 3: Build the application

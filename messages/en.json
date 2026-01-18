@@ -119,5 +119,41 @@
       "description": "Latest added customers",
       "empty": "No customers added yet"
     }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "description": "Manage and track all your invoices",
+    "create": "Create Invoice",
+    "list": {
+      "title": "All Invoices",
+      "description": "View and manage your invoices",
+      "empty": "No invoices created yet. Create your first invoice to get started."
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "description": "Manage your customer database",
+    "create": "Add Customer",
+    "list": {
+      "title": "All Customers",
+      "description": "View and manage your customers",
+      "empty": "No customers added yet. Add your first customer to get started."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your organization and account settings",
+    "organization": {
+      "title": "Organization Settings",
+      "description": "Manage your organization information",
+      "name": "Organization Name",
+      "slug": "URL Slug"
+    },
+    "account": {
+      "title": "Account Settings",
+      "description": "Your account information",
+      "name": "Name",
+      "email": "Email"
+    }
   }
 }

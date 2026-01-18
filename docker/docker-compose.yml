@@ -10,6 +10,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Database Migrations
   migrate:
@@ -21,6 +26,8 @@ services:
     command: bunx prisma migrate deploy
     env_file:
       - ./.env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
     depends_on:
       db:
         condition: service_healthy
@@ -37,6 +44,8 @@ services:
       - "3000:3000"
     env_file:
       - ./.env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
     depends_on:
       db:
         condition: service_healthy
