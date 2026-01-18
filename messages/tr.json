@@ -124,10 +124,117 @@
     "title": "Faturalar",
     "description": "Tüm faturalarınızı yönetin ve takip edin",
     "create": "Fatura Oluştur",
+    "edit": "Faturayı Düzenle",
+    "delete": "Faturayı Sil",
+    "view": "Fatura Detayı",
     "list": {
       "title": "Tüm Faturalar",
       "description": "Faturalarınızı görüntüleyin ve yönetin",
       "empty": "Henüz fatura oluşturulmadı. Başlamak için ilk faturanızı oluşturun."
+    },
+    "form": {
+      "createTitle": "Yeni Fatura",
+      "createDescription": "Yeni bir fatura oluşturun",
+      "editTitle": "Faturayı Düzenle",
+      "editDescription": "Fatura bilgilerini güncelleyin",
+      "submit": "Kaydet",
+      "submitting": "Kaydediliyor...",
+      "selectCustomer": "Müşteri Seçin",
+      "searchCustomer": "Müşteri ara...",
+      "noCustomers": "Müşteri bulunamadı",
+      "addItem": "Kalem Ekle",
+      "removeItem": "Kalemi Sil"
+    },
+    "fields": {
+      "invoiceNumber": "Fatura No",
+      "customer": "Müşteri",
+      "issueDate": "Düzenleme Tarihi",
+      "dueDate": "Vade Tarihi",
+      "status": "Durum",
+      "subtotal": "Ara Toplam",
+      "taxRate": "Vergi Oranı (%)",
+      "taxAmount": "Vergi Tutarı",
+      "total": "Genel Toplam",
+      "notes": "Notlar",
+      "notesPlaceholder": "Fatura ile ilgili notlar..."
+    },
+    "items": {
+      "title": "Fatura Kalemleri",
+      "description": "Açıklama",
+      "descriptionPlaceholder": "Ürün veya hizmet açıklaması",
+      "quantity": "Miktar",
+      "unitPrice": "Birim Fiyat",
+      "total": "Toplam",
+      "empty": "Henüz kalem eklenmedi"
+    },
+    "status": {
+      "DRAFT": "Taslak",
+      "SENT": "Gönderildi",
+      "PAID": "Ödendi",
+      "OVERDUE": "Vadesi Geçmiş",
+      "CANCELLED": "İptal Edildi"
+    },
+    "actions": {
+      "markAsSent": "Gönderildi Olarak İşaretle",
+      "markAsPaid": "Ödendi Olarak İşaretle",
+      "markAsOverdue": "Vadesi Geçmiş Olarak İşaretle",
+      "cancel": "Faturayı İptal Et",
+      "download": "PDF İndir",
+      "print": "Yazdır"
+    },
+    "table": {
+      "invoiceNumber": "Fatura No",
+      "customer": "Müşteri",
+      "issueDate": "Tarih",
+      "dueDate": "Vade",
+      "total": "Toplam",
+      "status": "Durum",
+      "actions": "İşlemler",
+      "noResults": "Sonuç bulunamadı"
+    },
+    "detail": {
+      "title": "Fatura Detayı",
+      "billTo": "Fatura Adresi",
+      "invoiceInfo": "Fatura Bilgileri",
+      "itemsTitle": "Kalemler",
+      "summary": "Özet"
+    },
+    "messages": {
+      "createSuccess": "Fatura başarıyla oluşturuldu",
+      "createError": "Fatura oluşturulamadı",
+      "updateSuccess": "Fatura başarıyla güncellendi",
+      "updateError": "Fatura güncellenemedi",
+      "deleteSuccess": "Fatura başarıyla silindi",
+      "deleteError": "Fatura silinemedi",
+      "statusUpdateSuccess": "Fatura durumu güncellendi",
+      "statusUpdateError": "Fatura durumu güncellenemedi",
+      "notFound": "Fatura bulunamadı"
+    },
+    "errors": {
+      "unauthorized": "Bu işlem için yetkiniz yok",
+      "cannotEdit": "Sadece taslak faturalar düzenlenebilir",
+      "cannotDelete": "Sadece taslak veya iptal edilmiş faturalar silinebilir",
+      "customerNotFound": "Müşteri bulunamadı"
+    },
+    "validation": {
+      "customerRequired": "Müşteri seçimi zorunludur",
+      "minItems": "En az bir kalem eklemelisiniz",
+      "minQuantity": "Miktar en az 0.01 olmalıdır",
+      "minPrice": "Fiyat 0 veya daha büyük olmalıdır",
+      "minTaxRate": "Vergi oranı 0 veya daha büyük olmalıdır",
+      "maxTaxRate": "Vergi oranı en fazla 100 olabilir"
+    },
+    "deleteDialog": {
+      "title": "Faturayı Sil",
+      "description": "\"{invoiceNumber}\" numaralı faturayı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+      "confirm": "Sil",
+      "cancel": "İptal"
+    },
+    "statusDialog": {
+      "title": "Durumu Değiştir",
+      "description": "Fatura durumunu \"{status}\" olarak değiştirmek istediğinizden emin misiniz?",
+      "confirm": "Değiştir",
+      "cancel": "İptal"
     }
   },
   "customers": {
@@ -224,6 +331,46 @@
       "description": "Hesap bilgileriniz",
       "name": "İsim",
       "email": "E-posta"
+    },
+    "profile": {
+      "title": "Profil Bilgileri",
+      "description": "Profil bilgilerinizi güncelleyin",
+      "fields": {
+        "name": "Ad Soyad",
+        "namePlaceholder": "Adınız Soyadınız",
+        "email": "E-posta",
+        "emailHint": "E-posta adresi değiştirilemez"
+      },
+      "submit": "Profili Güncelle",
+      "submitting": "Güncelleniyor...",
+      "messages": {
+        "success": "Profil başarıyla güncellendi",
+        "error": "Profil güncellenemedi"
+      }
+    },
+    "password": {
+      "title": "Şifre Değiştir",
+      "description": "Hesap güvenliğiniz için şifrenizi güncelleyin",
+      "fields": {
+        "currentPassword": "Mevcut Şifre",
+        "currentPasswordPlaceholder": "Mevcut şifrenizi girin",
+        "newPassword": "Yeni Şifre",
+        "newPasswordPlaceholder": "Yeni şifrenizi girin",
+        "confirmPassword": "Yeni Şifre (Tekrar)",
+        "confirmPasswordPlaceholder": "Yeni şifrenizi tekrar girin"
+      },
+      "submit": "Şifreyi Değiştir",
+      "submitting": "Değiştiriliyor...",
+      "messages": {
+        "success": "Şifre başarıyla değiştirildi",
+        "error": "Şifre değiştirilemedi"
+      },
+      "errors": {
+        "invalidCurrentPassword": "Mevcut şifre hatalı",
+        "noPasswordAccount": "Bu hesap şifre ile oluşturulmamış. Google ile giriş yapan hesaplar şifre değiştiremez."
+      },
+      "notAvailable": "Şifre değiştirme bu hesap için kullanılamaz",
+      "notAvailableDescription": "Google ile giriş yapan hesaplar şifre kullanmaz"
     }
   }
 }

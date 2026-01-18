@@ -11,6 +11,8 @@ export type {
   Organization,
   OrganizationMember,
   Customer,
+  Invoice,
+  InvoiceItem,
 } from "@/prisma/generated/prisma";
 
-export { Role } from "@/prisma/generated/prisma";
+export { Role, InvoiceStatus } from "@/prisma/generated/prisma";

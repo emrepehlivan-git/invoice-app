@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getUserProfile } from "@/app/actions/user";
 import { redirect } from "@/i18n/navigation";
 import {
   Card,
@@ -10,6 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ProfileForm } from "@/components/settings/profile-form";
+import { PasswordForm } from "@/components/settings/password-form";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -31,6 +36,8 @@ export default async function SettingsPage({ params }: Props) {
     notFound();
   }
 
+  const { user, hasPasswordAccount } = await getUserProfile();
+
   const t = await getTranslations();
 
   return (
@@ -51,8 +58,12 @@ export default async function SettingsPage({ params }: Props) {
           <CardContent>
             <div className="space-y-4">
               <div>
-                <p className="text-sm font-medium">{t("settings.organization.name")}</p>
-                <p className="text-sm text-muted-foreground">{organization.name}</p>
+                <p className="text-sm font-medium">
+                  {t("settings.organization.name")}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {organization.name}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -60,22 +71,42 @@ export default async function SettingsPage({ params }: Props) {
 
         <Card>
           <CardHeader>
-            <CardTitle>{t("settings.account.title")}</CardTitle>
+            <CardTitle>{t("settings.profile.title")}</CardTitle>
             <CardDescription>
-              {t("settings.account.description")}
+              {t("settings.profile.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium">{t("settings.account.name")}</p>
-                <p className="text-sm text-muted-foreground">{session?.user?.name}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium">{t("settings.account.email")}</p>
-                <p className="text-sm text-muted-foreground">{session?.user?.email}</p>
-              </div>
-            </div>
+            {user && (
+              <ProfileForm
+                user={{
+                  name: user.name,
+                  email: user.email,
+                }}
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("settings.password.title")}</CardTitle>
+            <CardDescription>
+              {t("settings.password.description")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {hasPasswordAccount ? (
+              <PasswordForm />
+            ) : (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>{t("settings.password.notAvailable")}</AlertTitle>
+                <AlertDescription>
+                  {t("settings.password.notAvailableDescription")}
+                </AlertDescription>
+              </Alert>
+            )}
           </CardContent>
         </Card>
       </div>

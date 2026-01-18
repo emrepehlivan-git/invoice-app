@@ -124,10 +124,117 @@
     "title": "Invoices",
     "description": "Manage and track all your invoices",
     "create": "Create Invoice",
+    "edit": "Edit Invoice",
+    "delete": "Delete Invoice",
+    "view": "Invoice Details",
     "list": {
       "title": "All Invoices",
       "description": "View and manage your invoices",
       "empty": "No invoices created yet. Create your first invoice to get started."
+    },
+    "form": {
+      "createTitle": "New Invoice",
+      "createDescription": "Create a new invoice",
+      "editTitle": "Edit Invoice",
+      "editDescription": "Update invoice information",
+      "submit": "Save",
+      "submitting": "Saving...",
+      "selectCustomer": "Select Customer",
+      "searchCustomer": "Search customer...",
+      "noCustomers": "No customers found",
+      "addItem": "Add Item",
+      "removeItem": "Remove Item"
+    },
+    "fields": {
+      "invoiceNumber": "Invoice No",
+      "customer": "Customer",
+      "issueDate": "Issue Date",
+      "dueDate": "Due Date",
+      "status": "Status",
+      "subtotal": "Subtotal",
+      "taxRate": "Tax Rate (%)",
+      "taxAmount": "Tax Amount",
+      "total": "Total",
+      "notes": "Notes",
+      "notesPlaceholder": "Notes about the invoice..."
+    },
+    "items": {
+      "title": "Invoice Items",
+      "description": "Description",
+      "descriptionPlaceholder": "Product or service description",
+      "quantity": "Quantity",
+      "unitPrice": "Unit Price",
+      "total": "Total",
+      "empty": "No items added yet"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "PAID": "Paid",
+      "OVERDUE": "Overdue",
+      "CANCELLED": "Cancelled"
+    },
+    "actions": {
+      "markAsSent": "Mark as Sent",
+      "markAsPaid": "Mark as Paid",
+      "markAsOverdue": "Mark as Overdue",
+      "cancel": "Cancel Invoice",
+      "download": "Download PDF",
+      "print": "Print"
+    },
+    "table": {
+      "invoiceNumber": "Invoice No",
+      "customer": "Customer",
+      "issueDate": "Date",
+      "dueDate": "Due Date",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions",
+      "noResults": "No results found"
+    },
+    "detail": {
+      "title": "Invoice Details",
+      "billTo": "Bill To",
+      "invoiceInfo": "Invoice Information",
+      "itemsTitle": "Items",
+      "summary": "Summary"
+    },
+    "messages": {
+      "createSuccess": "Invoice created successfully",
+      "createError": "Failed to create invoice",
+      "updateSuccess": "Invoice updated successfully",
+      "updateError": "Failed to update invoice",
+      "deleteSuccess": "Invoice deleted successfully",
+      "deleteError": "Failed to delete invoice",
+      "statusUpdateSuccess": "Invoice status updated",
+      "statusUpdateError": "Failed to update invoice status",
+      "notFound": "Invoice not found"
+    },
+    "errors": {
+      "unauthorized": "You do not have permission for this action",
+      "cannotEdit": "Only draft invoices can be edited",
+      "cannotDelete": "Only draft or cancelled invoices can be deleted",
+      "customerNotFound": "Customer not found"
+    },
+    "validation": {
+      "customerRequired": "Customer selection is required",
+      "minItems": "You must add at least one item",
+      "minQuantity": "Quantity must be at least 0.01",
+      "minPrice": "Price must be 0 or greater",
+      "minTaxRate": "Tax rate must be 0 or greater",
+      "maxTaxRate": "Tax rate cannot exceed 100"
+    },
+    "deleteDialog": {
+      "title": "Delete Invoice",
+      "description": "Are you sure you want to delete invoice \"{invoiceNumber}\"? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "statusDialog": {
+      "title": "Change Status",
+      "description": "Are you sure you want to change the invoice status to \"{status}\"?",
+      "confirm": "Change",
+      "cancel": "Cancel"
     }
   },
   "customers": {
@@ -224,6 +331,46 @@
       "description": "Your account information",
       "name": "Name",
       "email": "Email"
+    },
+    "profile": {
+      "title": "Profile Information",
+      "description": "Update your profile information",
+      "fields": {
+        "name": "Full Name",
+        "namePlaceholder": "Your Name",
+        "email": "Email",
+        "emailHint": "Email address cannot be changed"
+      },
+      "submit": "Update Profile",
+      "submitting": "Updating...",
+      "messages": {
+        "success": "Profile updated successfully",
+        "error": "Failed to update profile"
+      }
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "Update your password for account security",
+      "fields": {
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter your new password",
+        "confirmPassword": "Confirm New Password",
+        "confirmPasswordPlaceholder": "Confirm your new password"
+      },
+      "submit": "Change Password",
+      "submitting": "Changing...",
+      "messages": {
+        "success": "Password changed successfully",
+        "error": "Failed to change password"
+      },
+      "errors": {
+        "invalidCurrentPassword": "Current password is incorrect",
+        "noPasswordAccount": "This account was not created with a password. Accounts using Google sign-in cannot change passwords."
+      },
+      "notAvailable": "Password change is not available for this account",
+      "notAvailableDescription": "Accounts using Google sign-in do not use passwords"
     }
   }
 }

@@ -13,6 +13,14 @@ enum Role {
   MEMBER
 }
 
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
 // Better Auth tables
 model User {
   id            String    @id @default(cuid())
@@ -83,6 +91,7 @@ model Organization {
 
   members   OrganizationMember[]
   customers Customer[]
+  invoices  Invoice[]
 }
 
 model OrganizationMember {
@@ -118,8 +127,52 @@ model Customer {
   updatedAt      DateTime @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
 
   @@unique([organizationId, email])
   @@index([organizationId])
   @@index([name])
+}
+
+// Invoice model
+model Invoice {
+  id             String        @id @default(cuid())
+  invoiceNumber  String
+  organizationId String
+  customerId     String
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime
+  subtotal       Decimal       @db.Decimal(10, 2)
+  taxRate        Decimal       @default(0) @db.Decimal(5, 2)
+  taxAmount      Decimal       @db.Decimal(10, 2)
+  total          Decimal       @db.Decimal(10, 2)
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  items        InvoiceItem[]
+
+  @@unique([organizationId, invoiceNumber])
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([status])
+  @@index([issueDate])
+  @@index([dueDate])
+}
+
+// Invoice Item model
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Decimal @db.Decimal(10, 2)
+  unitPrice   Decimal @db.Decimal(10, 2)
+  total       Decimal @db.Decimal(10, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
 }

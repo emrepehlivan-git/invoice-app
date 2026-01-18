@@ -201,6 +201,32 @@ exports.Prisma.CustomerScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  organizationId: 'organizationId',
+  customerId: 'customerId',
+  status: 'status',
+  issueDate: 'issueDate',
+  dueDate: 'dueDate',
+  subtotal: 'subtotal',
+  taxRate: 'taxRate',
+  taxAmount: 'taxAmount',
+  total: 'total',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceItemScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  total: 'total'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -220,6 +246,14 @@ exports.Role = exports.$Enums.Role = {
   MEMBER: 'MEMBER'
 };
 
+exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -227,7 +261,9 @@ exports.Prisma.ModelName = {
   Verification: 'Verification',
   Organization: 'Organization',
   OrganizationMember: 'OrganizationMember',
-  Customer: 'Customer'
+  Customer: 'Customer',
+  Invoice: 'Invoice',
+  InvoiceItem: 'InvoiceItem'
 };
 
 /**
