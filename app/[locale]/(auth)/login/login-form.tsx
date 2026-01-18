@@ -61,7 +61,7 @@ export function LoginForm() {
       }
 
       toast.success(t("auth.login.success"));
-      router.push("/");
+      router.push("/onboarding");
       router.refresh();
     } catch {
       toast.error(t("common.error"));

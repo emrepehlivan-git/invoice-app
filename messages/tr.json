@@ -9,7 +9,9 @@
     "edit": "Düzenle",
     "create": "Oluştur",
     "search": "Ara",
-    "or": "veya"
+    "or": "veya",
+    "continue": "Devam Et",
+    "back": "Geri"
   },
   "auth": {
     "login": {
@@ -42,7 +44,36 @@
       "emailPlaceholder": "ornek@email.com",
       "password": "Şifre",
       "passwordPlaceholder": "********",
-      "confirmPassword": "**********"
+      "confirmPassword": "Şifre Tekrar"
+    }
+  },
+  "organization": {
+    "create": {
+      "title": "Organizasyon Oluştur",
+      "description": "Faturalarınızı yönetmek için yeni bir organizasyon oluşturun",
+      "submit": "Organizasyon Oluştur",
+      "success": "Organizasyon başarıyla oluşturuldu",
+      "error": "Organizasyon oluşturulamadı"
+    },
+    "select": {
+      "title": "Organizasyon Seçin",
+      "description": "Devam etmek için bir organizasyon seçin veya yeni bir tane oluşturun",
+      "empty": "Henüz bir organizasyonunuz yok",
+      "createNew": "Yeni Organizasyon Oluştur"
+    },
+    "fields": {
+      "name": "Organizasyon Adı",
+      "namePlaceholder": "Şirketim A.Ş.",
+      "slug": "URL Kısaltması",
+      "slugPlaceholder": "sirketim",
+      "slugHint": "Sadece küçük harf, rakam ve tire kullanılabilir"
+    },
+    "errors": {
+      "slugExists": "Bu URL kısaltması zaten kullanılıyor"
+    },
+    "roles": {
+      "admin": "Yönetici",
+      "member": "Üye"
     }
   },
   "validation": {
@@ -51,6 +82,7 @@
     "minLength": "En az {min} karakter olmalıdır",
     "maxLength": "En fazla {max} karakter olabilir",
     "passwordMatch": "Şifreler eşleşmiyor",
-    "passwordStrength": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir"
+    "passwordStrength": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir",
+    "slug": "Sadece küçük harf, rakam ve tire kullanılabilir"
   }
 }

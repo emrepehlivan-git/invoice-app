@@ -9,7 +9,9 @@
     "edit": "Edit",
     "create": "Create",
     "search": "Search",
-    "or": "or"
+    "or": "or",
+    "continue": "Continue",
+    "back": "Back"
   },
   "auth": {
     "login": {
@@ -42,7 +44,36 @@
       "emailPlaceholder": "example@email.com",
       "password": "Password",
       "passwordPlaceholder": "********",
-      "confirmPassword": "**********"
+      "confirmPassword": "Confirm Password"
+    }
+  },
+  "organization": {
+    "create": {
+      "title": "Create Organization",
+      "description": "Create a new organization to manage your invoices",
+      "submit": "Create Organization",
+      "success": "Organization created successfully",
+      "error": "Failed to create organization"
+    },
+    "select": {
+      "title": "Select Organization",
+      "description": "Select an organization to continue or create a new one",
+      "empty": "You don't have any organizations yet",
+      "createNew": "Create New Organization"
+    },
+    "fields": {
+      "name": "Organization Name",
+      "namePlaceholder": "My Company Inc.",
+      "slug": "URL Slug",
+      "slugPlaceholder": "my-company",
+      "slugHint": "Only lowercase letters, numbers and hyphens allowed"
+    },
+    "errors": {
+      "slugExists": "This URL slug is already taken"
+    },
+    "roles": {
+      "admin": "Admin",
+      "member": "Member"
     }
   },
   "validation": {
@@ -51,6 +82,7 @@
     "minLength": "Must be at least {min} characters",
     "maxLength": "Must be at most {max} characters",
     "passwordMatch": "Passwords do not match",
-    "passwordStrength": "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    "passwordStrength": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+    "slug": "Only lowercase letters, numbers and hyphens allowed"
   }
 }
