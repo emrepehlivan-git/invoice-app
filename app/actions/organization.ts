@@ -7,6 +7,7 @@ import { z } from "zod";
 import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg } from "@/types";
 import { Role } from "@/types";
 import { redirect } from "@/i18n/navigation";
+import logger from "@/lib/logger";
 
 const createOrgSchema = z.object({
   name: z.string().min(2).max(100),
@@ -20,79 +21,94 @@ type CreateOrganizationResult =
 export async function createOrganization(
   data: { name: string; slug: string; locale: string }
 ): Promise<CreateOrganizationResult> {
-  const session = await requireAuth();
+  try {
+    const session = await requireAuth();
 
-  const validated = createOrgSchema.parse(data);
+    const validated = createOrgSchema.parse(data);
 
-  const existingOrg = await prisma.organization.findUnique({
-    where: { slug: validated.slug },
-  });
+    const existingOrg = await prisma.organization.findUnique({
+      where: { slug: validated.slug },
+    });
 
-  if (existingOrg) {
-    return { error: "slug_exists" };
-  }
+    if (existingOrg) {
+      return { error: "slug_exists" };
+    }
 
-  const organization = await prisma.organization.create({
-    data: {
-      name: validated.name,
-      slug: validated.slug,
-      members: {
-        create: {
-          userId: session.user.id,
-          role: Role.ADMIN,
+    const organization = await prisma.organization.create({
+      data: {
+        name: validated.name,
+        slug: validated.slug,
+        members: {
+          create: {
+            userId: session.user.id,
+            role: Role.ADMIN,
+          },
         },
       },
-    },
-  });
+    });
 
-  revalidatePath("/");
+    revalidatePath("/");
 
-  redirect({
-    href: `/${organization.slug}`,
-    locale: data.locale,
-  });
-  
-  throw new Error("Unreachable code");
+    redirect({
+      href: `/${organization.slug}`,
+      locale: data.locale,
+    });
+    
+    throw new Error("Unreachable code");
+  } catch (error) {
+    logger.error("Failed to create organization", { error, data });
+    throw error;
+  }
 }
 
 export async function getUserOrganizations(): Promise<OrganizationWithRole[]> {
-  const session = await requireAuth();
+  try {
+    const session = await requireAuth();
 
-  const memberships = await prisma.organizationMember.findMany({
-    where: { userId: session.user.id },
-    include: {
-      organization: true,
-    },
-    orderBy: { createdAt: "desc" },
-  });
+    const memberships = await prisma.organizationMember.findMany({
+      where: { userId: session.user.id },
+      include: {
+        organization: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-  return memberships.map((m: OrganizationMemberWithOrg) => ({
-    ...m.organization,
-    role: m.role,
-  }));
+    return memberships.map((m: OrganizationMemberWithOrg) => ({
+      ...m.organization,
+      role: m.role,
+    }));
+  } catch (error) {
+    logger.error("Failed to get user organizations", { error });
+    throw error;
+  }
 }
 
 export async function getOrganizationBySlug(
   slug: string
 ): Promise<OrganizationWithRole | null> {
-  const session = await requireAuth();
+  try {
+    const session = await requireAuth();
 
-  const membership = await prisma.organizationMember.findFirst({
-    where: {
-      userId: session.user.id,
-      organization: { slug },
-    },
-    include: {
-      organization: true,
-    },
-  });
+    const membership = await prisma.organizationMember.findFirst({
+      where: {
+        userId: session.user.id,
+        organization: { slug },
+      },
+      include: {
+        organization: true,
+      },
+    });
 
-  if (!membership) {
-    return null;
+    if (!membership) {
+      return null;
+    }
+
+    return {
+      ...membership.organization,
+      role: membership.role,
+    };
+  } catch (error) {
+    logger.error("Failed to get organization by slug", { error, slug });
+    throw error;
   }
-
-  return {
-    ...membership.organization,
-    role: membership.role,
-  };
 }
