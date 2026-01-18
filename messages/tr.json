@@ -1,0 +1,56 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "success": "Başarılı",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "create": "Oluştur",
+    "search": "Ara",
+    "or": "veya"
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş Yap",
+      "description": "Hesabınıza giriş yaparak devam edin",
+      "submit": "Giriş Yap",
+      "noAccount": "Hesabınız yok mu?",
+      "register": "Kayıt Ol",
+      "success": "Giriş başarılı",
+      "error": "Giriş yapılamadı"
+    },
+    "register": {
+      "title": "Kayıt Ol",
+      "description": "Yeni bir hesap oluşturarak başlayın",
+      "submit": "Kayıt Ol",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "login": "Giriş Yap",
+      "success": "Kayıt başarılı! Giriş yapabilirsiniz.",
+      "error": "Kayıt oluşturulamadı"
+    },
+    "google": {
+      "login": "Google ile Giriş Yap",
+      "register": "Google ile Kayıt Ol",
+      "error": "Google ile işlem yapılamadı"
+    },
+    "fields": {
+      "name": "İsim",
+      "namePlaceholder": "Adınız Soyadınız",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@email.com",
+      "password": "Şifre",
+      "passwordPlaceholder": "********",
+      "confirmPassword": "**********"
+    }
+  },
+  "validation": {
+    "required": "Bu alan zorunludur",
+    "email": "Geçerli bir e-posta adresi giriniz",
+    "minLength": "En az {min} karakter olmalıdır",
+    "maxLength": "En fazla {max} karakter olabilir",
+    "passwordMatch": "Şifreler eşleşmiyor",
+    "passwordStrength": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir"
+  }
+}
