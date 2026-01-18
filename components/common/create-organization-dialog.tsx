@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -26,7 +26,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Link } from "@/i18n/navigation";
 import { createOrganization } from "@/app/actions/organization";
 import {
   createOrganizationSchema,
@@ -34,9 +33,15 @@ import {
 } from "@/lib/validators/organization";
 import { slugify } from "@/lib/utils";
 
-export function CreateOrganizationForm() {
+type Props = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
+export function CreateOrganizationDialog({ open, onOpenChange }: Props) {
   const t = useTranslations();
   const params = useParams();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [previousName, setPreviousName] = useState("");
 
@@ -80,37 +85,44 @@ export function CreateOrganizationForm() {
       }
 
       toast.success(t("organization.create.success"));
+      form.reset();
+      onOpenChange(false);
+      router.refresh();
     } catch (error) {
-      const isRedirect = error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.includes("NEXT_REDIRECT");
+      const isRedirect =
+        error &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.includes("NEXT_REDIRECT");
 
       if (!isRedirect) {
         toast.error(t("common.error"));
+      } else {
+        onOpenChange(false);
       }
     } finally {
       setIsLoading(false);
     }
   }
 
+  function handleOpenChange(newOpen: boolean) {
+    if (!newOpen) {
+      form.reset();
+      setPreviousName("");
+    }
+    onOpenChange(newOpen);
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/onboarding">
-              <ArrowLeft className="size-4" />
-            </Link>
-          </Button>
-          <div>
-            <CardTitle className="text-2xl">
-              {t("organization.create.title")}
-            </CardTitle>
-            <CardDescription>
-              {t("organization.create.description")}
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("organization.create.title")}</DialogTitle>
+          <DialogDescription>
+            {t("organization.create.description")}
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -154,13 +166,23 @@ export function CreateOrganizationForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
-              {t("organization.create.submit")}
-            </Button>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleOpenChange(false)}
+                disabled={isLoading}
+              >
+                {t("common.cancel")}
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+                {t("organization.create.submit")}
+              </Button>
+            </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 }

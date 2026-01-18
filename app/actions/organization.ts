@@ -48,9 +48,10 @@ export async function createOrganization(
     });
 
     revalidatePath("/");
+    revalidatePath("/onboarding");
 
     redirect({
-      href: `/${organization.slug}`,
+      href: "/onboarding",
       locale: data.locale,
     });
     

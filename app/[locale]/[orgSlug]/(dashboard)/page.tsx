@@ -113,10 +113,12 @@ export default async function DashboardPage({ params }: Props) {
               {t("dashboard.recentInvoices.description")}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              {t("dashboard.recentInvoices.empty")}
-            </p>
+          <CardContent className="min-h-[200px]">
+            <div className="flex h-full items-center justify-center">
+              <p className="text-sm text-muted-foreground">
+                {t("dashboard.recentInvoices.empty")}
+              </p>
+            </div>
           </CardContent>
         </Card>
 
@@ -127,10 +129,12 @@ export default async function DashboardPage({ params }: Props) {
               {t("dashboard.recentCustomers.description")}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              {t("dashboard.recentCustomers.empty")}
-            </p>
+          <CardContent className="min-h-[200px]">
+            <div className="flex h-full items-center justify-center">
+              <p className="text-sm text-muted-foreground">
+                {t("dashboard.recentCustomers.empty")}
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

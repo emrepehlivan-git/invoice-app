@@ -146,8 +146,7 @@
     "organization": {
       "title": "Organization Settings",
       "description": "Manage your organization information",
-      "name": "Organization Name",
-      "slug": "URL Slug"
+      "name": "Organization Name"
     },
     "account": {
       "title": "Account Settings",

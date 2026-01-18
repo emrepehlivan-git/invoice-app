@@ -1,7 +1,10 @@
 import { redirect, notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug } from "@/app/actions/organization";
+import {
+  getOrganizationBySlug,
+  getUserOrganizations,
+} from "@/app/actions/organization";
 import { DashboardSidebar } from "@/components/common/dashboard-sidebar";
 import { DashboardHeader } from "@/components/common/dashboard-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -21,7 +24,10 @@ export default async function DashboardLayout({ children, params }: Props) {
     redirect(`/${locale}/login`);
   }
 
-  const organization = await getOrganizationBySlug(orgSlug);
+  const [organization, organizations] = await Promise.all([
+    getOrganizationBySlug(orgSlug),
+    getUserOrganizations(),
+  ]);
 
   if (!organization) {
     notFound();
@@ -31,12 +37,13 @@ export default async function DashboardLayout({ children, params }: Props) {
     <SidebarProvider>
       <DashboardSidebar
         organization={organization}
+        organizations={organizations}
         user={session.user}
         locale={locale}
       />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col overflow-hidden">
         <DashboardHeader organization={organization} user={session.user} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
@@ -8,6 +9,8 @@ import {
   Settings,
   Building2,
   LogOut,
+  Plus,
+  ChevronDown,
 } from "lucide-react";
 
 import {
@@ -31,21 +34,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth/client";
 import type { OrganizationWithRole } from "@/types";
 import type { Session } from "@/lib/auth";
+import { CreateOrganizationDialog } from "@/components/common/create-organization-dialog";
 
 type Props = {
   organization: OrganizationWithRole;
+  organizations: OrganizationWithRole[];
   user: Session["user"];
   locale: string;
 };
 
-export function DashboardSidebar({ organization, user, locale }: Props) {
+export function DashboardSidebar({
+  organization,
+  organizations,
+  user,
+  locale,
+}: Props) {
   const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const basePath = `/${organization.slug}`;
 
@@ -89,11 +101,59 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
 
   return (
     <Sidebar>
-      <SidebarHeader className="border-b">
-        <div className="flex items-center gap-2 px-2 py-2">
-          <Building2 className="size-6" />
-          <span className="font-semibold truncate">{organization.name}</span>
-        </div>
+      <SidebarHeader className="border-b space-y-2 p-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between px-2 h-auto py-2"
+            >
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <Building2 className="size-5 shrink-0" />
+                <span className="font-semibold truncate text-left">
+                  {organization.name}
+                </span>
+              </div>
+              <ChevronDown className="size-4 shrink-0 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-64">
+            <div className="px-2 py-1.5">
+              <p className="text-xs font-semibold text-muted-foreground">
+                {t("dashboard.user.switchOrg")}
+              </p>
+            </div>
+            <div className="max-h-[300px] overflow-y-auto">
+              {organizations.map((org) => (
+                <DropdownMenuItem
+                  key={org.id}
+                  asChild
+                  className={
+                    org.id === organization.id ? "bg-accent" : "cursor-pointer"
+                  }
+                >
+                  <Link href={`/${org.slug}`}>
+                    <Building2 className="mr-2 size-4" />
+                    <div className="flex flex-col">
+                      <span className="font-medium">{org.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {t(`organization.roles.${org.role.toLowerCase()}`)}
+                      </span>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsCreateDialogOpen(true)}
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Plus className="mr-2 size-4" />
+              {t("organization.select.createNew")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarHeader>
 
       <SidebarContent>
@@ -143,13 +203,6 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/onboarding">
-                    <Building2 className="mr-2 size-4" />
-                    {t("dashboard.user.switchOrg")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 size-4" />
                   {t("dashboard.user.signOut")}
@@ -161,6 +214,10 @@ export function DashboardSidebar({ organization, user, locale }: Props) {
       </SidebarFooter>
 
       <SidebarRail />
+      <CreateOrganizationDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+      />
     </Sidebar>
   );
 }

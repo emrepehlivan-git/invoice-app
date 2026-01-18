@@ -146,8 +146,7 @@
     "organization": {
       "title": "Organizasyon Ayarları",
       "description": "Organizasyon bilgilerinizi yönetin",
-      "name": "Organizasyon Adı",
-      "slug": "URL Kısaltması"
+      "name": "Organizasyon Adı"
     },
     "account": {
       "title": "Hesap Ayarları",

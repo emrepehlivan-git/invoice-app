@@ -54,10 +54,6 @@ export default async function SettingsPage({ params }: Props) {
                 <p className="text-sm font-medium">{t("settings.organization.name")}</p>
                 <p className="text-sm text-muted-foreground">{organization.name}</p>
               </div>
-              <div>
-                <p className="text-sm font-medium">{t("settings.organization.slug")}</p>
-                <p className="text-sm text-muted-foreground">{organization.slug}</p>
-              </div>
             </div>
           </CardContent>
         </Card>
