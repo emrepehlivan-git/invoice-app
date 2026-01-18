@@ -9,8 +9,12 @@ export type {
   Verification,
   Organization,
   OrganizationMember,
+  Customer,
 } from "./prisma";
 export { Role } from "./prisma";
 
 // Organization types
 export type { OrganizationWithRole, OrganizationMemberWithOrg } from "./organization";
+
+// Customer types
+export type { CustomerWithOrganization } from "./customer";

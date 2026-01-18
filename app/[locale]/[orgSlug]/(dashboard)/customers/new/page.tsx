@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
-import { getCustomers } from "@/app/actions/customer";
 import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
@@ -12,14 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { CustomerTable } from "@/components/customers/customer-table";
+import { ArrowLeft } from "lucide-react";
+import { CustomerForm } from "@/components/customers/customer-form";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
 };
 
-export default async function CustomersPage({ params }: Props) {
+export default async function NewCustomerPage({ params }: Props) {
   const { locale, orgSlug } = await params;
   setRequestLocale(locale);
 
@@ -35,37 +34,36 @@ export default async function CustomersPage({ params }: Props) {
     notFound();
   }
 
-  const customers = await getCustomers(organization.id);
-
   const t = await getTranslations();
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t("customers.title")}</h1>
-          <p className="text-muted-foreground">
-            {t("customers.description")}
-          </p>
-        </div>
-        <Button asChild>
-          <Link href={`/${orgSlug}/customers/new`}>
-            <Plus className="mr-2 size-4" />
-            {t("customers.create")}
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href={`/${orgSlug}/customers`}>
+            <ArrowLeft className="size-4" />
           </Link>
         </Button>
+        <div>
+          <h1 className="text-3xl font-bold">{t("customers.form.createTitle")}</h1>
+          <p className="text-muted-foreground">
+            {t("customers.form.createDescription")}
+          </p>
+        </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("customers.list.title")}</CardTitle>
-          <CardDescription>{t("customers.list.description")}</CardDescription>
+          <CardTitle>{t("customers.form.createTitle")}</CardTitle>
+          <CardDescription>
+            {t("customers.form.createDescription")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <CustomerTable
-            customers={customers}
+          <CustomerForm
+            organizationId={organization.id}
             orgSlug={orgSlug}
-            locale={locale}
+            mode="create"
           />
         </CardContent>
       </Card>

@@ -134,10 +134,81 @@
     "title": "Customers",
     "description": "Manage your customer database",
     "create": "Add Customer",
+    "edit": "Edit Customer",
+    "delete": "Delete Customer",
+    "view": "Customer Details",
     "list": {
       "title": "All Customers",
       "description": "View and manage your customers",
       "empty": "No customers added yet. Add your first customer to get started."
+    },
+    "form": {
+      "createTitle": "New Customer",
+      "createDescription": "Add a new customer",
+      "editTitle": "Edit Customer",
+      "editDescription": "Update customer information",
+      "submit": "Save",
+      "submitting": "Saving..."
+    },
+    "fields": {
+      "name": "Customer Name",
+      "namePlaceholder": "John Doe or ABC Company",
+      "email": "Email",
+      "emailPlaceholder": "customer@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 555 123 4567",
+      "taxNumber": "Tax ID / VAT Number",
+      "taxNumberPlaceholder": "1234567890",
+      "address": "Address",
+      "addressPlaceholder": "Street, Building Number",
+      "city": "City",
+      "cityPlaceholder": "New York",
+      "country": "Country",
+      "countryPlaceholder": "United States",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "10001",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional notes about the customer..."
+    },
+    "detail": {
+      "title": "Customer Information",
+      "contactInfo": "Contact Information",
+      "addressInfo": "Address Information",
+      "additionalInfo": "Additional Information",
+      "createdAt": "Created At",
+      "updatedAt": "Last Updated",
+      "noEmail": "No email provided",
+      "noPhone": "No phone provided",
+      "noAddress": "No address provided",
+      "noNotes": "No notes"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "createdAt": "Added Date",
+      "actions": "Actions",
+      "noResults": "No results found"
+    },
+    "messages": {
+      "createSuccess": "Customer created successfully",
+      "createError": "Failed to create customer",
+      "updateSuccess": "Customer updated successfully",
+      "updateError": "Failed to update customer",
+      "deleteSuccess": "Customer deleted successfully",
+      "deleteError": "Failed to delete customer",
+      "notFound": "Customer not found"
+    },
+    "errors": {
+      "emailExists": "This email address is already in use",
+      "unauthorized": "You do not have permission for this action"
+    },
+    "deleteDialog": {
+      "title": "Delete Customer",
+      "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
     }
   },
   "settings": {

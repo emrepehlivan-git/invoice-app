@@ -134,10 +134,81 @@
     "title": "Müşteriler",
     "description": "Müşteri veritabanınızı yönetin",
     "create": "Müşteri Ekle",
+    "edit": "Müşteriyi Düzenle",
+    "delete": "Müşteriyi Sil",
+    "view": "Müşteri Detayı",
     "list": {
       "title": "Tüm Müşteriler",
       "description": "Müşterilerinizi görüntüleyin ve yönetin",
       "empty": "Henüz müşteri eklenmedi. Başlamak için ilk müşterinizi ekleyin."
+    },
+    "form": {
+      "createTitle": "Yeni Müşteri",
+      "createDescription": "Yeni bir müşteri ekleyin",
+      "editTitle": "Müşteriyi Düzenle",
+      "editDescription": "Müşteri bilgilerini güncelleyin",
+      "submit": "Kaydet",
+      "submitting": "Kaydediliyor..."
+    },
+    "fields": {
+      "name": "Müşteri Adı",
+      "namePlaceholder": "Ahmet Yılmaz veya ABC Şirketi",
+      "email": "E-posta",
+      "emailPlaceholder": "musteri@email.com",
+      "phone": "Telefon",
+      "phonePlaceholder": "+90 555 123 4567",
+      "taxNumber": "Vergi No / TC Kimlik No",
+      "taxNumberPlaceholder": "1234567890",
+      "address": "Adres",
+      "addressPlaceholder": "Cadde, Sokak, Bina No",
+      "city": "Şehir",
+      "cityPlaceholder": "İstanbul",
+      "country": "Ülke",
+      "countryPlaceholder": "Türkiye",
+      "postalCode": "Posta Kodu",
+      "postalCodePlaceholder": "34000",
+      "notes": "Notlar",
+      "notesPlaceholder": "Müşteri hakkında ek notlar..."
+    },
+    "detail": {
+      "title": "Müşteri Bilgileri",
+      "contactInfo": "İletişim Bilgileri",
+      "addressInfo": "Adres Bilgileri",
+      "additionalInfo": "Ek Bilgiler",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Son Güncelleme",
+      "noEmail": "E-posta belirtilmemiş",
+      "noPhone": "Telefon belirtilmemiş",
+      "noAddress": "Adres belirtilmemiş",
+      "noNotes": "Not bulunmuyor"
+    },
+    "table": {
+      "name": "Ad",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "city": "Şehir",
+      "createdAt": "Eklenme Tarihi",
+      "actions": "İşlemler",
+      "noResults": "Sonuç bulunamadı"
+    },
+    "messages": {
+      "createSuccess": "Müşteri başarıyla oluşturuldu",
+      "createError": "Müşteri oluşturulamadı",
+      "updateSuccess": "Müşteri başarıyla güncellendi",
+      "updateError": "Müşteri güncellenemedi",
+      "deleteSuccess": "Müşteri başarıyla silindi",
+      "deleteError": "Müşteri silinemedi",
+      "notFound": "Müşteri bulunamadı"
+    },
+    "errors": {
+      "emailExists": "Bu e-posta adresi zaten kullanılıyor",
+      "unauthorized": "Bu işlem için yetkiniz yok"
+    },
+    "deleteDialog": {
+      "title": "Müşteriyi Sil",
+      "description": "\"{name}\" müşterisini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+      "confirm": "Sil",
+      "cancel": "İptal"
     }
   },
   "settings": {

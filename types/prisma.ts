@@ -10,6 +10,7 @@ export type {
   Verification,
   Organization,
   OrganizationMember,
+  Customer,
 } from "@/prisma/generated/prisma";
 
 export { Role } from "@/prisma/generated/prisma";
