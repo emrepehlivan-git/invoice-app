@@ -84,5 +84,40 @@
     "passwordMatch": "Passwords do not match",
     "passwordStrength": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
     "slug": "Only lowercase letters, numbers and hyphens allowed"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to {name}",
+    "nav": {
+      "menu": "Menu",
+      "dashboard": "Dashboard",
+      "invoices": "Invoices",
+      "customers": "Customers",
+      "settings": "Settings"
+    },
+    "user": {
+      "switchOrg": "Switch Organization",
+      "signOut": "Sign Out"
+    },
+    "stats": {
+      "totalInvoices": "Total Invoices",
+      "invoicesDescription": "All created invoices",
+      "totalCustomers": "Total Customers",
+      "customersDescription": "Registered customers",
+      "revenue": "Total Revenue",
+      "revenueDescription": "Total from paid invoices",
+      "outstanding": "Outstanding",
+      "outstandingDescription": "Total from unpaid invoices"
+    },
+    "recentInvoices": {
+      "title": "Recent Invoices",
+      "description": "Latest created invoices",
+      "empty": "No invoices created yet"
+    },
+    "recentCustomers": {
+      "title": "Recent Customers",
+      "description": "Latest added customers",
+      "empty": "No customers added yet"
+    }
   }
 }

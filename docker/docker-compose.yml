@@ -1,0 +1,58 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: invoice-db
+    restart: unless-stopped
+    env_file:
+      - ../.env.local
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Database Migrations
+  migrate:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: migrate
+    container_name: invoice-migrate
+    command: bunx prisma migrate deploy
+    env_file:
+      - ../.env.local
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-invoice}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-invoice}?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  # Next.js Application
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: invoice-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../.env.local
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-invoice}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-invoice}?schema=public
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+        
+volumes:
+  postgres_data:
+    driver: local

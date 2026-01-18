@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
@@ -44,9 +44,10 @@ function slugify(text: string): string {
 
 export function CreateOrganizationForm() {
   const t = useTranslations();
-  const locale = useLocale();
-  const router = useRouter();
+  const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
+
+  const locale = params.locale as string;
 
   const organizationSchema = createOrganizationSchema(t);
 
@@ -73,9 +74,9 @@ export function CreateOrganizationForm() {
   async function onSubmit(data: OrganizationInput) {
     setIsLoading(true);
     try {
-      const result = await createOrganization(data);
+      const result = await createOrganization({ ...data, locale });
 
-      if (result.error) {
+      if (result?.error) {
         if (result.error === "slug_exists") {
           form.setError("slug", {
             message: t("organization.errors.slugExists"),
@@ -83,13 +84,15 @@ export function CreateOrganizationForm() {
         } else {
           toast.error(t("organization.create.error"));
         }
-        return;
+      } else {
+        toast.success(t("organization.create.success"));
       }
+    } catch (error) {
+      const isRedirect = error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.includes("NEXT_REDIRECT");
 
-      toast.success(t("organization.create.success"));
-      router.push(`/${locale}/${result.data?.slug}`);
-    } catch {
-      toast.error(t("common.error"));
+      if (!isRedirect) {
+        toast.error(t("common.error"));
+      }
     } finally {
       setIsLoading(false);
     }

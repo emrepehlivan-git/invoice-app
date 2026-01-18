@@ -1,7 +1,5 @@
 import { z } from "zod";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TranslationFunction = (key: string, values?: any) => string;
+import type { TranslationFunction } from "@/types";
 
 export function createOrganizationSchema(t: TranslationFunction) {
   return z.object({

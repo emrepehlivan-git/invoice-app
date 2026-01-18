@@ -84,5 +84,40 @@
     "passwordMatch": "Şifreler eşleşmiyor",
     "passwordStrength": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir",
     "slug": "Sadece küçük harf, rakam ve tire kullanılabilir"
+  },
+  "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcome": "{name} organizasyonuna hoş geldiniz",
+    "nav": {
+      "menu": "Menü",
+      "dashboard": "Kontrol Paneli",
+      "invoices": "Faturalar",
+      "customers": "Müşteriler",
+      "settings": "Ayarlar"
+    },
+    "user": {
+      "switchOrg": "Organizasyon Değiştir",
+      "signOut": "Çıkış Yap"
+    },
+    "stats": {
+      "totalInvoices": "Toplam Fatura",
+      "invoicesDescription": "Oluşturulan tüm faturalar",
+      "totalCustomers": "Toplam Müşteri",
+      "customersDescription": "Kayıtlı müşteriler",
+      "revenue": "Toplam Gelir",
+      "revenueDescription": "Ödenen fatura toplamı",
+      "outstanding": "Bekleyen Tutar",
+      "outstandingDescription": "Ödenmemiş fatura toplamı"
+    },
+    "recentInvoices": {
+      "title": "Son Faturalar",
+      "description": "En son oluşturulan faturalar",
+      "empty": "Henüz fatura oluşturulmadı"
+    },
+    "recentCustomers": {
+      "title": "Son Müşteriler",
+      "description": "En son eklenen müşteriler",
+      "empty": "Henüz müşteri eklenmedi"
+    }
   }
 }
