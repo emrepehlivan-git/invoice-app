@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
-import { redirect } from "@/i18n/navigation";
+import { getInvoices } from "@/app/actions/invoice";
+import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { InvoiceTable } from "@/components/invoices/invoice-table";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -33,6 +35,8 @@ export default async function InvoicesPage({ params }: Props) {
     notFound();
   }
 
+  const invoices = await getInvoices(organization.id);
+
   const t = await getTranslations();
 
   return (
@@ -40,13 +44,13 @@ export default async function InvoicesPage({ params }: Props) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">{t("invoices.title")}</h1>
-          <p className="text-muted-foreground">
-            {t("invoices.description")}
-          </p>
+          <p className="text-muted-foreground">{t("invoices.description")}</p>
         </div>
-        <Button>
-          <Plus className="mr-2 size-4" />
-          {t("invoices.create")}
+        <Button asChild>
+          <Link href={`/${orgSlug}/invoices/new`}>
+            <Plus className="mr-2 size-4" />
+            {t("invoices.create")}
+          </Link>
         </Button>
       </div>
 
@@ -56,9 +60,7 @@ export default async function InvoicesPage({ params }: Props) {
           <CardDescription>{t("invoices.list.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t("invoices.list.empty")}
-          </p>
+          <InvoiceTable invoices={invoices} orgSlug={orgSlug} locale={locale} />
         </CardContent>
       </Card>
     </div>

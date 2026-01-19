@@ -107,7 +107,8 @@
       "revenue": "Toplam Gelir",
       "revenueDescription": "Ödenen fatura toplamı",
       "outstanding": "Bekleyen Tutar",
-      "outstandingDescription": "Ödenmemiş fatura toplamı"
+      "outstandingDescription": "Ödenmemiş fatura toplamı",
+      "missingRates": "Eksik döviz kurları: {currencies}"
     },
     "recentInvoices": {
       "title": "Son Faturalar",
@@ -142,12 +143,14 @@
       "selectCustomer": "Müşteri Seçin",
       "searchCustomer": "Müşteri ara...",
       "noCustomers": "Müşteri bulunamadı",
+      "selectCurrency": "Para Birimi Seçin",
       "addItem": "Kalem Ekle",
       "removeItem": "Kalemi Sil"
     },
     "fields": {
       "invoiceNumber": "Fatura No",
       "customer": "Müşteri",
+      "currency": "Para Birimi",
       "issueDate": "Düzenleme Tarihi",
       "dueDate": "Vade Tarihi",
       "status": "Durum",
@@ -371,6 +374,50 @@
       },
       "notAvailable": "Şifre değiştirme bu hesap için kullanılamaz",
       "notAvailableDescription": "Google ile giriş yapan hesaplar şifre kullanmaz"
+    },
+    "currency": {
+      "title": "Baz Para Birimi",
+      "description": "Raporlar ve dashboard toplamları için kullanılacak para birimini ayarlayın",
+      "fields": {
+        "baseCurrency": "Baz Para Birimi",
+        "selectCurrency": "Para birimi seçin",
+        "baseCurrencyHint": "Tüm tutarlar raporlama için bu para birimine dönüştürülecektir"
+      },
+      "messages": {
+        "success": "Baz para birimi güncellendi",
+        "error": "Baz para birimi güncellenemedi"
+      }
+    },
+    "exchangeRates": {
+      "title": "Döviz Kurları",
+      "description": "Raporlarda para birimi dönüşümü için döviz kurlarını ayarlayın",
+      "currentRates": "Mevcut Döviz Kurları",
+      "addRate": "Kur Ekle veya Güncelle",
+      "editRate": "Kuru Düzenle",
+      "fields": {
+        "currency": "Para Birimi",
+        "rate": "Kur ({base} cinsinden)"
+      },
+      "table": {
+        "currency": "Para Birimi",
+        "rate": "Kur",
+        "example": "Örnek",
+        "actions": "İşlemler"
+      },
+      "hint": "{base} cinsinden döviz kurunu girin. Örneğin, 1 USD = 35,50 TRY ise 35.50 girin",
+      "messages": {
+        "success": "Döviz kuru güncellendi",
+        "error": "Döviz kuru güncellenemedi",
+        "deleteSuccess": "Döviz kuru silindi",
+        "deleteError": "Döviz kuru silinemedi"
+      },
+      "errors": {
+        "sameCurrency": "Baz para birimi için kur tanımlanamaz"
+      },
+      "deleteDialog": {
+        "title": "Döviz Kurunu Sil",
+        "description": "{currency} için döviz kurunu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+      }
     }
   }
 }

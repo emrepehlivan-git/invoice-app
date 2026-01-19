@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getInvoiceStats, getInvoices } from "@/app/actions/invoice";
+import { getCustomers } from "@/app/actions/customer";
+import { getExchangeRatesMap } from "@/app/actions/exchange-rate";
+import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
   CardContent,
@@ -9,11 +13,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { FileText, Users, DollarSign, TrendingUp } from "lucide-react";
-import { redirect } from "@/i18n/navigation";
+import { format } from "date-fns";
+import { tr, enUS } from "date-fns/locale";
+import { InvoiceStatus } from "@/types";
+import { formatCurrency, formatMultiCurrencyTotal, convertToBaseCurrency } from "@/lib/currency";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
+};
+
+const statusColors: Record<InvoiceStatus, string> = {
+  [InvoiceStatus.DRAFT]:
+    "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100",
+  [InvoiceStatus.SENT]:
+    "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",
+  [InvoiceStatus.PAID]:
+    "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
+  [InvoiceStatus.OVERDUE]:
+    "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
+  [InvoiceStatus.CANCELLED]:
+    "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100",
 };
 
 export default async function DashboardPage({ params }: Props) {
@@ -32,7 +53,72 @@ export default async function DashboardPage({ params }: Props) {
     notFound();
   }
 
+  const [stats, invoices, customers, exchangeRatesMap] = await Promise.all([
+    getInvoiceStats(organization.id),
+    getInvoices(organization.id),
+    getCustomers(organization.id),
+    getExchangeRatesMap(organization.id),
+  ]);
+
   const t = await getTranslations();
+  const dateLocale = locale === "tr" ? tr : enUS;
+  const baseCurrency = organization.baseCurrency;
+
+  const recentInvoices = invoices.slice(0, 5);
+  const recentCustomers = customers.slice(0, 5);
+
+  // Calculate totals converted to base currency
+  let totalRevenueInBase = 0;
+  let totalOutstandingInBase = 0;
+  const missingRates: string[] = [];
+
+  if (stats?.revenueByCurrency) {
+    for (const [currency, amount] of Object.entries(stats.revenueByCurrency)) {
+      if (currency === baseCurrency) {
+        totalRevenueInBase += amount;
+      } else if (exchangeRatesMap[currency]) {
+        totalRevenueInBase += convertToBaseCurrency(
+          amount,
+          currency,
+          baseCurrency,
+          exchangeRatesMap
+        );
+      } else {
+        // Mark as missing rate
+        if (!missingRates.includes(currency)) {
+          missingRates.push(currency);
+        }
+      }
+    }
+  }
+
+  if (stats?.outstandingByCurrency) {
+    for (const [currency, amount] of Object.entries(stats.outstandingByCurrency)) {
+      if (currency === baseCurrency) {
+        totalOutstandingInBase += amount;
+      } else if (exchangeRatesMap[currency]) {
+        totalOutstandingInBase += convertToBaseCurrency(
+          amount,
+          currency,
+          baseCurrency,
+          exchangeRatesMap
+        );
+      } else {
+        // Mark as missing rate
+        if (!missingRates.includes(currency)) {
+          missingRates.push(currency);
+        }
+      }
+    }
+  }
+
+  // Format breakdown by currency for tooltip/detail
+  const revenueBreakdown = stats?.revenueByCurrency
+    ? formatMultiCurrencyTotal(stats.revenueByCurrency)
+    : [];
+  const outstandingBreakdown = stats?.outstandingByCurrency
+    ? formatMultiCurrencyTotal(stats.outstandingByCurrency)
+    : [];
 
   return (
     <div className="space-y-6">
@@ -52,7 +138,7 @@ export default async function DashboardPage({ params }: Props) {
             <FileText className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{stats?.totalCount ?? 0}</div>
             <p className="text-xs text-muted-foreground">
               {t("dashboard.stats.invoicesDescription")}
             </p>
@@ -67,7 +153,7 @@ export default async function DashboardPage({ params }: Props) {
             <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{customers.length}</div>
             <p className="text-xs text-muted-foreground">
               {t("dashboard.stats.customersDescription")}
             </p>
@@ -82,8 +168,26 @@ export default async function DashboardPage({ params }: Props) {
             <DollarSign className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₺0</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">
+              {formatCurrency(totalRevenueInBase, baseCurrency)}
+            </div>
+            {revenueBreakdown.length > 1 && (
+              <div className="mt-1 space-y-0.5">
+                {revenueBreakdown.map((amount, i) => (
+                  <p key={i} className="text-xs text-muted-foreground">
+                    {amount}
+                  </p>
+                ))}
+              </div>
+            )}
+            {missingRates.length > 0 && (
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                {t("dashboard.stats.missingRates", {
+                  currencies: missingRates.join(", "),
+                })}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">
               {t("dashboard.stats.revenueDescription")}
             </p>
           </CardContent>
@@ -97,8 +201,19 @@ export default async function DashboardPage({ params }: Props) {
             <TrendingUp className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₺0</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold">
+              {formatCurrency(totalOutstandingInBase, baseCurrency)}
+            </div>
+            {outstandingBreakdown.length > 1 && (
+              <div className="mt-1 space-y-0.5">
+                {outstandingBreakdown.map((amount, i) => (
+                  <p key={i} className="text-xs text-muted-foreground">
+                    {amount}
+                  </p>
+                ))}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">
               {t("dashboard.stats.outstandingDescription")}
             </p>
           </CardContent>
@@ -113,12 +228,51 @@ export default async function DashboardPage({ params }: Props) {
               {t("dashboard.recentInvoices.description")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="min-h-[200px]">
-            <div className="flex h-full items-center justify-center">
-              <p className="text-sm text-muted-foreground">
-                {t("dashboard.recentInvoices.empty")}
-              </p>
-            </div>
+          <CardContent>
+            {recentInvoices.length === 0 ? (
+              <div className="flex h-[200px] items-center justify-center">
+                <p className="text-sm text-muted-foreground">
+                  {t("dashboard.recentInvoices.empty")}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {recentInvoices.map((invoice) => (
+                  <Link
+                    key={invoice.id}
+                    href={`/${orgSlug}/invoices/${invoice.id}`}
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">
+                        {invoice.invoiceNumber}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {invoice.customer.name}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {formatCurrency(Number(invoice.total), invoice.currency)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(invoice.issueDate), "dd MMM", {
+                            locale: dateLocale,
+                          })}
+                        </p>
+                      </div>
+                      <Badge
+                        className={statusColors[invoice.status]}
+                        variant="secondary"
+                      >
+                        {t(`invoices.status.${invoice.status}`)}
+                      </Badge>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -129,12 +283,38 @@ export default async function DashboardPage({ params }: Props) {
               {t("dashboard.recentCustomers.description")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="min-h-[200px]">
-            <div className="flex h-full items-center justify-center">
-              <p className="text-sm text-muted-foreground">
-                {t("dashboard.recentCustomers.empty")}
-              </p>
-            </div>
+          <CardContent>
+            {recentCustomers.length === 0 ? (
+              <div className="flex h-[200px] items-center justify-center">
+                <p className="text-sm text-muted-foreground">
+                  {t("dashboard.recentCustomers.empty")}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {recentCustomers.map((customer) => (
+                  <Link
+                    key={customer.id}
+                    href={`/${orgSlug}/customers/${customer.id}`}
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{customer.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {customer.email || customer.phone || "-"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(customer.createdAt), "dd MMM yyyy", {
+                          locale: dateLocale,
+                        })}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

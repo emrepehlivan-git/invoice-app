@@ -107,7 +107,8 @@
       "revenue": "Total Revenue",
       "revenueDescription": "Total from paid invoices",
       "outstanding": "Outstanding",
-      "outstandingDescription": "Total from unpaid invoices"
+      "outstandingDescription": "Total from unpaid invoices",
+      "missingRates": "Missing exchange rates: {currencies}"
     },
     "recentInvoices": {
       "title": "Recent Invoices",
@@ -142,12 +143,14 @@
       "selectCustomer": "Select Customer",
       "searchCustomer": "Search customer...",
       "noCustomers": "No customers found",
+      "selectCurrency": "Select Currency",
       "addItem": "Add Item",
       "removeItem": "Remove Item"
     },
     "fields": {
       "invoiceNumber": "Invoice No",
       "customer": "Customer",
+      "currency": "Currency",
       "issueDate": "Issue Date",
       "dueDate": "Due Date",
       "status": "Status",
@@ -371,6 +374,50 @@
       },
       "notAvailable": "Password change is not available for this account",
       "notAvailableDescription": "Accounts using Google sign-in do not use passwords"
+    },
+    "currency": {
+      "title": "Base Currency",
+      "description": "Set the currency used for reports and dashboard totals",
+      "fields": {
+        "baseCurrency": "Base Currency",
+        "selectCurrency": "Select currency",
+        "baseCurrencyHint": "All amounts will be converted to this currency for reporting"
+      },
+      "messages": {
+        "success": "Base currency updated successfully",
+        "error": "Failed to update base currency"
+      }
+    },
+    "exchangeRates": {
+      "title": "Exchange Rates",
+      "description": "Set exchange rates for currency conversion in reports",
+      "currentRates": "Current Exchange Rates",
+      "addRate": "Add or Update Rate",
+      "editRate": "Edit Rate",
+      "fields": {
+        "currency": "Currency",
+        "rate": "Rate (to {base})"
+      },
+      "table": {
+        "currency": "Currency",
+        "rate": "Rate",
+        "example": "Example",
+        "actions": "Actions"
+      },
+      "hint": "Enter the exchange rate to convert to {base}. For example, if 1 USD = 35.50 TRY, enter 35.50",
+      "messages": {
+        "success": "Exchange rate updated successfully",
+        "error": "Failed to update exchange rate",
+        "deleteSuccess": "Exchange rate deleted successfully",
+        "deleteError": "Failed to delete exchange rate"
+      },
+      "errors": {
+        "sameCurrency": "Cannot set rate for base currency to itself"
+      },
+      "deleteDialog": {
+        "title": "Delete Exchange Rate",
+        "description": "Are you sure you want to delete the exchange rate for {currency}? This action cannot be undone."
+      }
     }
   }
 }

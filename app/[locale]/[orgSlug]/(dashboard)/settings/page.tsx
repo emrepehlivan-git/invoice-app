@@ -3,6 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
 import { getUserProfile } from "@/app/actions/user";
+import { getExchangeRates } from "@/app/actions/exchange-rate";
 import { redirect } from "@/i18n/navigation";
 import {
   Card,
@@ -13,8 +14,11 @@ import {
 } from "@/components/ui/card";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { PasswordForm } from "@/components/settings/password-form";
+import { CurrencySettingsForm } from "@/components/settings/currency-settings-form";
+import { ExchangeRatesForm } from "@/components/settings/exchange-rates-form";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Role } from "@/types";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -36,9 +40,13 @@ export default async function SettingsPage({ params }: Props) {
     notFound();
   }
 
-  const { user, hasPasswordAccount } = await getUserProfile();
+  const [{ user, hasPasswordAccount }, exchangeRates] = await Promise.all([
+    getUserProfile(),
+    getExchangeRates(organization.id),
+  ]);
 
   const t = await getTranslations();
+  const isAdmin = organization.role === Role.ADMIN;
 
   return (
     <div className="space-y-6">
@@ -68,6 +76,43 @@ export default async function SettingsPage({ params }: Props) {
             </div>
           </CardContent>
         </Card>
+
+        {isAdmin && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("settings.currency.title")}</CardTitle>
+                <CardDescription>
+                  {t("settings.currency.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CurrencySettingsForm
+                  organizationId={organization.id}
+                  currentBaseCurrency={organization.baseCurrency}
+                  locale={locale}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("settings.exchangeRates.title")}</CardTitle>
+                <CardDescription>
+                  {t("settings.exchangeRates.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ExchangeRatesForm
+                  organizationId={organization.id}
+                  baseCurrency={organization.baseCurrency}
+                  exchangeRates={exchangeRates}
+                  locale={locale}
+                />
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         <Card>
           <CardHeader>

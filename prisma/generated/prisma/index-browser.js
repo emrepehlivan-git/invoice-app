@@ -172,6 +172,18 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   logo: 'logo',
+  baseCurrency: 'baseCurrency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrency: 'fromCurrency',
+  toCurrency: 'toCurrency',
+  rate: 'rate',
+  effectiveDate: 'effectiveDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -206,6 +218,7 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   invoiceNumber: 'invoiceNumber',
   organizationId: 'organizationId',
   customerId: 'customerId',
+  currency: 'currency',
   status: 'status',
   issueDate: 'issueDate',
   dueDate: 'dueDate',
@@ -260,6 +273,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Organization: 'Organization',
+  ExchangeRate: 'ExchangeRate',
   OrganizationMember: 'OrganizationMember',
   Customer: 'Customer',
   Invoice: 'Invoice',

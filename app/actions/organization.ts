@@ -113,3 +113,49 @@ export async function getOrganizationBySlug(
     throw error;
   }
 }
+
+const updateOrgSchema = z.object({
+  baseCurrency: z.string().length(3),
+});
+
+type UpdateOrganizationResult =
+  | { error: string; data?: never }
+  | { data: Organization; error?: never };
+
+export async function updateOrganizationSettings(
+  organizationId: string,
+  data: { baseCurrency: string }
+): Promise<UpdateOrganizationResult> {
+  try {
+    const session = await requireAuth();
+
+    // Verify user has access and is admin
+    const membership = await prisma.organizationMember.findFirst({
+      where: {
+        userId: session.user.id,
+        organizationId,
+        role: Role.ADMIN,
+      },
+    });
+
+    if (!membership) {
+      return { error: "unauthorized" };
+    }
+
+    const validated = updateOrgSchema.parse(data);
+
+    const organization = await prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        baseCurrency: validated.baseCurrency,
+      },
+    });
+
+    revalidatePath("/");
+
+    return { data: organization };
+  } catch (error) {
+    logger.error("Failed to update organization settings", { error, organizationId, data });
+    throw error;
+  }
+}

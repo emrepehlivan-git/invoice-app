@@ -39,6 +39,11 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  */
 export type Organization = $Result.DefaultSelection<Prisma.$OrganizationPayload>
 /**
+ * Model ExchangeRate
+ * 
+ */
+export type ExchangeRate = $Result.DefaultSelection<Prisma.$ExchangeRatePayload>
+/**
  * Model OrganizationMember
  * 
  */
@@ -258,6 +263,16 @@ export class PrismaClient<
     * ```
     */
   get organization(): Prisma.OrganizationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.exchangeRate`: Exposes CRUD operations for the **ExchangeRate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExchangeRates
+    * const exchangeRates = await prisma.exchangeRate.findMany()
+    * ```
+    */
+  get exchangeRate(): Prisma.ExchangeRateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.organizationMember`: Exposes CRUD operations for the **OrganizationMember** model.
@@ -744,6 +759,7 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     Organization: 'Organization',
+    ExchangeRate: 'ExchangeRate',
     OrganizationMember: 'OrganizationMember',
     Customer: 'Customer',
     Invoice: 'Invoice',
@@ -766,7 +782,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "organization" | "organizationMember" | "customer" | "invoice" | "invoiceItem"
+      modelProps: "user" | "session" | "account" | "verification" | "organization" | "exchangeRate" | "organizationMember" | "customer" | "invoice" | "invoiceItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1137,6 +1153,80 @@ export namespace Prisma {
           count: {
             args: Prisma.OrganizationCountArgs<ExtArgs>
             result: $Utils.Optional<OrganizationCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExchangeRate: {
+        payload: Prisma.$ExchangeRatePayload<ExtArgs>
+        fields: Prisma.ExchangeRateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExchangeRateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExchangeRateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          findFirst: {
+            args: Prisma.ExchangeRateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExchangeRateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          findMany: {
+            args: Prisma.ExchangeRateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+          }
+          create: {
+            args: Prisma.ExchangeRateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          createMany: {
+            args: Prisma.ExchangeRateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExchangeRateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+          }
+          delete: {
+            args: Prisma.ExchangeRateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          update: {
+            args: Prisma.ExchangeRateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          deleteMany: {
+            args: Prisma.ExchangeRateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExchangeRateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExchangeRateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>[]
+          }
+          upsert: {
+            args: Prisma.ExchangeRateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExchangeRatePayload>
+          }
+          aggregate: {
+            args: Prisma.ExchangeRateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExchangeRate>
+          }
+          groupBy: {
+            args: Prisma.ExchangeRateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExchangeRateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExchangeRateCountArgs<ExtArgs>
+            result: $Utils.Optional<ExchangeRateCountAggregateOutputType> | number
           }
         }
       }
@@ -1537,6 +1627,7 @@ export namespace Prisma {
     account?: AccountOmit
     verification?: VerificationOmit
     organization?: OrganizationOmit
+    exchangeRate?: ExchangeRateOmit
     organizationMember?: OrganizationMemberOmit
     customer?: CustomerOmit
     invoice?: InvoiceOmit
@@ -1673,12 +1764,14 @@ export namespace Prisma {
     members: number
     customers: number
     invoices: number
+    exchangeRates: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | OrganizationCountOutputTypeCountMembersArgs
     customers?: boolean | OrganizationCountOutputTypeCountCustomersArgs
     invoices?: boolean | OrganizationCountOutputTypeCountInvoicesArgs
+    exchangeRates?: boolean | OrganizationCountOutputTypeCountExchangeRatesArgs
   }
 
   // Custom InputTypes
@@ -1711,6 +1804,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountExchangeRatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExchangeRateWhereInput
   }
 
 
@@ -6214,6 +6314,7 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     logo: string | null
+    baseCurrency: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6223,6 +6324,7 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     logo: string | null
+    baseCurrency: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6232,6 +6334,7 @@ export namespace Prisma {
     name: number
     slug: number
     logo: number
+    baseCurrency: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6243,6 +6346,7 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    baseCurrency?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6252,6 +6356,7 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    baseCurrency?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6261,6 +6366,7 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    baseCurrency?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6343,6 +6449,7 @@ export namespace Prisma {
     name: string
     slug: string
     logo: string | null
+    baseCurrency: string
     createdAt: Date
     updatedAt: Date
     _count: OrganizationCountAggregateOutputType | null
@@ -6369,11 +6476,13 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    baseCurrency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     members?: boolean | Organization$membersArgs<ExtArgs>
     customers?: boolean | Organization$customersArgs<ExtArgs>
     invoices?: boolean | Organization$invoicesArgs<ExtArgs>
+    exchangeRates?: boolean | Organization$exchangeRatesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -6382,6 +6491,7 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    baseCurrency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["organization"]>
@@ -6391,6 +6501,7 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    baseCurrency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["organization"]>
@@ -6400,15 +6511,17 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    baseCurrency?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "baseCurrency" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Organization$membersArgs<ExtArgs>
     customers?: boolean | Organization$customersArgs<ExtArgs>
     invoices?: boolean | Organization$invoicesArgs<ExtArgs>
+    exchangeRates?: boolean | Organization$exchangeRatesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -6420,12 +6533,14 @@ export namespace Prisma {
       members: Prisma.$OrganizationMemberPayload<ExtArgs>[]
       customers: Prisma.$CustomerPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      exchangeRates: Prisma.$ExchangeRatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       slug: string
       logo: string | null
+      baseCurrency: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["organization"]>
@@ -6825,6 +6940,7 @@ export namespace Prisma {
     members<T extends Organization$membersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customers<T extends Organization$customersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends Organization$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    exchangeRates<T extends Organization$exchangeRatesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$exchangeRatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6858,6 +6974,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Organization", 'String'>
     readonly slug: FieldRef<"Organization", 'String'>
     readonly logo: FieldRef<"Organization", 'String'>
+    readonly baseCurrency: FieldRef<"Organization", 'String'>
     readonly createdAt: FieldRef<"Organization", 'DateTime'>
     readonly updatedAt: FieldRef<"Organization", 'DateTime'>
   }
@@ -7320,6 +7437,30 @@ export namespace Prisma {
   }
 
   /**
+   * Organization.exchangeRates
+   */
+  export type Organization$exchangeRatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    where?: ExchangeRateWhereInput
+    orderBy?: ExchangeRateOrderByWithRelationInput | ExchangeRateOrderByWithRelationInput[]
+    cursor?: ExchangeRateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExchangeRateScalarFieldEnum | ExchangeRateScalarFieldEnum[]
+  }
+
+  /**
    * Organization without action
    */
   export type OrganizationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7335,6 +7476,1137 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrganizationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExchangeRate
+   */
+
+  export type AggregateExchangeRate = {
+    _count: ExchangeRateCountAggregateOutputType | null
+    _avg: ExchangeRateAvgAggregateOutputType | null
+    _sum: ExchangeRateSumAggregateOutputType | null
+    _min: ExchangeRateMinAggregateOutputType | null
+    _max: ExchangeRateMaxAggregateOutputType | null
+  }
+
+  export type ExchangeRateAvgAggregateOutputType = {
+    rate: Decimal | null
+  }
+
+  export type ExchangeRateSumAggregateOutputType = {
+    rate: Decimal | null
+  }
+
+  export type ExchangeRateMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    fromCurrency: string | null
+    toCurrency: string | null
+    rate: Decimal | null
+    effectiveDate: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExchangeRateMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    fromCurrency: string | null
+    toCurrency: string | null
+    rate: Decimal | null
+    effectiveDate: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExchangeRateCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    fromCurrency: number
+    toCurrency: number
+    rate: number
+    effectiveDate: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExchangeRateAvgAggregateInputType = {
+    rate?: true
+  }
+
+  export type ExchangeRateSumAggregateInputType = {
+    rate?: true
+  }
+
+  export type ExchangeRateMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    fromCurrency?: true
+    toCurrency?: true
+    rate?: true
+    effectiveDate?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExchangeRateMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    fromCurrency?: true
+    toCurrency?: true
+    rate?: true
+    effectiveDate?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExchangeRateCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    fromCurrency?: true
+    toCurrency?: true
+    rate?: true
+    effectiveDate?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExchangeRateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExchangeRate to aggregate.
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExchangeRates to fetch.
+     */
+    orderBy?: ExchangeRateOrderByWithRelationInput | ExchangeRateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExchangeRateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExchangeRates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExchangeRates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExchangeRates
+    **/
+    _count?: true | ExchangeRateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExchangeRateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExchangeRateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExchangeRateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExchangeRateMaxAggregateInputType
+  }
+
+  export type GetExchangeRateAggregateType<T extends ExchangeRateAggregateArgs> = {
+        [P in keyof T & keyof AggregateExchangeRate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExchangeRate[P]>
+      : GetScalarType<T[P], AggregateExchangeRate[P]>
+  }
+
+
+
+
+  export type ExchangeRateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExchangeRateWhereInput
+    orderBy?: ExchangeRateOrderByWithAggregationInput | ExchangeRateOrderByWithAggregationInput[]
+    by: ExchangeRateScalarFieldEnum[] | ExchangeRateScalarFieldEnum
+    having?: ExchangeRateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExchangeRateCountAggregateInputType | true
+    _avg?: ExchangeRateAvgAggregateInputType
+    _sum?: ExchangeRateSumAggregateInputType
+    _min?: ExchangeRateMinAggregateInputType
+    _max?: ExchangeRateMaxAggregateInputType
+  }
+
+  export type ExchangeRateGroupByOutputType = {
+    id: string
+    organizationId: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal
+    effectiveDate: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: ExchangeRateCountAggregateOutputType | null
+    _avg: ExchangeRateAvgAggregateOutputType | null
+    _sum: ExchangeRateSumAggregateOutputType | null
+    _min: ExchangeRateMinAggregateOutputType | null
+    _max: ExchangeRateMaxAggregateOutputType | null
+  }
+
+  type GetExchangeRateGroupByPayload<T extends ExchangeRateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExchangeRateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExchangeRateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExchangeRateGroupByOutputType[P]>
+            : GetScalarType<T[P], ExchangeRateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExchangeRateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    fromCurrency?: boolean
+    toCurrency?: boolean
+    rate?: boolean
+    effectiveDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exchangeRate"]>
+
+  export type ExchangeRateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    fromCurrency?: boolean
+    toCurrency?: boolean
+    rate?: boolean
+    effectiveDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exchangeRate"]>
+
+  export type ExchangeRateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    fromCurrency?: boolean
+    toCurrency?: boolean
+    rate?: boolean
+    effectiveDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exchangeRate"]>
+
+  export type ExchangeRateSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    fromCurrency?: boolean
+    toCurrency?: boolean
+    rate?: boolean
+    effectiveDate?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExchangeRateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "fromCurrency" | "toCurrency" | "rate" | "effectiveDate" | "createdAt" | "updatedAt", ExtArgs["result"]["exchangeRate"]>
+  export type ExchangeRateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ExchangeRateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ExchangeRateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ExchangeRatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExchangeRate"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      fromCurrency: string
+      toCurrency: string
+      rate: Prisma.Decimal
+      effectiveDate: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["exchangeRate"]>
+    composites: {}
+  }
+
+  type ExchangeRateGetPayload<S extends boolean | null | undefined | ExchangeRateDefaultArgs> = $Result.GetResult<Prisma.$ExchangeRatePayload, S>
+
+  type ExchangeRateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExchangeRateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExchangeRateCountAggregateInputType | true
+    }
+
+  export interface ExchangeRateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExchangeRate'], meta: { name: 'ExchangeRate' } }
+    /**
+     * Find zero or one ExchangeRate that matches the filter.
+     * @param {ExchangeRateFindUniqueArgs} args - Arguments to find a ExchangeRate
+     * @example
+     * // Get one ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExchangeRateFindUniqueArgs>(args: SelectSubset<T, ExchangeRateFindUniqueArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExchangeRate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExchangeRateFindUniqueOrThrowArgs} args - Arguments to find a ExchangeRate
+     * @example
+     * // Get one ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExchangeRateFindUniqueOrThrowArgs>(args: SelectSubset<T, ExchangeRateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExchangeRate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateFindFirstArgs} args - Arguments to find a ExchangeRate
+     * @example
+     * // Get one ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExchangeRateFindFirstArgs>(args?: SelectSubset<T, ExchangeRateFindFirstArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExchangeRate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateFindFirstOrThrowArgs} args - Arguments to find a ExchangeRate
+     * @example
+     * // Get one ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExchangeRateFindFirstOrThrowArgs>(args?: SelectSubset<T, ExchangeRateFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExchangeRates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExchangeRates
+     * const exchangeRates = await prisma.exchangeRate.findMany()
+     * 
+     * // Get first 10 ExchangeRates
+     * const exchangeRates = await prisma.exchangeRate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const exchangeRateWithIdOnly = await prisma.exchangeRate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExchangeRateFindManyArgs>(args?: SelectSubset<T, ExchangeRateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExchangeRate.
+     * @param {ExchangeRateCreateArgs} args - Arguments to create a ExchangeRate.
+     * @example
+     * // Create one ExchangeRate
+     * const ExchangeRate = await prisma.exchangeRate.create({
+     *   data: {
+     *     // ... data to create a ExchangeRate
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExchangeRateCreateArgs>(args: SelectSubset<T, ExchangeRateCreateArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExchangeRates.
+     * @param {ExchangeRateCreateManyArgs} args - Arguments to create many ExchangeRates.
+     * @example
+     * // Create many ExchangeRates
+     * const exchangeRate = await prisma.exchangeRate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExchangeRateCreateManyArgs>(args?: SelectSubset<T, ExchangeRateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExchangeRates and returns the data saved in the database.
+     * @param {ExchangeRateCreateManyAndReturnArgs} args - Arguments to create many ExchangeRates.
+     * @example
+     * // Create many ExchangeRates
+     * const exchangeRate = await prisma.exchangeRate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExchangeRates and only return the `id`
+     * const exchangeRateWithIdOnly = await prisma.exchangeRate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExchangeRateCreateManyAndReturnArgs>(args?: SelectSubset<T, ExchangeRateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExchangeRate.
+     * @param {ExchangeRateDeleteArgs} args - Arguments to delete one ExchangeRate.
+     * @example
+     * // Delete one ExchangeRate
+     * const ExchangeRate = await prisma.exchangeRate.delete({
+     *   where: {
+     *     // ... filter to delete one ExchangeRate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExchangeRateDeleteArgs>(args: SelectSubset<T, ExchangeRateDeleteArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExchangeRate.
+     * @param {ExchangeRateUpdateArgs} args - Arguments to update one ExchangeRate.
+     * @example
+     * // Update one ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExchangeRateUpdateArgs>(args: SelectSubset<T, ExchangeRateUpdateArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExchangeRates.
+     * @param {ExchangeRateDeleteManyArgs} args - Arguments to filter ExchangeRates to delete.
+     * @example
+     * // Delete a few ExchangeRates
+     * const { count } = await prisma.exchangeRate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExchangeRateDeleteManyArgs>(args?: SelectSubset<T, ExchangeRateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExchangeRates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExchangeRates
+     * const exchangeRate = await prisma.exchangeRate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExchangeRateUpdateManyArgs>(args: SelectSubset<T, ExchangeRateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExchangeRates and returns the data updated in the database.
+     * @param {ExchangeRateUpdateManyAndReturnArgs} args - Arguments to update many ExchangeRates.
+     * @example
+     * // Update many ExchangeRates
+     * const exchangeRate = await prisma.exchangeRate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExchangeRates and only return the `id`
+     * const exchangeRateWithIdOnly = await prisma.exchangeRate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExchangeRateUpdateManyAndReturnArgs>(args: SelectSubset<T, ExchangeRateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExchangeRate.
+     * @param {ExchangeRateUpsertArgs} args - Arguments to update or create a ExchangeRate.
+     * @example
+     * // Update or create a ExchangeRate
+     * const exchangeRate = await prisma.exchangeRate.upsert({
+     *   create: {
+     *     // ... data to create a ExchangeRate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExchangeRate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExchangeRateUpsertArgs>(args: SelectSubset<T, ExchangeRateUpsertArgs<ExtArgs>>): Prisma__ExchangeRateClient<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExchangeRates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateCountArgs} args - Arguments to filter ExchangeRates to count.
+     * @example
+     * // Count the number of ExchangeRates
+     * const count = await prisma.exchangeRate.count({
+     *   where: {
+     *     // ... the filter for the ExchangeRates we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExchangeRateCountArgs>(
+      args?: Subset<T, ExchangeRateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExchangeRateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExchangeRate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExchangeRateAggregateArgs>(args: Subset<T, ExchangeRateAggregateArgs>): Prisma.PrismaPromise<GetExchangeRateAggregateType<T>>
+
+    /**
+     * Group by ExchangeRate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExchangeRateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExchangeRateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExchangeRateGroupByArgs['orderBy'] }
+        : { orderBy?: ExchangeRateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExchangeRateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExchangeRateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExchangeRate model
+   */
+  readonly fields: ExchangeRateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExchangeRate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExchangeRateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExchangeRate model
+   */
+  interface ExchangeRateFieldRefs {
+    readonly id: FieldRef<"ExchangeRate", 'String'>
+    readonly organizationId: FieldRef<"ExchangeRate", 'String'>
+    readonly fromCurrency: FieldRef<"ExchangeRate", 'String'>
+    readonly toCurrency: FieldRef<"ExchangeRate", 'String'>
+    readonly rate: FieldRef<"ExchangeRate", 'Decimal'>
+    readonly effectiveDate: FieldRef<"ExchangeRate", 'DateTime'>
+    readonly createdAt: FieldRef<"ExchangeRate", 'DateTime'>
+    readonly updatedAt: FieldRef<"ExchangeRate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExchangeRate findUnique
+   */
+  export type ExchangeRateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter, which ExchangeRate to fetch.
+     */
+    where: ExchangeRateWhereUniqueInput
+  }
+
+  /**
+   * ExchangeRate findUniqueOrThrow
+   */
+  export type ExchangeRateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter, which ExchangeRate to fetch.
+     */
+    where: ExchangeRateWhereUniqueInput
+  }
+
+  /**
+   * ExchangeRate findFirst
+   */
+  export type ExchangeRateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter, which ExchangeRate to fetch.
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExchangeRates to fetch.
+     */
+    orderBy?: ExchangeRateOrderByWithRelationInput | ExchangeRateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExchangeRates.
+     */
+    cursor?: ExchangeRateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExchangeRates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExchangeRates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExchangeRates.
+     */
+    distinct?: ExchangeRateScalarFieldEnum | ExchangeRateScalarFieldEnum[]
+  }
+
+  /**
+   * ExchangeRate findFirstOrThrow
+   */
+  export type ExchangeRateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter, which ExchangeRate to fetch.
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExchangeRates to fetch.
+     */
+    orderBy?: ExchangeRateOrderByWithRelationInput | ExchangeRateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExchangeRates.
+     */
+    cursor?: ExchangeRateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExchangeRates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExchangeRates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExchangeRates.
+     */
+    distinct?: ExchangeRateScalarFieldEnum | ExchangeRateScalarFieldEnum[]
+  }
+
+  /**
+   * ExchangeRate findMany
+   */
+  export type ExchangeRateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter, which ExchangeRates to fetch.
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExchangeRates to fetch.
+     */
+    orderBy?: ExchangeRateOrderByWithRelationInput | ExchangeRateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExchangeRates.
+     */
+    cursor?: ExchangeRateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExchangeRates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExchangeRates.
+     */
+    skip?: number
+    distinct?: ExchangeRateScalarFieldEnum | ExchangeRateScalarFieldEnum[]
+  }
+
+  /**
+   * ExchangeRate create
+   */
+  export type ExchangeRateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExchangeRate.
+     */
+    data: XOR<ExchangeRateCreateInput, ExchangeRateUncheckedCreateInput>
+  }
+
+  /**
+   * ExchangeRate createMany
+   */
+  export type ExchangeRateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExchangeRates.
+     */
+    data: ExchangeRateCreateManyInput | ExchangeRateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExchangeRate createManyAndReturn
+   */
+  export type ExchangeRateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExchangeRates.
+     */
+    data: ExchangeRateCreateManyInput | ExchangeRateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExchangeRate update
+   */
+  export type ExchangeRateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExchangeRate.
+     */
+    data: XOR<ExchangeRateUpdateInput, ExchangeRateUncheckedUpdateInput>
+    /**
+     * Choose, which ExchangeRate to update.
+     */
+    where: ExchangeRateWhereUniqueInput
+  }
+
+  /**
+   * ExchangeRate updateMany
+   */
+  export type ExchangeRateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExchangeRates.
+     */
+    data: XOR<ExchangeRateUpdateManyMutationInput, ExchangeRateUncheckedUpdateManyInput>
+    /**
+     * Filter which ExchangeRates to update
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * Limit how many ExchangeRates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExchangeRate updateManyAndReturn
+   */
+  export type ExchangeRateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * The data used to update ExchangeRates.
+     */
+    data: XOR<ExchangeRateUpdateManyMutationInput, ExchangeRateUncheckedUpdateManyInput>
+    /**
+     * Filter which ExchangeRates to update
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * Limit how many ExchangeRates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExchangeRate upsert
+   */
+  export type ExchangeRateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExchangeRate to update in case it exists.
+     */
+    where: ExchangeRateWhereUniqueInput
+    /**
+     * In case the ExchangeRate found by the `where` argument doesn't exist, create a new ExchangeRate with this data.
+     */
+    create: XOR<ExchangeRateCreateInput, ExchangeRateUncheckedCreateInput>
+    /**
+     * In case the ExchangeRate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExchangeRateUpdateInput, ExchangeRateUncheckedUpdateInput>
+  }
+
+  /**
+   * ExchangeRate delete
+   */
+  export type ExchangeRateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
+    /**
+     * Filter which ExchangeRate to delete.
+     */
+    where: ExchangeRateWhereUniqueInput
+  }
+
+  /**
+   * ExchangeRate deleteMany
+   */
+  export type ExchangeRateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExchangeRates to delete
+     */
+    where?: ExchangeRateWhereInput
+    /**
+     * Limit how many ExchangeRates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExchangeRate without action
+   */
+  export type ExchangeRateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExchangeRate
+     */
+    select?: ExchangeRateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExchangeRate
+     */
+    omit?: ExchangeRateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExchangeRateInclude<ExtArgs> | null
   }
 
 
@@ -9640,6 +10912,7 @@ export namespace Prisma {
     invoiceNumber: string | null
     organizationId: string | null
     customerId: string | null
+    currency: string | null
     status: $Enums.InvoiceStatus | null
     issueDate: Date | null
     dueDate: Date | null
@@ -9657,6 +10930,7 @@ export namespace Prisma {
     invoiceNumber: string | null
     organizationId: string | null
     customerId: string | null
+    currency: string | null
     status: $Enums.InvoiceStatus | null
     issueDate: Date | null
     dueDate: Date | null
@@ -9674,6 +10948,7 @@ export namespace Prisma {
     invoiceNumber: number
     organizationId: number
     customerId: number
+    currency: number
     status: number
     issueDate: number
     dueDate: number
@@ -9707,6 +10982,7 @@ export namespace Prisma {
     invoiceNumber?: true
     organizationId?: true
     customerId?: true
+    currency?: true
     status?: true
     issueDate?: true
     dueDate?: true
@@ -9724,6 +11000,7 @@ export namespace Prisma {
     invoiceNumber?: true
     organizationId?: true
     customerId?: true
+    currency?: true
     status?: true
     issueDate?: true
     dueDate?: true
@@ -9741,6 +11018,7 @@ export namespace Prisma {
     invoiceNumber?: true
     organizationId?: true
     customerId?: true
+    currency?: true
     status?: true
     issueDate?: true
     dueDate?: true
@@ -9845,6 +11123,7 @@ export namespace Prisma {
     invoiceNumber: string
     organizationId: string
     customerId: string
+    currency: string
     status: $Enums.InvoiceStatus
     issueDate: Date
     dueDate: Date
@@ -9881,6 +11160,7 @@ export namespace Prisma {
     invoiceNumber?: boolean
     organizationId?: boolean
     customerId?: boolean
+    currency?: boolean
     status?: boolean
     issueDate?: boolean
     dueDate?: boolean
@@ -9902,6 +11182,7 @@ export namespace Prisma {
     invoiceNumber?: boolean
     organizationId?: boolean
     customerId?: boolean
+    currency?: boolean
     status?: boolean
     issueDate?: boolean
     dueDate?: boolean
@@ -9921,6 +11202,7 @@ export namespace Prisma {
     invoiceNumber?: boolean
     organizationId?: boolean
     customerId?: boolean
+    currency?: boolean
     status?: boolean
     issueDate?: boolean
     dueDate?: boolean
@@ -9940,6 +11222,7 @@ export namespace Prisma {
     invoiceNumber?: boolean
     organizationId?: boolean
     customerId?: boolean
+    currency?: boolean
     status?: boolean
     issueDate?: boolean
     dueDate?: boolean
@@ -9952,7 +11235,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "status" | "issueDate" | "dueDate" | "subtotal" | "taxRate" | "taxAmount" | "total" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "currency" | "status" | "issueDate" | "dueDate" | "subtotal" | "taxRate" | "taxAmount" | "total" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -9980,6 +11263,7 @@ export namespace Prisma {
       invoiceNumber: string
       organizationId: string
       customerId: string
+      currency: string
       status: $Enums.InvoiceStatus
       issueDate: Date
       dueDate: Date
@@ -10420,6 +11704,7 @@ export namespace Prisma {
     readonly invoiceNumber: FieldRef<"Invoice", 'String'>
     readonly organizationId: FieldRef<"Invoice", 'String'>
     readonly customerId: FieldRef<"Invoice", 'String'>
+    readonly currency: FieldRef<"Invoice", 'String'>
     readonly status: FieldRef<"Invoice", 'InvoiceStatus'>
     readonly issueDate: FieldRef<"Invoice", 'DateTime'>
     readonly dueDate: FieldRef<"Invoice", 'DateTime'>
@@ -12058,11 +13343,26 @@ export namespace Prisma {
     name: 'name',
     slug: 'slug',
     logo: 'logo',
+    baseCurrency: 'baseCurrency',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+  export const ExchangeRateScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    fromCurrency: 'fromCurrency',
+    toCurrency: 'toCurrency',
+    rate: 'rate',
+    effectiveDate: 'effectiveDate',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExchangeRateScalarFieldEnum = (typeof ExchangeRateScalarFieldEnum)[keyof typeof ExchangeRateScalarFieldEnum]
 
 
   export const OrganizationMemberScalarFieldEnum: {
@@ -12101,6 +13401,7 @@ export namespace Prisma {
     invoiceNumber: 'invoiceNumber',
     organizationId: 'organizationId',
     customerId: 'customerId',
+    currency: 'currency',
     status: 'status',
     issueDate: 'issueDate',
     dueDate: 'dueDate',
@@ -12193,6 +13494,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -12217,20 +13532,6 @@ export namespace Prisma {
    * Reference to a field of type 'InvoiceStatus[]'
    */
   export type ListEnumInvoiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvoiceStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Decimal'
-   */
-  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-  /**
-   * Reference to a field of type 'Decimal[]'
-   */
-  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -12552,11 +13853,13 @@ export namespace Prisma {
     name?: StringFilter<"Organization"> | string
     slug?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
+    baseCurrency?: StringFilter<"Organization"> | string
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     members?: OrganizationMemberListRelationFilter
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
+    exchangeRates?: ExchangeRateListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -12564,11 +13867,13 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
+    baseCurrency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     members?: OrganizationMemberOrderByRelationAggregateInput
     customers?: CustomerOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    exchangeRates?: ExchangeRateOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -12579,11 +13884,13 @@ export namespace Prisma {
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
     name?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
+    baseCurrency?: StringFilter<"Organization"> | string
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     members?: OrganizationMemberListRelationFilter
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
+    exchangeRates?: ExchangeRateListRelationFilter
   }, "id" | "slug">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -12591,6 +13898,7 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
+    baseCurrency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: OrganizationCountOrderByAggregateInput
@@ -12606,8 +13914,82 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Organization"> | string
     slug?: StringWithAggregatesFilter<"Organization"> | string
     logo?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    baseCurrency?: StringWithAggregatesFilter<"Organization"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  }
+
+  export type ExchangeRateWhereInput = {
+    AND?: ExchangeRateWhereInput | ExchangeRateWhereInput[]
+    OR?: ExchangeRateWhereInput[]
+    NOT?: ExchangeRateWhereInput | ExchangeRateWhereInput[]
+    id?: StringFilter<"ExchangeRate"> | string
+    organizationId?: StringFilter<"ExchangeRate"> | string
+    fromCurrency?: StringFilter<"ExchangeRate"> | string
+    toCurrency?: StringFilter<"ExchangeRate"> | string
+    rate?: DecimalFilter<"ExchangeRate"> | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFilter<"ExchangeRate"> | Date | string
+    createdAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+    updatedAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type ExchangeRateOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    fromCurrency?: SortOrder
+    toCurrency?: SortOrder
+    rate?: SortOrder
+    effectiveDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type ExchangeRateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_fromCurrency_toCurrency_effectiveDate?: ExchangeRateOrganizationIdFromCurrencyToCurrencyEffectiveDateCompoundUniqueInput
+    AND?: ExchangeRateWhereInput | ExchangeRateWhereInput[]
+    OR?: ExchangeRateWhereInput[]
+    NOT?: ExchangeRateWhereInput | ExchangeRateWhereInput[]
+    organizationId?: StringFilter<"ExchangeRate"> | string
+    fromCurrency?: StringFilter<"ExchangeRate"> | string
+    toCurrency?: StringFilter<"ExchangeRate"> | string
+    rate?: DecimalFilter<"ExchangeRate"> | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFilter<"ExchangeRate"> | Date | string
+    createdAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+    updatedAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_fromCurrency_toCurrency_effectiveDate">
+
+  export type ExchangeRateOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    fromCurrency?: SortOrder
+    toCurrency?: SortOrder
+    rate?: SortOrder
+    effectiveDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ExchangeRateCountOrderByAggregateInput
+    _avg?: ExchangeRateAvgOrderByAggregateInput
+    _max?: ExchangeRateMaxOrderByAggregateInput
+    _min?: ExchangeRateMinOrderByAggregateInput
+    _sum?: ExchangeRateSumOrderByAggregateInput
+  }
+
+  export type ExchangeRateScalarWhereWithAggregatesInput = {
+    AND?: ExchangeRateScalarWhereWithAggregatesInput | ExchangeRateScalarWhereWithAggregatesInput[]
+    OR?: ExchangeRateScalarWhereWithAggregatesInput[]
+    NOT?: ExchangeRateScalarWhereWithAggregatesInput | ExchangeRateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExchangeRate"> | string
+    organizationId?: StringWithAggregatesFilter<"ExchangeRate"> | string
+    fromCurrency?: StringWithAggregatesFilter<"ExchangeRate"> | string
+    toCurrency?: StringWithAggregatesFilter<"ExchangeRate"> | string
+    rate?: DecimalWithAggregatesFilter<"ExchangeRate"> | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeWithAggregatesFilter<"ExchangeRate"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ExchangeRate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ExchangeRate"> | Date | string
   }
 
   export type OrganizationMemberWhereInput = {
@@ -12781,6 +14163,7 @@ export namespace Prisma {
     invoiceNumber?: StringFilter<"Invoice"> | string
     organizationId?: StringFilter<"Invoice"> | string
     customerId?: StringFilter<"Invoice"> | string
+    currency?: StringFilter<"Invoice"> | string
     status?: EnumInvoiceStatusFilter<"Invoice"> | $Enums.InvoiceStatus
     issueDate?: DateTimeFilter<"Invoice"> | Date | string
     dueDate?: DateTimeFilter<"Invoice"> | Date | string
@@ -12801,6 +14184,7 @@ export namespace Prisma {
     invoiceNumber?: SortOrder
     organizationId?: SortOrder
     customerId?: SortOrder
+    currency?: SortOrder
     status?: SortOrder
     issueDate?: SortOrder
     dueDate?: SortOrder
@@ -12825,6 +14209,7 @@ export namespace Prisma {
     invoiceNumber?: StringFilter<"Invoice"> | string
     organizationId?: StringFilter<"Invoice"> | string
     customerId?: StringFilter<"Invoice"> | string
+    currency?: StringFilter<"Invoice"> | string
     status?: EnumInvoiceStatusFilter<"Invoice"> | $Enums.InvoiceStatus
     issueDate?: DateTimeFilter<"Invoice"> | Date | string
     dueDate?: DateTimeFilter<"Invoice"> | Date | string
@@ -12845,6 +14230,7 @@ export namespace Prisma {
     invoiceNumber?: SortOrder
     organizationId?: SortOrder
     customerId?: SortOrder
+    currency?: SortOrder
     status?: SortOrder
     issueDate?: SortOrder
     dueDate?: SortOrder
@@ -12870,6 +14256,7 @@ export namespace Prisma {
     invoiceNumber?: StringWithAggregatesFilter<"Invoice"> | string
     organizationId?: StringWithAggregatesFilter<"Invoice"> | string
     customerId?: StringWithAggregatesFilter<"Invoice"> | string
+    currency?: StringWithAggregatesFilter<"Invoice"> | string
     status?: EnumInvoiceStatusWithAggregatesFilter<"Invoice"> | $Enums.InvoiceStatus
     issueDate?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     dueDate?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
@@ -13281,11 +14668,13 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     customers?: CustomerCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -13293,11 +14682,13 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -13305,11 +14696,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     customers?: CustomerUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -13317,11 +14710,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -13329,6 +14724,7 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13338,6 +14734,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13347,6 +14744,83 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExchangeRateCreateInput = {
+    id?: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutExchangeRatesInput
+  }
+
+  export type ExchangeRateUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExchangeRateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutExchangeRatesNestedInput
+  }
+
+  export type ExchangeRateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExchangeRateCreateManyInput = {
+    id?: string
+    organizationId: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExchangeRateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExchangeRateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13530,6 +15004,7 @@ export namespace Prisma {
   export type InvoiceCreateInput = {
     id?: string
     invoiceNumber: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -13550,6 +15025,7 @@ export namespace Prisma {
     invoiceNumber: string
     organizationId: string
     customerId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -13566,6 +15042,7 @@ export namespace Prisma {
   export type InvoiceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13586,6 +15063,7 @@ export namespace Prisma {
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13604,6 +15082,7 @@ export namespace Prisma {
     invoiceNumber: string
     organizationId: string
     customerId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -13619,6 +15098,7 @@ export namespace Prisma {
   export type InvoiceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13636,6 +15116,7 @@ export namespace Prisma {
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14029,6 +15510,12 @@ export namespace Prisma {
     none?: InvoiceWhereInput
   }
 
+  export type ExchangeRateListRelationFilter = {
+    every?: ExchangeRateWhereInput
+    some?: ExchangeRateWhereInput
+    none?: ExchangeRateWhereInput
+  }
+
   export type CustomerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -14037,11 +15524,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ExchangeRateOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type OrganizationCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    baseCurrency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14051,6 +15543,7 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    baseCurrency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14060,8 +15553,89 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    baseCurrency?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type OrganizationScalarRelationFilter = {
+    is?: OrganizationWhereInput
+    isNot?: OrganizationWhereInput
+  }
+
+  export type ExchangeRateOrganizationIdFromCurrencyToCurrencyEffectiveDateCompoundUniqueInput = {
+    organizationId: string
+    fromCurrency: string
+    toCurrency: string
+    effectiveDate: Date | string
+  }
+
+  export type ExchangeRateCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    fromCurrency?: SortOrder
+    toCurrency?: SortOrder
+    rate?: SortOrder
+    effectiveDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExchangeRateAvgOrderByAggregateInput = {
+    rate?: SortOrder
+  }
+
+  export type ExchangeRateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    fromCurrency?: SortOrder
+    toCurrency?: SortOrder
+    rate?: SortOrder
+    effectiveDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExchangeRateMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    fromCurrency?: SortOrder
+    toCurrency?: SortOrder
+    rate?: SortOrder
+    effectiveDate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExchangeRateSumOrderByAggregateInput = {
+    rate?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type EnumRoleFilter<$PrismaModel = never> = {
@@ -14069,11 +15643,6 @@ export namespace Prisma {
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type OrganizationScalarRelationFilter = {
-    is?: OrganizationWhereInput
-    isNot?: OrganizationWhereInput
   }
 
   export type OrganizationMemberUserIdOrganizationIdCompoundUniqueInput = {
@@ -14178,17 +15747,6 @@ export namespace Prisma {
     not?: NestedEnumInvoiceStatusFilter<$PrismaModel> | $Enums.InvoiceStatus
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type CustomerScalarRelationFilter = {
     is?: CustomerWhereInput
     isNot?: CustomerWhereInput
@@ -14214,6 +15772,7 @@ export namespace Prisma {
     invoiceNumber?: SortOrder
     organizationId?: SortOrder
     customerId?: SortOrder
+    currency?: SortOrder
     status?: SortOrder
     issueDate?: SortOrder
     dueDate?: SortOrder
@@ -14238,6 +15797,7 @@ export namespace Prisma {
     invoiceNumber?: SortOrder
     organizationId?: SortOrder
     customerId?: SortOrder
+    currency?: SortOrder
     status?: SortOrder
     issueDate?: SortOrder
     dueDate?: SortOrder
@@ -14255,6 +15815,7 @@ export namespace Prisma {
     invoiceNumber?: SortOrder
     organizationId?: SortOrder
     customerId?: SortOrder
+    currency?: SortOrder
     status?: SortOrder
     issueDate?: SortOrder
     dueDate?: SortOrder
@@ -14282,22 +15843,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvoiceStatusFilter<$PrismaModel>
     _max?: NestedEnumInvoiceStatusFilter<$PrismaModel>
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type InvoiceScalarRelationFilter = {
@@ -14539,6 +16084,13 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
+  export type ExchangeRateCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput> | ExchangeRateCreateWithoutOrganizationInput[] | ExchangeRateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ExchangeRateCreateOrConnectWithoutOrganizationInput | ExchangeRateCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ExchangeRateCreateManyOrganizationInputEnvelope
+    connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -14558,6 +16110,13 @@ export namespace Prisma {
     connectOrCreate?: InvoiceCreateOrConnectWithoutOrganizationInput | InvoiceCreateOrConnectWithoutOrganizationInput[]
     createMany?: InvoiceCreateManyOrganizationInputEnvelope
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type ExchangeRateUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput> | ExchangeRateCreateWithoutOrganizationInput[] | ExchangeRateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ExchangeRateCreateOrConnectWithoutOrganizationInput | ExchangeRateCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ExchangeRateCreateManyOrganizationInputEnvelope
+    connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
   }
 
   export type OrganizationMemberUpdateManyWithoutOrganizationNestedInput = {
@@ -14602,6 +16161,20 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type ExchangeRateUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput> | ExchangeRateCreateWithoutOrganizationInput[] | ExchangeRateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ExchangeRateCreateOrConnectWithoutOrganizationInput | ExchangeRateCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ExchangeRateUpsertWithWhereUniqueWithoutOrganizationInput | ExchangeRateUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ExchangeRateCreateManyOrganizationInputEnvelope
+    set?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    disconnect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    delete?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    update?: ExchangeRateUpdateWithWhereUniqueWithoutOrganizationInput | ExchangeRateUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ExchangeRateUpdateManyWithWhereWithoutOrganizationInput | ExchangeRateUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
+  }
+
   export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -14642,6 +16215,42 @@ export namespace Prisma {
     update?: InvoiceUpdateWithWhereUniqueWithoutOrganizationInput | InvoiceUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: InvoiceUpdateManyWithWhereWithoutOrganizationInput | InvoiceUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type ExchangeRateUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput> | ExchangeRateCreateWithoutOrganizationInput[] | ExchangeRateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ExchangeRateCreateOrConnectWithoutOrganizationInput | ExchangeRateCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ExchangeRateUpsertWithWhereUniqueWithoutOrganizationInput | ExchangeRateUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ExchangeRateCreateManyOrganizationInputEnvelope
+    set?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    disconnect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    delete?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+    update?: ExchangeRateUpdateWithWhereUniqueWithoutOrganizationInput | ExchangeRateUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ExchangeRateUpdateManyWithWhereWithoutOrganizationInput | ExchangeRateUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutExchangeRatesInput = {
+    create?: XOR<OrganizationCreateWithoutExchangeRatesInput, OrganizationUncheckedCreateWithoutExchangeRatesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutExchangeRatesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutExchangeRatesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutExchangeRatesInput, OrganizationUncheckedCreateWithoutExchangeRatesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutExchangeRatesInput
+    upsert?: OrganizationUpsertWithoutExchangeRatesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutExchangeRatesInput, OrganizationUpdateWithoutExchangeRatesInput>, OrganizationUncheckedUpdateWithoutExchangeRatesInput>
   }
 
   export type UserCreateNestedOneWithoutOrganizationMembersInput = {
@@ -14760,14 +16369,6 @@ export namespace Prisma {
 
   export type EnumInvoiceStatusFieldUpdateOperationsInput = {
     set?: $Enums.InvoiceStatus
-  }
-
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type OrganizationUpdateOneRequiredWithoutInvoicesNestedInput = {
@@ -14975,6 +16576,33 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -14999,17 +16627,6 @@ export namespace Prisma {
     not?: NestedEnumInvoiceStatusFilter<$PrismaModel> | $Enums.InvoiceStatus
   }
 
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedEnumInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.InvoiceStatus | EnumInvoiceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.InvoiceStatus[] | ListEnumInvoiceStatusFieldRefInput<$PrismaModel>
@@ -15018,22 +16635,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvoiceStatusFilter<$PrismaModel>
     _max?: NestedEnumInvoiceStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -15424,6 +17025,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutOrganizationInput = {
     id?: string
     invoiceNumber: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -15442,6 +17044,7 @@ export namespace Prisma {
     id?: string
     invoiceNumber: string
     customerId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -15462,6 +17065,36 @@ export namespace Prisma {
 
   export type InvoiceCreateManyOrganizationInputEnvelope = {
     data: InvoiceCreateManyOrganizationInput | InvoiceCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExchangeRateCreateWithoutOrganizationInput = {
+    id?: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExchangeRateUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExchangeRateCreateOrConnectWithoutOrganizationInput = {
+    where: ExchangeRateWhereUniqueInput
+    create: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ExchangeRateCreateManyOrganizationInputEnvelope = {
+    data: ExchangeRateCreateManyOrganizationInput | ExchangeRateCreateManyOrganizationInput[]
     skipDuplicates?: boolean
   }
 
@@ -15540,6 +17173,7 @@ export namespace Prisma {
     invoiceNumber?: StringFilter<"Invoice"> | string
     organizationId?: StringFilter<"Invoice"> | string
     customerId?: StringFilter<"Invoice"> | string
+    currency?: StringFilter<"Invoice"> | string
     status?: EnumInvoiceStatusFilter<"Invoice"> | $Enums.InvoiceStatus
     issueDate?: DateTimeFilter<"Invoice"> | Date | string
     dueDate?: DateTimeFilter<"Invoice"> | Date | string
@@ -15550,6 +17184,104 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+  }
+
+  export type ExchangeRateUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ExchangeRateWhereUniqueInput
+    update: XOR<ExchangeRateUpdateWithoutOrganizationInput, ExchangeRateUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ExchangeRateCreateWithoutOrganizationInput, ExchangeRateUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ExchangeRateUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ExchangeRateWhereUniqueInput
+    data: XOR<ExchangeRateUpdateWithoutOrganizationInput, ExchangeRateUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ExchangeRateUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ExchangeRateScalarWhereInput
+    data: XOR<ExchangeRateUpdateManyMutationInput, ExchangeRateUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ExchangeRateScalarWhereInput = {
+    AND?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
+    OR?: ExchangeRateScalarWhereInput[]
+    NOT?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
+    id?: StringFilter<"ExchangeRate"> | string
+    organizationId?: StringFilter<"ExchangeRate"> | string
+    fromCurrency?: StringFilter<"ExchangeRate"> | string
+    toCurrency?: StringFilter<"ExchangeRate"> | string
+    rate?: DecimalFilter<"ExchangeRate"> | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFilter<"ExchangeRate"> | Date | string
+    createdAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+    updatedAt?: DateTimeFilter<"ExchangeRate"> | Date | string
+  }
+
+  export type OrganizationCreateWithoutExchangeRatesInput = {
+    id?: string
+    name: string
+    slug: string
+    logo?: string | null
+    baseCurrency?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutExchangeRatesInput = {
+    id?: string
+    name: string
+    slug: string
+    logo?: string | null
+    baseCurrency?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutExchangeRatesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutExchangeRatesInput, OrganizationUncheckedCreateWithoutExchangeRatesInput>
+  }
+
+  export type OrganizationUpsertWithoutExchangeRatesInput = {
+    update: XOR<OrganizationUpdateWithoutExchangeRatesInput, OrganizationUncheckedUpdateWithoutExchangeRatesInput>
+    create: XOR<OrganizationCreateWithoutExchangeRatesInput, OrganizationUncheckedCreateWithoutExchangeRatesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutExchangeRatesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutExchangeRatesInput, OrganizationUncheckedUpdateWithoutExchangeRatesInput>
+  }
+
+  export type OrganizationUpdateWithoutExchangeRatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutExchangeRatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserCreateWithoutOrganizationMembersInput = {
@@ -15586,10 +17318,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     customers?: CustomerCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -15597,10 +17331,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -15659,10 +17395,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customers?: CustomerUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -15670,10 +17408,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutCustomersInput = {
@@ -15681,10 +17421,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCustomersInput = {
@@ -15692,10 +17434,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCustomersInput = {
@@ -15706,6 +17450,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutCustomerInput = {
     id?: string
     invoiceNumber: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -15724,6 +17469,7 @@ export namespace Prisma {
     id?: string
     invoiceNumber: string
     organizationId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -15763,10 +17509,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCustomersInput = {
@@ -15774,10 +17522,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -15801,10 +17551,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     customers?: CustomerCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvoicesInput = {
@@ -15812,10 +17564,12 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    baseCurrency?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
+    exchangeRates?: ExchangeRateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvoicesInput = {
@@ -15902,10 +17656,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     customers?: CustomerUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
@@ -15913,10 +17669,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
+    exchangeRates?: ExchangeRateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutInvoicesInput = {
@@ -15993,6 +17751,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutItemsInput = {
     id?: string
     invoiceNumber: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -16012,6 +17771,7 @@ export namespace Prisma {
     invoiceNumber: string
     organizationId: string
     customerId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -16043,6 +17803,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16062,6 +17823,7 @@ export namespace Prisma {
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16233,6 +17995,7 @@ export namespace Prisma {
     id?: string
     invoiceNumber: string
     customerId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -16241,6 +18004,16 @@ export namespace Prisma {
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExchangeRateCreateManyOrganizationInput = {
+    id?: string
+    fromCurrency: string
+    toCurrency: string
+    rate: Decimal | DecimalJsLike | number | string
+    effectiveDate?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16319,6 +18092,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16337,6 +18111,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16354,6 +18129,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16366,10 +18142,41 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ExchangeRateUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExchangeRateUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExchangeRateUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromCurrency?: StringFieldUpdateOperationsInput | string
+    toCurrency?: StringFieldUpdateOperationsInput | string
+    rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    effectiveDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InvoiceCreateManyCustomerInput = {
     id?: string
     invoiceNumber: string
     organizationId: string
+    currency?: string
     status?: $Enums.InvoiceStatus
     issueDate?: Date | string
     dueDate: Date | string
@@ -16385,6 +18192,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16403,6 +18211,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16420,6 +18229,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
     status?: EnumInvoiceStatusFieldUpdateOperationsInput | $Enums.InvoiceStatus
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string

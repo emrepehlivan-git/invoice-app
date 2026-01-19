@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output = "./generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -23,13 +23,13 @@ enum InvoiceStatus {
 
 // Better Auth tables
 model User {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   sessions            Session[]
   accounts            Account[]
@@ -82,16 +82,37 @@ model Verification {
 
 // Organization tables
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  logo      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  logo         String?
+  baseCurrency String   @default("TRY") // ISO 4217 - reporting currency
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  members   OrganizationMember[]
-  customers Customer[]
-  invoices  Invoice[]
+  members       OrganizationMember[]
+  customers     Customer[]
+  invoices      Invoice[]
+  exchangeRates ExchangeRate[]
+}
+
+// Exchange rate for currency conversion
+model ExchangeRate {
+  id             String   @id @default(cuid())
+  organizationId String
+  fromCurrency   String   // Source currency (e.g., USD)
+  toCurrency     String   // Target currency (e.g., TRY) - usually org's baseCurrency
+  rate           Decimal  @db.Decimal(12, 6) // Exchange rate with 6 decimal precision
+  effectiveDate  DateTime @default(now()) // When this rate becomes effective
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, fromCurrency, toCurrency, effectiveDate])
+  @@index([organizationId])
+  @@index([fromCurrency, toCurrency])
+  @@index([effectiveDate])
 }
 
 model OrganizationMember {
@@ -140,6 +161,7 @@ model Invoice {
   invoiceNumber  String
   organizationId String
   customerId     String
+  currency       String        @default("TRY") // ISO 4217 currency code
   status         InvoiceStatus @default(DRAFT)
   issueDate      DateTime      @default(now())
   dueDate        DateTime
