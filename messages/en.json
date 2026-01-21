@@ -97,6 +97,7 @@
     },
     "user": {
       "switchOrg": "Switch Organization",
+      "settings": "User Settings",
       "signOut": "Sign Out"
     },
     "stats": {
@@ -324,10 +325,20 @@
   "settings": {
     "title": "Settings",
     "description": "Manage your organization and account settings",
+    "nav": {
+      "user": "User Settings",
+      "organization": "Organization Settings"
+    },
+    "user": {
+      "description": "Manage your profile and security settings"
+    },
     "organization": {
-      "title": "Organization Settings",
       "description": "Manage your organization information",
-      "name": "Organization Name"
+      "info": "Organization Information",
+      "infoDescription": "Basic information about your organization",
+      "name": "Organization Name",
+      "adminOnly": "Admin Access Required",
+      "adminOnlyDescription": "You need admin privileges to change these settings"
     },
     "account": {
       "title": "Account Settings",

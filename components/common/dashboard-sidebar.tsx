@@ -11,6 +11,7 @@ import {
   LogOut,
   Plus,
   ChevronDown,
+  User,
 } from "lucide-react";
 
 import {
@@ -78,7 +79,7 @@ export function DashboardSidebar({
       label: t("dashboard.nav.customers"),
     },
     {
-      href: `${basePath}/settings`,
+      href: `${basePath}/settings/organization`,
       icon: Settings,
       label: t("dashboard.nav.settings"),
     },
@@ -203,6 +204,13 @@ export function DashboardSidebar({
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href={`${basePath}/settings/user`}>
+                    <User className="mr-2 size-4" />
+                    {t("dashboard.user.settings")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 size-4" />
                   {t("dashboard.user.signOut")}

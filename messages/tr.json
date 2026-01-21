@@ -97,6 +97,7 @@
     },
     "user": {
       "switchOrg": "Organizasyon Değiştir",
+      "settings": "Kullanıcı Ayarları",
       "signOut": "Çıkış Yap"
     },
     "stats": {
@@ -324,10 +325,20 @@
   "settings": {
     "title": "Ayarlar",
     "description": "Organizasyon ve hesap ayarlarınızı yönetin",
+    "nav": {
+      "user": "Kullanıcı Ayarları",
+      "organization": "Organizasyon Ayarları"
+    },
+    "user": {
+      "description": "Profil ve güvenlik ayarlarınızı yönetin"
+    },
     "organization": {
-      "title": "Organizasyon Ayarları",
       "description": "Organizasyon bilgilerinizi yönetin",
-      "name": "Organizasyon Adı"
+      "info": "Organizasyon Bilgileri",
+      "infoDescription": "Organizasyonunuzun temel bilgileri",
+      "name": "Organizasyon Adı",
+      "adminOnly": "Yönetici Yetkisi Gerekli",
+      "adminOnlyDescription": "Bu ayarları değiştirmek için yönetici yetkisine sahip olmanız gerekiyor"
     },
     "account": {
       "title": "Hesap Ayarları",
