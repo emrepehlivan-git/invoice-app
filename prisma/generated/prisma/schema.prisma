@@ -198,3 +198,30 @@ model InvoiceItem {
 
   @@index([invoiceId])
 }
+
+// Audit Log model for tracking critical actions
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+}
+
+model AuditLog {
+  id             String      @id @default(cuid())
+  action         AuditAction
+  entityType     String // e.g., "Invoice", "Customer", "ExchangeRate"
+  entityId       String // ID of the affected entity
+  userId         String? // User who performed the action (null for system actions)
+  organizationId String? // Organization context
+  oldData        Json? // Previous state (for updates/deletes)
+  newData        Json? // New state (for creates/updates)
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([createdAt])
+}

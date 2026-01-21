@@ -6,6 +6,7 @@ import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import type { Customer } from "@/types";
 import logger from "@/lib/logger";
+import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
 
 const customerSchema = z.object({
   name: z.string().min(2).max(100),
@@ -85,6 +86,14 @@ export async function createCustomer(
 
     revalidatePath("/");
 
+    // Audit log
+    await auditCreate("Customer", customer.id, {
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      city: customer.city,
+    }, organizationId);
+
     return { data: customer };
   } catch (error) {
     logger.error("Failed to create customer", { error, data });
@@ -144,6 +153,19 @@ export async function updateCustomer(
 
     revalidatePath("/");
 
+    // Audit log
+    await auditUpdate("Customer", customer.id, {
+      name: existingCustomer.name,
+      email: existingCustomer.email,
+      phone: existingCustomer.phone,
+      city: existingCustomer.city,
+    }, {
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      city: customer.city,
+    }, existingCustomer.organizationId);
+
     return { data: customer };
   } catch (error) {
     logger.error("Failed to update customer", { error, customerId, data });
@@ -171,6 +193,14 @@ export async function deleteCustomer(customerId: string): Promise<DeleteResult> 
     });
 
     revalidatePath("/");
+
+    // Audit log
+    await auditDelete("Customer", customerId, {
+      name: existingCustomer.name,
+      email: existingCustomer.email,
+      phone: existingCustomer.phone,
+      city: existingCustomer.city,
+    }, existingCustomer.organizationId);
 
     return { success: true };
   } catch (error) {

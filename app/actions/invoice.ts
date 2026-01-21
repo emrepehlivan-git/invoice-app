@@ -8,6 +8,7 @@ import { InvoiceStatus } from "@/types";
 import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
 import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
+import { auditCreate, auditUpdate, auditDelete, auditStatusChange } from "@/lib/audit";
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1).max(500),
@@ -151,6 +152,15 @@ export async function createInvoice(
 
     revalidatePath("/");
 
+    // Audit log
+    await auditCreate("Invoice", invoice.id, {
+      invoiceNumber: invoice.invoiceNumber,
+      customerId: invoice.customerId,
+      currency: invoice.currency,
+      total: Number(invoice.total),
+      status: invoice.status,
+    }, organizationId);
+
     return { data: invoice };
   } catch (error) {
     logger.error("Failed to create invoice", { error, data });
@@ -235,6 +245,19 @@ export async function updateInvoice(
 
     revalidatePath("/");
 
+    // Audit log
+    await auditUpdate("Invoice", invoice.id, {
+      invoiceNumber: existingInvoice.invoiceNumber,
+      customerId: existingInvoice.customerId,
+      currency: existingInvoice.currency,
+      total: Number(existingInvoice.total),
+    }, {
+      invoiceNumber: invoice.invoiceNumber,
+      customerId: invoice.customerId,
+      currency: invoice.currency,
+      total: Number(invoice.total),
+    }, existingInvoice.organizationId);
+
     return { data: invoice };
   } catch (error) {
     logger.error("Failed to update invoice", { error, invoiceId, data });
@@ -272,6 +295,15 @@ export async function updateInvoiceStatus(
 
     revalidatePath("/");
 
+    // Audit log
+    await auditStatusChange(
+      "Invoice",
+      invoice.id,
+      existingInvoice.status,
+      status,
+      existingInvoice.organizationId
+    );
+
     return { data: invoice };
   } catch (error) {
     logger.error("Failed to update invoice status", { error, invoiceId, status });
@@ -307,6 +339,15 @@ export async function deleteInvoice(invoiceId: string): Promise<DeleteResult> {
     });
 
     revalidatePath("/");
+
+    // Audit log
+    await auditDelete("Invoice", invoiceId, {
+      invoiceNumber: existingInvoice.invoiceNumber,
+      customerId: existingInvoice.customerId,
+      currency: existingInvoice.currency,
+      total: Number(existingInvoice.total),
+      status: existingInvoice.status,
+    }, existingInvoice.organizationId);
 
     return { success: true };
   } catch (error) {

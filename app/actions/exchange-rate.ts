@@ -6,6 +6,7 @@ import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import logger from "@/lib/logger";
 import type { ExchangeRate } from "@/prisma/generated/prisma";
+import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
 
 const exchangeRateSchema = z.object({
   fromCurrency: z.string().length(3),
@@ -143,6 +144,18 @@ export async function upsertExchangeRate(
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Check if rate already exists to determine audit action
+    const existingRate = await prisma.exchangeRate.findUnique({
+      where: {
+        organizationId_fromCurrency_toCurrency_effectiveDate: {
+          organizationId,
+          fromCurrency: validated.fromCurrency,
+          toCurrency: organization.baseCurrency,
+          effectiveDate: today,
+        },
+      },
+    });
+
     // Upsert: update if exists for today, create if not
     const exchangeRate = await prisma.exchangeRate.upsert({
       where: {
@@ -166,6 +179,25 @@ export async function upsertExchangeRate(
     });
 
     revalidatePath("/");
+
+    // Audit log
+    if (existingRate) {
+      await auditUpdate("ExchangeRate", exchangeRate.id, {
+        fromCurrency: existingRate.fromCurrency,
+        toCurrency: existingRate.toCurrency,
+        rate: Number(existingRate.rate),
+      }, {
+        fromCurrency: exchangeRate.fromCurrency,
+        toCurrency: exchangeRate.toCurrency,
+        rate: Number(exchangeRate.rate),
+      }, organizationId);
+    } else {
+      await auditCreate("ExchangeRate", exchangeRate.id, {
+        fromCurrency: exchangeRate.fromCurrency,
+        toCurrency: exchangeRate.toCurrency,
+        rate: Number(exchangeRate.rate),
+      }, organizationId);
+    }
 
     return { data: exchangeRate };
   } catch (error) {
@@ -225,6 +257,13 @@ export async function deleteExchangeRate(
     });
 
     revalidatePath("/");
+
+    // Audit log
+    await auditDelete("ExchangeRate", exchangeRateId, {
+      fromCurrency: exchangeRate.fromCurrency,
+      toCurrency: exchangeRate.toCurrency,
+      rate: Number(exchangeRate.rate),
+    }, exchangeRate.organizationId);
 
     return { success: true };
   } catch (error) {

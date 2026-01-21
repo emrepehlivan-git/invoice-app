@@ -13,6 +13,7 @@ export type {
   Customer,
   Invoice,
   InvoiceItem,
+  AuditLog,
 } from "@/prisma/generated/prisma";
 
-export { Role, InvoiceStatus } from "@/prisma/generated/prisma";
+export { Role, InvoiceStatus, AuditAction } from "@/prisma/generated/prisma";
