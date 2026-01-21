@@ -12,7 +12,7 @@ logs:
 	cd $(DOCKER_DIR) && docker compose logs -f app
 
 migrate:
-	cd $(DOCKER_DIR) && docker compose up migrate
+	cd $(DOCKER_DIR) && docker compose --profile migrate up migrate
 
 build:
 	cd $(DOCKER_DIR) && docker compose up -d --build

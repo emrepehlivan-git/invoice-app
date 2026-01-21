@@ -226,6 +226,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   taxRate: 'taxRate',
   taxAmount: 'taxAmount',
   total: 'total',
+  exchangeRateToBase: 'exchangeRateToBase',
+  totalInBaseCurrency: 'totalInBaseCurrency',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

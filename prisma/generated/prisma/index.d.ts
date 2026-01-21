@@ -11003,6 +11003,8 @@ export namespace Prisma {
     taxRate: Decimal | null
     taxAmount: Decimal | null
     total: Decimal | null
+    exchangeRateToBase: Decimal | null
+    totalInBaseCurrency: Decimal | null
   }
 
   export type InvoiceSumAggregateOutputType = {
@@ -11010,6 +11012,8 @@ export namespace Prisma {
     taxRate: Decimal | null
     taxAmount: Decimal | null
     total: Decimal | null
+    exchangeRateToBase: Decimal | null
+    totalInBaseCurrency: Decimal | null
   }
 
   export type InvoiceMinAggregateOutputType = {
@@ -11025,6 +11029,8 @@ export namespace Prisma {
     taxRate: Decimal | null
     taxAmount: Decimal | null
     total: Decimal | null
+    exchangeRateToBase: Decimal | null
+    totalInBaseCurrency: Decimal | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -11043,6 +11049,8 @@ export namespace Prisma {
     taxRate: Decimal | null
     taxAmount: Decimal | null
     total: Decimal | null
+    exchangeRateToBase: Decimal | null
+    totalInBaseCurrency: Decimal | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -11061,6 +11069,8 @@ export namespace Prisma {
     taxRate: number
     taxAmount: number
     total: number
+    exchangeRateToBase: number
+    totalInBaseCurrency: number
     notes: number
     createdAt: number
     updatedAt: number
@@ -11073,6 +11083,8 @@ export namespace Prisma {
     taxRate?: true
     taxAmount?: true
     total?: true
+    exchangeRateToBase?: true
+    totalInBaseCurrency?: true
   }
 
   export type InvoiceSumAggregateInputType = {
@@ -11080,6 +11092,8 @@ export namespace Prisma {
     taxRate?: true
     taxAmount?: true
     total?: true
+    exchangeRateToBase?: true
+    totalInBaseCurrency?: true
   }
 
   export type InvoiceMinAggregateInputType = {
@@ -11095,6 +11109,8 @@ export namespace Prisma {
     taxRate?: true
     taxAmount?: true
     total?: true
+    exchangeRateToBase?: true
+    totalInBaseCurrency?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -11113,6 +11129,8 @@ export namespace Prisma {
     taxRate?: true
     taxAmount?: true
     total?: true
+    exchangeRateToBase?: true
+    totalInBaseCurrency?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -11131,6 +11149,8 @@ export namespace Prisma {
     taxRate?: true
     taxAmount?: true
     total?: true
+    exchangeRateToBase?: true
+    totalInBaseCurrency?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -11236,6 +11256,8 @@ export namespace Prisma {
     taxRate: Decimal
     taxAmount: Decimal
     total: Decimal
+    exchangeRateToBase: Decimal | null
+    totalInBaseCurrency: Decimal | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -11273,6 +11295,8 @@ export namespace Prisma {
     taxRate?: boolean
     taxAmount?: boolean
     total?: boolean
+    exchangeRateToBase?: boolean
+    totalInBaseCurrency?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -11295,6 +11319,8 @@ export namespace Prisma {
     taxRate?: boolean
     taxAmount?: boolean
     total?: boolean
+    exchangeRateToBase?: boolean
+    totalInBaseCurrency?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -11315,6 +11341,8 @@ export namespace Prisma {
     taxRate?: boolean
     taxAmount?: boolean
     total?: boolean
+    exchangeRateToBase?: boolean
+    totalInBaseCurrency?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -11335,12 +11363,14 @@ export namespace Prisma {
     taxRate?: boolean
     taxAmount?: boolean
     total?: boolean
+    exchangeRateToBase?: boolean
+    totalInBaseCurrency?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "currency" | "status" | "issueDate" | "dueDate" | "subtotal" | "taxRate" | "taxAmount" | "total" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "currency" | "status" | "issueDate" | "dueDate" | "subtotal" | "taxRate" | "taxAmount" | "total" | "exchangeRateToBase" | "totalInBaseCurrency" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -11376,6 +11406,8 @@ export namespace Prisma {
       taxRate: Prisma.Decimal
       taxAmount: Prisma.Decimal
       total: Prisma.Decimal
+      exchangeRateToBase: Prisma.Decimal | null
+      totalInBaseCurrency: Prisma.Decimal | null
       notes: string | null
       createdAt: Date
       updatedAt: Date
@@ -11817,6 +11849,8 @@ export namespace Prisma {
     readonly taxRate: FieldRef<"Invoice", 'Decimal'>
     readonly taxAmount: FieldRef<"Invoice", 'Decimal'>
     readonly total: FieldRef<"Invoice", 'Decimal'>
+    readonly exchangeRateToBase: FieldRef<"Invoice", 'Decimal'>
+    readonly totalInBaseCurrency: FieldRef<"Invoice", 'Decimal'>
     readonly notes: FieldRef<"Invoice", 'String'>
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
@@ -14579,6 +14613,8 @@ export namespace Prisma {
     taxRate: 'taxRate',
     taxAmount: 'taxAmount',
     total: 'total',
+    exchangeRateToBase: 'exchangeRateToBase',
+    totalInBaseCurrency: 'totalInBaseCurrency',
     notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -15403,6 +15439,8 @@ export namespace Prisma {
     taxRate?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
@@ -15424,6 +15462,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrderInput | SortOrder
+    totalInBaseCurrency?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15449,6 +15489,8 @@ export namespace Prisma {
     taxRate?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
@@ -15470,6 +15512,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrderInput | SortOrder
+    totalInBaseCurrency?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15496,6 +15540,8 @@ export namespace Prisma {
     taxRate?: DecimalWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     total?: DecimalWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: DecimalNullableWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: DecimalNullableWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
@@ -16326,6 +16372,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16347,6 +16395,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16364,6 +16414,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16385,6 +16437,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16404,6 +16458,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16420,6 +16476,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16438,6 +16496,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17159,6 +17219,17 @@ export namespace Prisma {
     not?: NestedEnumInvoiceStatusFilter<$PrismaModel> | $Enums.InvoiceStatus
   }
 
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type CustomerScalarRelationFilter = {
     is?: CustomerWhereInput
     isNot?: CustomerWhereInput
@@ -17192,6 +17263,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrder
+    totalInBaseCurrency?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17202,6 +17275,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrder
+    totalInBaseCurrency?: SortOrder
   }
 
   export type InvoiceMaxOrderByAggregateInput = {
@@ -17217,6 +17292,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrder
+    totalInBaseCurrency?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17235,6 +17312,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrder
+    totalInBaseCurrency?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17245,6 +17324,8 @@ export namespace Prisma {
     taxRate?: SortOrder
     taxAmount?: SortOrder
     total?: SortOrder
+    exchangeRateToBase?: SortOrder
+    totalInBaseCurrency?: SortOrder
   }
 
   export type EnumInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17255,6 +17336,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvoiceStatusFilter<$PrismaModel>
     _max?: NestedEnumInvoiceStatusFilter<$PrismaModel>
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type InvoiceScalarRelationFilter = {
@@ -17887,6 +17984,14 @@ export namespace Prisma {
     set?: $Enums.InvoiceStatus
   }
 
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
   export type OrganizationUpdateOneRequiredWithoutInvoicesNestedInput = {
     create?: XOR<OrganizationCreateWithoutInvoicesInput, OrganizationUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutInvoicesInput
@@ -18147,6 +18252,17 @@ export namespace Prisma {
     not?: NestedEnumInvoiceStatusFilter<$PrismaModel> | $Enums.InvoiceStatus
   }
 
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type NestedEnumInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.InvoiceStatus | EnumInvoiceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.InvoiceStatus[] | ListEnumInvoiceStatusFieldRefInput<$PrismaModel>
@@ -18155,6 +18271,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvoiceStatusFilter<$PrismaModel>
     _max?: NestedEnumInvoiceStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumAuditActionFilter<$PrismaModel = never> = {
@@ -18593,6 +18725,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18612,6 +18746,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18741,6 +18877,8 @@ export namespace Prisma {
     taxRate?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
     total?: DecimalFilter<"Invoice"> | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
@@ -19018,6 +19156,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19037,6 +19177,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19319,6 +19461,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19339,6 +19483,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19371,6 +19517,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19391,6 +19539,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19563,6 +19713,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19660,6 +19812,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19679,6 +19833,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19697,6 +19853,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19744,6 +19902,8 @@ export namespace Prisma {
     taxRate?: Decimal | DecimalJsLike | number | string
     taxAmount: Decimal | DecimalJsLike | number | string
     total: Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19760,6 +19920,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19779,6 +19941,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19797,6 +19961,8 @@ export namespace Prisma {
     taxRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     taxAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

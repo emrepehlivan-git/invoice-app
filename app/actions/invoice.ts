@@ -9,6 +9,7 @@ import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
 import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { auditCreate, auditUpdate, auditDelete, auditStatusChange } from "@/lib/audit";
+import { getExchangeRatesMap } from "./exchange-rate";
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1).max(500),
@@ -91,6 +92,59 @@ function calculateTotals(items: InvoiceInput["items"], taxRate: number) {
   };
 }
 
+/**
+ * Calculate exchange rate snapshot for invoice
+ * This captures the exchange rate at invoice creation time for accurate historical reporting
+ */
+async function calculateExchangeRateSnapshot(
+  organizationId: string,
+  invoiceCurrency: string,
+  total: Decimal
+): Promise<{ exchangeRateToBase: Decimal | null; totalInBaseCurrency: Decimal | null }> {
+  try {
+    // Get organization's base currency
+    const organization = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { baseCurrency: true },
+    });
+
+    if (!organization) {
+      return { exchangeRateToBase: null, totalInBaseCurrency: null };
+    }
+
+    const baseCurrency = organization.baseCurrency;
+
+    // If invoice currency is same as base currency, rate is 1.0
+    if (invoiceCurrency === baseCurrency) {
+      return {
+        exchangeRateToBase: new Decimal(1),
+        totalInBaseCurrency: total,
+      };
+    }
+
+    // Get current exchange rate for this currency
+    const ratesMap = await getExchangeRatesMap(organizationId);
+    const rate = ratesMap[invoiceCurrency];
+
+    if (!rate) {
+      // No exchange rate defined - store null (will use current rate in reports)
+      return { exchangeRateToBase: null, totalInBaseCurrency: null };
+    }
+
+    const exchangeRateToBase = new Decimal(rate.toFixed(6));
+    const totalInBaseCurrency = new Decimal((Number(total) * rate).toFixed(2));
+
+    return { exchangeRateToBase, totalInBaseCurrency };
+  } catch (error) {
+    logger.error("Failed to calculate exchange rate snapshot", {
+      error,
+      organizationId,
+      invoiceCurrency,
+    });
+    return { exchangeRateToBase: null, totalInBaseCurrency: null };
+  }
+}
+
 export async function createInvoice(
   organizationId: string,
   data: InvoiceInput
@@ -121,6 +175,13 @@ export async function createInvoice(
       validated.taxRate
     );
 
+    // Capture exchange rate snapshot at invoice creation time
+    const { exchangeRateToBase, totalInBaseCurrency } = await calculateExchangeRateSnapshot(
+      organizationId,
+      validated.currency,
+      total
+    );
+
     const invoice = await prisma.invoice.create({
       data: {
         invoiceNumber,
@@ -133,6 +194,8 @@ export async function createInvoice(
         subtotal,
         taxAmount,
         total,
+        exchangeRateToBase,
+        totalInBaseCurrency,
         notes: validated.notes || null,
         items: {
           create: validated.items.map((item) => ({
@@ -210,6 +273,14 @@ export async function updateInvoice(
       validated.taxRate
     );
 
+    // Recalculate exchange rate snapshot when invoice is updated
+    // This captures the current rate at update time
+    const { exchangeRateToBase, totalInBaseCurrency } = await calculateExchangeRateSnapshot(
+      existingInvoice.organizationId,
+      validated.currency,
+      total
+    );
+
     // Delete existing items and create new ones
     await prisma.invoiceItem.deleteMany({
       where: { invoiceId },
@@ -226,6 +297,8 @@ export async function updateInvoice(
         subtotal,
         taxAmount,
         total,
+        exchangeRateToBase,
+        totalInBaseCurrency,
         notes: validated.notes || null,
         items: {
           create: validated.items.map((item) => ({
@@ -419,6 +492,11 @@ export type InvoiceStats = {
   overdueCount: number;
   revenueByCurrency: CurrencyTotal;
   outstandingByCurrency: CurrencyTotal;
+  // New: Pre-calculated totals in base currency using historical rates
+  revenueInBaseCurrency: number;
+  outstandingInBaseCurrency: number;
+  // Currencies that don't have historical rate stored
+  missingHistoricalRates: string[];
 };
 
 export async function getInvoiceStats(organizationId: string): Promise<InvoiceStats | null> {
@@ -427,6 +505,17 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
     if (!hasAccess) {
       return null;
     }
+
+    const organization = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { baseCurrency: true },
+    });
+
+    if (!organization) {
+      return null;
+    }
+
+    const baseCurrency = organization.baseCurrency;
 
     const [totalCount, draftCount, sentCount, paidCount, overdueCount, paidInvoices, outstandingInvoices] =
       await Promise.all([
@@ -445,31 +534,72 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
         }),
         prisma.invoice.findMany({
           where: { organizationId, status: InvoiceStatus.PAID },
-          select: { currency: true, total: true },
+          select: {
+            currency: true,
+            total: true,
+            totalInBaseCurrency: true,
+            exchangeRateToBase: true,
+          },
         }),
         prisma.invoice.findMany({
           where: {
             organizationId,
             status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] },
           },
-          select: { currency: true, total: true },
+          select: {
+            currency: true,
+            total: true,
+            totalInBaseCurrency: true,
+            exchangeRateToBase: true,
+          },
         }),
       ]);
 
-    // Group revenue by currency
+    // Group revenue by currency (for breakdown display)
     const revenueByCurrency: CurrencyTotal = {};
+    let revenueInBaseCurrency = 0;
+    const missingHistoricalRates: string[] = [];
+
     for (const invoice of paidInvoices) {
       const currency = invoice.currency;
       const amount = Number(invoice.total);
       revenueByCurrency[currency] = (revenueByCurrency[currency] ?? 0) + amount;
+
+      // Use stored totalInBaseCurrency if available (historical rate)
+      if (invoice.totalInBaseCurrency !== null) {
+        revenueInBaseCurrency += Number(invoice.totalInBaseCurrency);
+      } else if (currency === baseCurrency) {
+        // Same currency, no conversion needed
+        revenueInBaseCurrency += amount;
+      } else {
+        // No historical rate stored - mark as missing
+        if (!missingHistoricalRates.includes(currency)) {
+          missingHistoricalRates.push(currency);
+        }
+      }
     }
 
-    // Group outstanding by currency
+    // Group outstanding by currency (for breakdown display)
     const outstandingByCurrency: CurrencyTotal = {};
+    let outstandingInBaseCurrency = 0;
+
     for (const invoice of outstandingInvoices) {
       const currency = invoice.currency;
       const amount = Number(invoice.total);
       outstandingByCurrency[currency] = (outstandingByCurrency[currency] ?? 0) + amount;
+
+      // Use stored totalInBaseCurrency if available (historical rate)
+      if (invoice.totalInBaseCurrency !== null) {
+        outstandingInBaseCurrency += Number(invoice.totalInBaseCurrency);
+      } else if (currency === baseCurrency) {
+        // Same currency, no conversion needed
+        outstandingInBaseCurrency += amount;
+      } else {
+        // No historical rate stored - mark as missing
+        if (!missingHistoricalRates.includes(currency)) {
+          missingHistoricalRates.push(currency);
+        }
+      }
     }
 
     return {
@@ -480,6 +610,9 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
       overdueCount,
       revenueByCurrency,
       outstandingByCurrency,
+      revenueInBaseCurrency,
+      outstandingInBaseCurrency,
+      missingHistoricalRates,
     };
   } catch (error) {
     logger.error("Failed to get invoice stats", { error, organizationId });

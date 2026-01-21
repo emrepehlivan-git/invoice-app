@@ -4,7 +4,6 @@ import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
 import { getInvoiceStats, getInvoices } from "@/app/actions/invoice";
 import { getCustomers } from "@/app/actions/customer";
-import { getExchangeRatesMap } from "@/app/actions/exchange-rate";
 import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
@@ -18,7 +17,7 @@ import { FileText, Users, DollarSign, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus } from "@/types";
-import { formatCurrency, formatMultiCurrencyTotal, convertToBaseCurrency } from "@/lib/currency";
+import { formatCurrency, formatMultiCurrencyTotal } from "@/lib/currency";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -53,11 +52,10 @@ export default async function DashboardPage({ params }: Props) {
     notFound();
   }
 
-  const [stats, invoices, customers, exchangeRatesMap] = await Promise.all([
+  const [stats, invoices, customers] = await Promise.all([
     getInvoiceStats(organization.id),
     getInvoices(organization.id),
     getCustomers(organization.id),
-    getExchangeRatesMap(organization.id),
   ]);
 
   const t = await getTranslations();
@@ -67,50 +65,10 @@ export default async function DashboardPage({ params }: Props) {
   const recentInvoices = invoices.slice(0, 5);
   const recentCustomers = customers.slice(0, 5);
 
-  // Calculate totals converted to base currency
-  let totalRevenueInBase = 0;
-  let totalOutstandingInBase = 0;
-  const missingRates: string[] = [];
-
-  if (stats?.revenueByCurrency) {
-    for (const [currency, amount] of Object.entries(stats.revenueByCurrency)) {
-      if (currency === baseCurrency) {
-        totalRevenueInBase += amount;
-      } else if (exchangeRatesMap[currency]) {
-        totalRevenueInBase += convertToBaseCurrency(
-          amount,
-          currency,
-          baseCurrency,
-          exchangeRatesMap
-        );
-      } else {
-        // Mark as missing rate
-        if (!missingRates.includes(currency)) {
-          missingRates.push(currency);
-        }
-      }
-    }
-  }
-
-  if (stats?.outstandingByCurrency) {
-    for (const [currency, amount] of Object.entries(stats.outstandingByCurrency)) {
-      if (currency === baseCurrency) {
-        totalOutstandingInBase += amount;
-      } else if (exchangeRatesMap[currency]) {
-        totalOutstandingInBase += convertToBaseCurrency(
-          amount,
-          currency,
-          baseCurrency,
-          exchangeRatesMap
-        );
-      } else {
-        // Mark as missing rate
-        if (!missingRates.includes(currency)) {
-          missingRates.push(currency);
-        }
-      }
-    }
-  }
+  // Use pre-calculated totals in base currency (using historical rates from invoice creation time)
+  const totalRevenueInBase = stats?.revenueInBaseCurrency ?? 0;
+  const totalOutstandingInBase = stats?.outstandingInBaseCurrency ?? 0;
+  const missingRates = stats?.missingHistoricalRates ?? [];
 
   // Format breakdown by currency for tooltip/detail
   const revenueBreakdown = stats?.revenueByCurrency
@@ -212,6 +170,13 @@ export default async function DashboardPage({ params }: Props) {
                   </p>
                 ))}
               </div>
+            )}
+            {missingRates.length > 0 && (
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                {t("dashboard.stats.missingRates", {
+                  currencies: missingRates.join(", "),
+                })}
+              </p>
             )}
             <p className="text-xs text-muted-foreground mt-1">
               {t("dashboard.stats.outstandingDescription")}
