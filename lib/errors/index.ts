@@ -73,4 +73,6 @@ export {
   assertCondition,
   assertExists,
   assertAccess,
+  isRedirectError,
+  rethrowRedirectError,
 } from "./handler";

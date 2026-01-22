@@ -204,3 +204,38 @@ export function assertAccess(
 ): asserts hasAccess {
   assertCondition(hasAccess, ErrorCode.UNAUTHORIZED, message);
 }
+
+/**
+ * Check if an error is a Next.js redirect error
+ * Next.js redirect() throws an error with "NEXT_REDIRECT" in its digest
+ */
+export function isRedirectError(error: unknown): boolean {
+  return (
+    error !== null &&
+    typeof error === "object" &&
+    "digest" in error &&
+    typeof (error as { digest: unknown }).digest === "string" &&
+    (error as { digest: string }).digest.includes("NEXT_REDIRECT")
+  );
+}
+
+/**
+ * Re-throw redirect errors if the error is a redirect
+ * Use this at the start of catch blocks in actions that use redirect()
+ *
+ * @example
+ * ```ts
+ * try {
+ *   // ... create resource
+ *   redirect("/success");
+ * } catch (error) {
+ *   rethrowRedirectError(error);
+ *   return handleActionError(error, "createResource");
+ * }
+ * ```
+ */
+export function rethrowRedirectError(error: unknown): void {
+  if (isRedirectError(error)) {
+    throw error;
+  }
+}

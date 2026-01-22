@@ -16,6 +16,7 @@ import {
   assertAccess,
   isUniqueConstraintError,
   getUniqueConstraintField,
+  rethrowRedirectError,
 } from "@/lib/errors";
 
 const createOrgSchema = z.object({
@@ -62,6 +63,9 @@ export async function createOrganization(
 
     return actionSuccess(organization);
   } catch (error) {
+    // Re-throw redirect errors - they're not actual errors
+    rethrowRedirectError(error);
+
     if (isUniqueConstraintError(error)) {
       const field = getUniqueConstraintField(error);
       if (field === "slug") {
