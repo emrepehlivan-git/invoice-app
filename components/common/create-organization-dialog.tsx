@@ -32,6 +32,7 @@ import {
   type OrganizationInput,
 } from "@/lib/validators/organization";
 import { slugify } from "@/lib/utils";
+import { ErrorCode } from "@/lib/errors/types";
 
 type Props = {
   open: boolean;
@@ -74,7 +75,7 @@ export function CreateOrganizationDialog({ open, onOpenChange }: Props) {
       const result = await createOrganization({ ...data, locale });
 
       if (result?.error) {
-        if (result.error === "slug_exists") {
+        if (result.error === ErrorCode.SLUG_EXISTS) {
           form.setError("slug", {
             message: t("organization.errors.slugExists"),
           });

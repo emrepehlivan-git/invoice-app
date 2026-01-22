@@ -5,8 +5,21 @@ import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import type { Customer } from "@/types";
-import logger from "@/lib/logger";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
+import {
+  ErrorCode,
+  type ActionResult,
+  type SimpleResult,
+  handleActionError,
+  actionError,
+  actionSuccess,
+  simpleSuccess,
+  simpleError,
+  assertExists,
+  assertAccess,
+  isUniqueConstraintError,
+  getUniqueConstraintField,
+} from "@/lib/errors";
 
 const customerSchema = z.object({
   name: z.string().min(2).max(100),
@@ -21,14 +34,6 @@ const customerSchema = z.object({
 });
 
 type CustomerInput = z.infer<typeof customerSchema>;
-
-type CustomerResult =
-  | { error: string; data?: never }
-  | { data: Customer; error?: never };
-
-type DeleteResult =
-  | { error: string; success?: never }
-  | { success: true; error?: never };
 
 async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
   const session = await requireAuth();
@@ -46,12 +51,10 @@ async function verifyOrganizationAccess(organizationId: string): Promise<boolean
 export async function createCustomer(
   organizationId: string,
   data: CustomerInput
-): Promise<CustomerResult> {
+): Promise<ActionResult<Customer>> {
   try {
     const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     const validated = customerSchema.parse(data);
 
@@ -65,7 +68,7 @@ export async function createCustomer(
       });
 
       if (existingCustomer) {
-        return { error: "email_exists" };
+        return actionError(ErrorCode.EMAIL_EXISTS);
       }
     }
 
@@ -86,7 +89,6 @@ export async function createCustomer(
 
     revalidatePath("/");
 
-    // Audit log
     await auditCreate("Customer", customer.id, {
       name: customer.name,
       email: customer.email,
@@ -94,30 +96,30 @@ export async function createCustomer(
       city: customer.city,
     }, organizationId);
 
-    return { data: customer };
+    return actionSuccess(customer);
   } catch (error) {
-    logger.error("Failed to create customer", { error, data });
-    throw error;
+    if (isUniqueConstraintError(error)) {
+      const field = getUniqueConstraintField(error);
+      if (field === "email") {
+        return actionError(ErrorCode.EMAIL_EXISTS);
+      }
+    }
+    return handleActionError(error, "createCustomer", { organizationId, data });
   }
 }
 
 export async function updateCustomer(
   customerId: string,
   data: CustomerInput
-): Promise<CustomerResult> {
+): Promise<ActionResult<Customer>> {
   try {
     const existingCustomer = await prisma.customer.findUnique({
       where: { id: customerId },
     });
-
-    if (!existingCustomer) {
-      return { error: "not_found" };
-    }
+    assertExists(existingCustomer, "Customer", customerId);
 
     const hasAccess = await verifyOrganizationAccess(existingCustomer.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     const validated = customerSchema.parse(data);
 
@@ -132,7 +134,7 @@ export async function updateCustomer(
       });
 
       if (duplicateCustomer) {
-        return { error: "email_exists" };
+        return actionError(ErrorCode.EMAIL_EXISTS);
       }
     }
 
@@ -153,7 +155,6 @@ export async function updateCustomer(
 
     revalidatePath("/");
 
-    // Audit log
     await auditUpdate("Customer", customer.id, {
       name: existingCustomer.name,
       email: existingCustomer.email,
@@ -166,27 +167,27 @@ export async function updateCustomer(
       city: customer.city,
     }, existingCustomer.organizationId);
 
-    return { data: customer };
+    return actionSuccess(customer);
   } catch (error) {
-    logger.error("Failed to update customer", { error, customerId, data });
-    throw error;
+    if (isUniqueConstraintError(error)) {
+      const field = getUniqueConstraintField(error);
+      if (field === "email") {
+        return actionError(ErrorCode.EMAIL_EXISTS);
+      }
+    }
+    return handleActionError(error, "updateCustomer", { customerId, data });
   }
 }
 
-export async function deleteCustomer(customerId: string): Promise<DeleteResult> {
+export async function deleteCustomer(customerId: string): Promise<SimpleResult> {
   try {
     const existingCustomer = await prisma.customer.findUnique({
       where: { id: customerId },
     });
-
-    if (!existingCustomer) {
-      return { error: "not_found" };
-    }
+    assertExists(existingCustomer, "Customer", customerId);
 
     const hasAccess = await verifyOrganizationAccess(existingCustomer.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     await prisma.customer.delete({
       where: { id: customerId },
@@ -194,7 +195,6 @@ export async function deleteCustomer(customerId: string): Promise<DeleteResult> 
 
     revalidatePath("/");
 
-    // Audit log
     await auditDelete("Customer", customerId, {
       name: existingCustomer.name,
       email: existingCustomer.email,
@@ -202,10 +202,10 @@ export async function deleteCustomer(customerId: string): Promise<DeleteResult> 
       city: existingCustomer.city,
     }, existingCustomer.organizationId);
 
-    return { success: true };
+    return simpleSuccess();
   } catch (error) {
-    logger.error("Failed to delete customer", { error, customerId });
-    throw error;
+    const result = handleActionError(error, "deleteCustomer", { customerId });
+    return simpleError(result.error, result.message);
   }
 }
 
@@ -225,9 +225,8 @@ export async function getCustomer(customerId: string): Promise<Customer | null> 
     }
 
     return customer;
-  } catch (error) {
-    logger.error("Failed to get customer", { error, customerId });
-    throw error;
+  } catch {
+    return null;
   }
 }
 
@@ -244,9 +243,8 @@ export async function getCustomers(organizationId: string): Promise<Customer[]> 
     });
 
     return customers;
-  } catch (error) {
-    logger.error("Failed to get customers", { error, organizationId });
-    throw error;
+  } catch {
+    return [];
   }
 }
 
@@ -274,8 +272,7 @@ export async function searchCustomers(
     });
 
     return customers;
-  } catch (error) {
-    logger.error("Failed to search customers", { error, organizationId, query });
-    throw error;
+  } catch {
+    return [];
   }
 }

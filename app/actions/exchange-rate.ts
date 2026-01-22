@@ -4,9 +4,20 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
-import logger from "@/lib/logger";
 import type { ExchangeRate } from "@/prisma/generated/prisma";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
+import {
+  ErrorCode,
+  type ActionResult,
+  type SimpleResult,
+  handleActionError,
+  actionError,
+  actionSuccess,
+  simpleSuccess,
+  simpleError,
+  assertExists,
+  assertAccess,
+} from "@/lib/errors";
 
 const exchangeRateSchema = z.object({
   fromCurrency: z.string().length(3),
@@ -14,10 +25,6 @@ const exchangeRateSchema = z.object({
 });
 
 type ExchangeRateInput = z.infer<typeof exchangeRateSchema>;
-
-type ExchangeRateResult =
-  | { error: string; data?: never }
-  | { data: ExchangeRate; error?: never };
 
 async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
   const session = await requireAuth();
@@ -64,9 +71,8 @@ export async function getExchangeRates(
     });
 
     return rates;
-  } catch (error) {
-    logger.error("Failed to get exchange rates", { error, organizationId });
-    throw error;
+  } catch {
+    return [];
   }
 }
 
@@ -102,13 +108,8 @@ export async function getLatestExchangeRate(
     });
 
     return rate;
-  } catch (error) {
-    logger.error("Failed to get latest exchange rate", {
-      error,
-      organizationId,
-      fromCurrency,
-    });
-    throw error;
+  } catch {
+    return null;
   }
 }
 
@@ -118,12 +119,10 @@ export async function getLatestExchangeRate(
 export async function upsertExchangeRate(
   organizationId: string,
   data: ExchangeRateInput
-): Promise<ExchangeRateResult> {
+): Promise<ActionResult<ExchangeRate>> {
   try {
     const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     const validated = exchangeRateSchema.parse(data);
 
@@ -131,14 +130,11 @@ export async function upsertExchangeRate(
       where: { id: organizationId },
       select: { baseCurrency: true },
     });
-
-    if (!organization) {
-      return { error: "organization_not_found" };
-    }
+    assertExists(organization, "Organization", organizationId);
 
     // Don't allow setting rate for base currency to itself
     if (validated.fromCurrency === organization.baseCurrency) {
-      return { error: "same_currency" };
+      return actionError(ErrorCode.INVALID_INPUT, "Cannot set rate for base currency to itself");
     }
 
     const today = new Date();
@@ -199,10 +195,9 @@ export async function upsertExchangeRate(
       }, organizationId);
     }
 
-    return { data: exchangeRate };
+    return actionSuccess(exchangeRate);
   } catch (error) {
-    logger.error("Failed to upsert exchange rate", { error, organizationId, data });
-    throw error;
+    return handleActionError(error, "upsertExchangeRate", { organizationId, data });
   }
 }
 
@@ -222,35 +217,25 @@ export async function getExchangeRatesMap(
     }
 
     return ratesMap;
-  } catch (error) {
-    logger.error("Failed to get exchange rates map", { error, organizationId });
-    throw error;
+  } catch {
+    return {};
   }
 }
-
-type DeleteResult =
-  | { error: string; success?: never }
-  | { success: true; error?: never };
 
 /**
  * Delete an exchange rate
  */
 export async function deleteExchangeRate(
   exchangeRateId: string
-): Promise<DeleteResult> {
+): Promise<SimpleResult> {
   try {
     const exchangeRate = await prisma.exchangeRate.findUnique({
       where: { id: exchangeRateId },
     });
-
-    if (!exchangeRate) {
-      return { error: "not_found" };
-    }
+    assertExists(exchangeRate, "ExchangeRate", exchangeRateId);
 
     const hasAccess = await verifyOrganizationAccess(exchangeRate.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     await prisma.exchangeRate.delete({
       where: { id: exchangeRateId },
@@ -258,17 +243,16 @@ export async function deleteExchangeRate(
 
     revalidatePath("/");
 
-    // Audit log
     await auditDelete("ExchangeRate", exchangeRateId, {
       fromCurrency: exchangeRate.fromCurrency,
       toCurrency: exchangeRate.toCurrency,
       rate: Number(exchangeRate.rate),
     }, exchangeRate.organizationId);
 
-    return { success: true };
+    return simpleSuccess();
   } catch (error) {
-    logger.error("Failed to delete exchange rate", { error, exchangeRateId });
-    throw error;
+    const result = handleActionError(error, "deleteExchangeRate", { exchangeRateId });
+    return simpleError(result.error, result.message);
   }
 }
 

@@ -10,6 +10,18 @@ import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { auditCreate, auditUpdate, auditDelete, auditStatusChange } from "@/lib/audit";
 import { getExchangeRatesMap } from "./exchange-rate";
+import {
+  ErrorCode,
+  type ActionResult,
+  type SimpleResult,
+  handleActionError,
+  actionError,
+  actionSuccess,
+  simpleSuccess,
+  simpleError,
+  assertExists,
+  assertAccess,
+} from "@/lib/errors";
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1).max(500),
@@ -28,14 +40,6 @@ const invoiceSchema = z.object({
 });
 
 type InvoiceInput = z.infer<typeof invoiceSchema>;
-
-type InvoiceResult =
-  | { error: string; data?: never }
-  | { data: InvoiceWithRelations; error?: never };
-
-type DeleteResult =
-  | { error: string; success?: never }
-  | { success: true; error?: never };
 
 async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
   const session = await requireAuth();
@@ -148,12 +152,10 @@ async function calculateExchangeRateSnapshot(
 export async function createInvoice(
   organizationId: string,
   data: InvoiceInput
-): Promise<InvoiceResult> {
+): Promise<ActionResult<InvoiceWithRelations>> {
   try {
     const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     const validated = invoiceSchema.parse(data);
 
@@ -166,7 +168,7 @@ export async function createInvoice(
     });
 
     if (!customer) {
-      return { error: "customer_not_found" };
+      return actionError(ErrorCode.NOT_FOUND, "Customer not found");
     }
 
     const invoiceNumber = await generateInvoiceNumber(organizationId);
@@ -215,7 +217,6 @@ export async function createInvoice(
 
     revalidatePath("/");
 
-    // Audit log
     await auditCreate("Invoice", invoice.id, {
       invoiceNumber: invoice.invoiceNumber,
       customerId: invoice.customerId,
@@ -224,34 +225,28 @@ export async function createInvoice(
       status: invoice.status,
     }, organizationId);
 
-    return { data: invoice };
+    return actionSuccess(invoice);
   } catch (error) {
-    logger.error("Failed to create invoice", { error, data });
-    throw error;
+    return handleActionError(error, "createInvoice", { organizationId, data });
   }
 }
 
 export async function updateInvoice(
   invoiceId: string,
   data: InvoiceInput
-): Promise<InvoiceResult> {
+): Promise<ActionResult<InvoiceWithRelations>> {
   try {
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
     });
-
-    if (!existingInvoice) {
-      return { error: "not_found" };
-    }
+    assertExists(existingInvoice, "Invoice", invoiceId);
 
     const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     // Can only edit DRAFT invoices
     if (existingInvoice.status !== InvoiceStatus.DRAFT) {
-      return { error: "cannot_edit" };
+      return actionError(ErrorCode.CANNOT_EDIT, "Only draft invoices can be edited");
     }
 
     const validated = invoiceSchema.parse(data);
@@ -265,7 +260,7 @@ export async function updateInvoice(
     });
 
     if (!customer) {
-      return { error: "customer_not_found" };
+      return actionError(ErrorCode.NOT_FOUND, "Customer not found");
     }
 
     const { subtotal, taxAmount, total } = calculateTotals(
@@ -274,7 +269,6 @@ export async function updateInvoice(
     );
 
     // Recalculate exchange rate snapshot when invoice is updated
-    // This captures the current rate at update time
     const { exchangeRateToBase, totalInBaseCurrency } = await calculateExchangeRateSnapshot(
       existingInvoice.organizationId,
       validated.currency,
@@ -318,7 +312,6 @@ export async function updateInvoice(
 
     revalidatePath("/");
 
-    // Audit log
     await auditUpdate("Invoice", invoice.id, {
       invoiceNumber: existingInvoice.invoiceNumber,
       customerId: existingInvoice.customerId,
@@ -331,30 +324,24 @@ export async function updateInvoice(
       total: Number(invoice.total),
     }, existingInvoice.organizationId);
 
-    return { data: invoice };
+    return actionSuccess(invoice);
   } catch (error) {
-    logger.error("Failed to update invoice", { error, invoiceId, data });
-    throw error;
+    return handleActionError(error, "updateInvoice", { invoiceId, data });
   }
 }
 
 export async function updateInvoiceStatus(
   invoiceId: string,
   status: InvoiceStatus
-): Promise<InvoiceResult> {
+): Promise<ActionResult<InvoiceWithRelations>> {
   try {
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
     });
-
-    if (!existingInvoice) {
-      return { error: "not_found" };
-    }
+    assertExists(existingInvoice, "Invoice", invoiceId);
 
     const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     const invoice = await prisma.invoice.update({
       where: { id: invoiceId },
@@ -368,7 +355,6 @@ export async function updateInvoiceStatus(
 
     revalidatePath("/");
 
-    // Audit log
     await auditStatusChange(
       "Invoice",
       invoice.id,
@@ -377,34 +363,28 @@ export async function updateInvoiceStatus(
       existingInvoice.organizationId
     );
 
-    return { data: invoice };
+    return actionSuccess(invoice);
   } catch (error) {
-    logger.error("Failed to update invoice status", { error, invoiceId, status });
-    throw error;
+    return handleActionError(error, "updateInvoiceStatus", { invoiceId, status });
   }
 }
 
-export async function deleteInvoice(invoiceId: string): Promise<DeleteResult> {
+export async function deleteInvoice(invoiceId: string): Promise<SimpleResult> {
   try {
     const existingInvoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
     });
-
-    if (!existingInvoice) {
-      return { error: "not_found" };
-    }
+    assertExists(existingInvoice, "Invoice", invoiceId);
 
     const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    if (!hasAccess) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(hasAccess);
 
     // Can only delete DRAFT or CANCELLED invoices
     if (
       existingInvoice.status !== InvoiceStatus.DRAFT &&
       existingInvoice.status !== InvoiceStatus.CANCELLED
     ) {
-      return { error: "cannot_delete" };
+      return simpleError(ErrorCode.CANNOT_DELETE, "Only draft or cancelled invoices can be deleted");
     }
 
     await prisma.invoice.delete({
@@ -413,7 +393,6 @@ export async function deleteInvoice(invoiceId: string): Promise<DeleteResult> {
 
     revalidatePath("/");
 
-    // Audit log
     await auditDelete("Invoice", invoiceId, {
       invoiceNumber: existingInvoice.invoiceNumber,
       customerId: existingInvoice.customerId,
@@ -422,10 +401,10 @@ export async function deleteInvoice(invoiceId: string): Promise<DeleteResult> {
       status: existingInvoice.status,
     }, existingInvoice.organizationId);
 
-    return { success: true };
+    return simpleSuccess();
   } catch (error) {
-    logger.error("Failed to delete invoice", { error, invoiceId });
-    throw error;
+    const result = handleActionError(error, "deleteInvoice", { invoiceId });
+    return simpleError(result.error, result.message);
   }
 }
 
@@ -452,9 +431,8 @@ export async function getInvoice(
     }
 
     return invoice;
-  } catch (error) {
-    logger.error("Failed to get invoice", { error, invoiceId });
-    throw error;
+  } catch {
+    return null;
   }
 }
 
@@ -476,9 +454,8 @@ export async function getInvoices(
     });
 
     return invoices;
-  } catch (error) {
-    logger.error("Failed to get invoices", { error, organizationId });
-    throw error;
+  } catch {
+    return [];
   }
 }
 
@@ -614,8 +591,7 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
       outstandingInBaseCurrency,
       missingHistoricalRates,
     };
-  } catch (error) {
-    logger.error("Failed to get invoice stats", { error, organizationId });
-    throw error;
+  } catch {
+    return null;
   }
 }

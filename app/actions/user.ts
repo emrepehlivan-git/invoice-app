@@ -4,8 +4,14 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
-import logger from "@/lib/logger";
 import { hash, verify } from "@node-rs/argon2";
+import {
+  ErrorCode,
+  type SimpleResult,
+  handleActionError,
+  simpleSuccess,
+  simpleError,
+} from "@/lib/errors";
 
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100),
@@ -19,13 +25,9 @@ const changePasswordSchema = z.object({
 type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
-type ActionResult =
-  | { error: string; success?: never }
-  | { success: true; error?: never };
-
 export async function updateProfile(
   data: UpdateProfileInput
-): Promise<ActionResult> {
+): Promise<SimpleResult> {
   try {
     const session = await requireAuth();
 
@@ -40,16 +42,16 @@ export async function updateProfile(
 
     revalidatePath("/");
 
-    return { success: true };
+    return simpleSuccess();
   } catch (error) {
-    logger.error("Failed to update profile", { error, data });
-    throw error;
+    const result = handleActionError(error, "updateProfile", { data });
+    return simpleError(result.error, result.message);
   }
 }
 
 export async function changePassword(
   data: ChangePasswordInput
-): Promise<ActionResult> {
+): Promise<SimpleResult> {
   try {
     const session = await requireAuth();
 
@@ -64,14 +66,14 @@ export async function changePassword(
     });
 
     if (!account?.password) {
-      return { error: "no_password_account" };
+      return simpleError(ErrorCode.FORBIDDEN, "No password account found");
     }
 
     // Verify current password
     const isValidPassword = await verify(account.password, validated.currentPassword);
 
     if (!isValidPassword) {
-      return { error: "invalid_current_password" };
+      return simpleError(ErrorCode.UNAUTHORIZED, "Invalid current password");
     }
 
     // Hash new password
@@ -90,10 +92,10 @@ export async function changePassword(
       },
     });
 
-    return { success: true };
+    return simpleSuccess();
   } catch (error) {
-    logger.error("Failed to change password", { error });
-    throw error;
+    const result = handleActionError(error, "changePassword");
+    return simpleError(result.error, result.message);
   }
 }
 
@@ -124,8 +126,10 @@ export async function getUserProfile() {
       user,
       hasPasswordAccount: !!hasPasswordAccount,
     };
-  } catch (error) {
-    logger.error("Failed to get user profile", { error });
-    throw error;
+  } catch {
+    return {
+      user: null,
+      hasPasswordAccount: false,
+    };
   }
 }

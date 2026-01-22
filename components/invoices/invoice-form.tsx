@@ -47,6 +47,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { createInvoice, updateInvoice } from "@/app/actions/invoice";
 import { createInvoiceSchema, type InvoiceInput } from "@/lib/validators/invoice";
+import { ErrorCode } from "@/lib/errors/types";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import type { Customer, InvoiceWithRelations, Organization } from "@/types";
 
@@ -120,11 +121,11 @@ export function InvoiceForm({
           : await updateInvoice(invoice!.id, data);
 
       if (result?.error) {
-        if (result.error === "customer_not_found") {
+        if (result.error === ErrorCode.NOT_FOUND) {
           toast.error(t("invoices.errors.customerNotFound"));
-        } else if (result.error === "cannot_edit") {
+        } else if (result.error === ErrorCode.CANNOT_EDIT) {
           toast.error(t("invoices.errors.cannotEdit"));
-        } else if (result.error === "unauthorized") {
+        } else if (result.error === ErrorCode.UNAUTHORIZED) {
           toast.error(t("invoices.errors.unauthorized"));
         } else {
           toast.error(

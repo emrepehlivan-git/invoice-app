@@ -45,4 +45,5 @@ next-env.d.ts
 prd.md
 CLAUDE.md
 .cursor/
-logs/*
+
+logs/

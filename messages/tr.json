@@ -11,7 +11,31 @@
     "search": "Ara",
     "or": "veya",
     "continue": "Devam Et",
-    "back": "Geri"
+    "back": "Geri",
+    "retry": "Tekrar Dene",
+    "goHome": "Ana Sayfaya Git",
+    "goBack": "Geri Dön"
+  },
+  "errors": {
+    "pageTitle": "Bir şeyler yanlış gitti",
+    "pageDescription": "Üzgünüz, beklenmedik bir hata oluştu. Lütfen tekrar deneyin.",
+    "notFoundTitle": "Sayfa Bulunamadı",
+    "notFoundDescription": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
+    "unauthorized": "Bu işlem için yetkiniz bulunmuyor",
+    "forbidden": "Erişim reddedildi",
+    "sessionExpired": "Oturumunuz sona erdi. Lütfen tekrar giriş yapın.",
+    "notFound": "İstenen kaynak bulunamadı",
+    "validationError": "Lütfen girdiğiniz bilgileri kontrol edip tekrar deneyin",
+    "emailExists": "Bu e-posta adresi zaten kullanılıyor",
+    "slugExists": "Bu URL kısaltması zaten kullanılıyor",
+    "cannotEdit": "Bu öğe mevcut durumunda düzenlenemez",
+    "cannotDelete": "Bu öğe silinemez",
+    "hasDependencies": "İlişkili kayıtlar olduğu için silinemez",
+    "databaseError": "Veritabanı hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+    "internalError": "Dahili bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+    "unknownError": "Beklenmeyen bir hata oluştu",
+    "networkError": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
+    "rateLimitExceeded": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin."
   },
   "auth": {
     "login": {

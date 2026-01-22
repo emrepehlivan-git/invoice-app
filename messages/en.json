@@ -11,7 +11,31 @@
     "search": "Search",
     "or": "or",
     "continue": "Continue",
-    "back": "Back"
+    "back": "Back",
+    "retry": "Try Again",
+    "goHome": "Go to Home",
+    "goBack": "Go Back"
+  },
+  "errors": {
+    "pageTitle": "Something went wrong",
+    "pageDescription": "We're sorry, but something unexpected happened. Please try again.",
+    "notFoundTitle": "Page Not Found",
+    "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+    "unauthorized": "You don't have permission to perform this action",
+    "forbidden": "Access denied",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "notFound": "The requested resource was not found",
+    "validationError": "Please check your input and try again",
+    "emailExists": "This email address is already in use",
+    "slugExists": "This URL slug is already taken",
+    "cannotEdit": "This item cannot be edited in its current state",
+    "cannotDelete": "This item cannot be deleted",
+    "hasDependencies": "Cannot delete because it has related records",
+    "databaseError": "A database error occurred. Please try again later.",
+    "internalError": "An internal error occurred. Please try again later.",
+    "unknownError": "An unexpected error occurred",
+    "networkError": "Network error. Please check your connection.",
+    "rateLimitExceeded": "Too many requests. Please wait a moment and try again."
   },
   "auth": {
     "login": {

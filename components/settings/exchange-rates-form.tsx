@@ -46,6 +46,7 @@ import {
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import { upsertExchangeRate, deleteExchangeRate } from "@/app/actions/exchange-rate";
 import type { ExchangeRate } from "@/prisma/generated/prisma";
+import { ErrorCode } from "@/lib/errors/types";
 
 const formSchema = z.object({
   fromCurrency: z.string().length(3),
@@ -98,7 +99,7 @@ export function ExchangeRatesForm({
       });
 
       if (result.error) {
-        if (result.error === "same_currency") {
+        if (result.error === ErrorCode.INVALID_INPUT) {
           toast.error(t("settings.exchangeRates.errors.sameCurrency"));
         } else {
           toast.error(t("settings.exchangeRates.messages.error"));

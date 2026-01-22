@@ -22,6 +22,7 @@ import {
   createChangePasswordSchema,
   type ChangePasswordInput,
 } from "@/lib/validators/user";
+import { ErrorCode } from "@/lib/errors/types";
 
 export function PasswordForm() {
   const t = useTranslations();
@@ -47,11 +48,11 @@ export function PasswordForm() {
       });
 
       if (result?.error) {
-        if (result.error === "invalid_current_password") {
+        if (result.error === ErrorCode.UNAUTHORIZED) {
           form.setError("currentPassword", {
             message: t("settings.password.errors.invalidCurrentPassword"),
           });
-        } else if (result.error === "no_password_account") {
+        } else if (result.error === ErrorCode.FORBIDDEN) {
           toast.error(t("settings.password.errors.noPasswordAccount"));
         } else {
           toast.error(t("settings.password.messages.error"));

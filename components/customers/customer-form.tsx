@@ -25,6 +25,7 @@ import {
   type CustomerInput,
 } from "@/lib/validators/customer";
 import type { Customer } from "@/types";
+import { ErrorCode } from "@/lib/errors/types";
 
 type CustomerFormProps = {
   organizationId: string;
@@ -69,11 +70,11 @@ export function CustomerForm({
           : await updateCustomer(customer!.id, data);
 
       if (result?.error) {
-        if (result.error === "email_exists") {
+        if (result.error === ErrorCode.EMAIL_EXISTS) {
           form.setError("email", {
             message: t("customers.errors.emailExists"),
           });
-        } else if (result.error === "unauthorized") {
+        } else if (result.error === ErrorCode.UNAUTHORIZED) {
           toast.error(t("customers.errors.unauthorized"));
         } else {
           toast.error(

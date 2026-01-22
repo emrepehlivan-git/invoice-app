@@ -7,20 +7,25 @@ import { z } from "zod";
 import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg } from "@/types";
 import { Role } from "@/types";
 import { redirect } from "@/i18n/navigation";
-import logger from "@/lib/logger";
+import {
+  ErrorCode,
+  type ActionResult,
+  handleActionError,
+  actionError,
+  actionSuccess,
+  assertAccess,
+  isUniqueConstraintError,
+  getUniqueConstraintField,
+} from "@/lib/errors";
 
 const createOrgSchema = z.object({
   name: z.string().min(2).max(100),
   slug: z.string().min(2).max(50).regex(/^[a-z0-9-]+$/),
 });
 
-type CreateOrganizationResult =
-  | { error: string; data?: never }
-  | { data: Organization; error?: never };
-
 export async function createOrganization(
   data: { name: string; slug: string; locale: string }
-): Promise<CreateOrganizationResult> {
+): Promise<ActionResult<Organization>> {
   try {
     const session = await requireAuth();
 
@@ -31,7 +36,7 @@ export async function createOrganization(
     });
 
     if (existingOrg) {
-      return { error: "slug_exists" };
+      return actionError(ErrorCode.SLUG_EXISTS);
     }
 
     const organization = await prisma.organization.create({
@@ -54,11 +59,16 @@ export async function createOrganization(
       href: "/onboarding",
       locale: data.locale,
     });
-    
-    throw new Error("Unreachable code");
+
+    return actionSuccess(organization);
   } catch (error) {
-    logger.error("Failed to create organization", { error, data });
-    throw error;
+    if (isUniqueConstraintError(error)) {
+      const field = getUniqueConstraintField(error);
+      if (field === "slug") {
+        return actionError(ErrorCode.SLUG_EXISTS);
+      }
+    }
+    return handleActionError(error, "createOrganization", { name: data.name, slug: data.slug });
   }
 }
 
@@ -78,9 +88,8 @@ export async function getUserOrganizations(): Promise<OrganizationWithRole[]> {
       ...m.organization,
       role: m.role,
     }));
-  } catch (error) {
-    logger.error("Failed to get user organizations", { error });
-    throw error;
+  } catch {
+    return [];
   }
 }
 
@@ -108,9 +117,8 @@ export async function getOrganizationBySlug(
       ...membership.organization,
       role: membership.role,
     };
-  } catch (error) {
-    logger.error("Failed to get organization by slug", { error, slug });
-    throw error;
+  } catch {
+    return null;
   }
 }
 
@@ -118,14 +126,10 @@ const updateOrgSchema = z.object({
   baseCurrency: z.string().length(3),
 });
 
-type UpdateOrganizationResult =
-  | { error: string; data?: never }
-  | { data: Organization; error?: never };
-
 export async function updateOrganizationSettings(
   organizationId: string,
   data: { baseCurrency: string }
-): Promise<UpdateOrganizationResult> {
+): Promise<ActionResult<Organization>> {
   try {
     const session = await requireAuth();
 
@@ -137,10 +141,7 @@ export async function updateOrganizationSettings(
         role: Role.ADMIN,
       },
     });
-
-    if (!membership) {
-      return { error: "unauthorized" };
-    }
+    assertAccess(!!membership, "Admin access required");
 
     const validated = updateOrgSchema.parse(data);
 
@@ -153,9 +154,8 @@ export async function updateOrganizationSettings(
 
     revalidatePath("/");
 
-    return { data: organization };
+    return actionSuccess(organization);
   } catch (error) {
-    logger.error("Failed to update organization settings", { error, organizationId, data });
-    throw error;
+    return handleActionError(error, "updateOrganizationSettings", { organizationId, data });
   }
 }

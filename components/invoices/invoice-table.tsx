@@ -48,6 +48,7 @@ import { Link } from "@/i18n/navigation";
 import { deleteInvoice, updateInvoiceStatus } from "@/app/actions/invoice";
 import { InvoiceStatus, type InvoiceWithCustomer } from "@/types";
 import { formatCurrency } from "@/lib/currency";
+import { ErrorCode } from "@/lib/errors/types";
 
 type InvoiceTableProps = {
   invoices: InvoiceWithCustomer[];
@@ -99,7 +100,7 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
       const result = await deleteInvoice(invoiceToDelete.id);
 
       if (result?.error) {
-        if (result.error === "cannot_delete") {
+        if (result.error === ErrorCode.CANNOT_DELETE) {
           toast.error(t("invoices.errors.cannotDelete"));
         } else {
           toast.error(t("invoices.messages.deleteError"));
