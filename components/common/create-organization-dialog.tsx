@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -74,7 +75,7 @@ export function CreateOrganizationDialog({ open, onOpenChange }: Props) {
     try {
       const result = await createOrganization({ ...data, locale });
 
-      if (result?.error) {
+      if ("error" in result) {
         if (result.error === ErrorCode.SLUG_EXISTS) {
           form.setError("slug", {
             message: t("organization.errors.slugExists"),
@@ -88,20 +89,10 @@ export function CreateOrganizationDialog({ open, onOpenChange }: Props) {
       toast.success(t("organization.create.success"));
       form.reset();
       onOpenChange(false);
-      router.refresh();
-    } catch (error) {
-      const isRedirect =
-        error &&
-        typeof error === "object" &&
-        "digest" in error &&
-        typeof error.digest === "string" &&
-        error.digest.includes("NEXT_REDIRECT");
-
-      if (!isRedirect) {
-        toast.error(t("common.error"));
-      } else {
-        onOpenChange(false);
-      }
+      // Navigate to the new organization's dashboard
+      router.push(`/${result.data.slug}`);
+    } catch {
+      toast.error(t("common.error"));
     } finally {
       setIsLoading(false);
     }

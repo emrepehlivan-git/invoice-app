@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -33,10 +34,12 @@ import {
   type OrganizationInput,
 } from "@/lib/validators/organization";
 import { slugify } from "@/lib/utils";
+import { ErrorCode } from "@/lib/errors/types";
 
 export function CreateOrganizationForm() {
   const t = useTranslations();
   const params = useParams();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [previousName, setPreviousName] = useState("");
 
@@ -68,8 +71,8 @@ export function CreateOrganizationForm() {
     try {
       const result = await createOrganization({ ...data, locale });
 
-      if (result?.error) {
-        if (result.error === "slug_exists") {
+      if ("error" in result) {
+        if (result.error === ErrorCode.SLUG_EXISTS) {
           form.setError("slug", {
             message: t("organization.errors.slugExists"),
           });
@@ -80,12 +83,10 @@ export function CreateOrganizationForm() {
       }
 
       toast.success(t("organization.create.success"));
-    } catch (error) {
-      const isRedirect = error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.includes("NEXT_REDIRECT");
-
-      if (!isRedirect) {
-        toast.error(t("common.error"));
-      }
+      // Navigate to the new organization's dashboard
+      router.push(`/${result.data.slug}`);
+    } catch {
+      toast.error(t("common.error"));
     } finally {
       setIsLoading(false);
     }

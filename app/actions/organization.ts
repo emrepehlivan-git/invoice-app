@@ -6,7 +6,6 @@ import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg } from "@/types";
 import { Role } from "@/types";
-import { redirect } from "@/i18n/navigation";
 import {
   ErrorCode,
   type ActionResult,
@@ -16,7 +15,6 @@ import {
   assertAccess,
   isUniqueConstraintError,
   getUniqueConstraintField,
-  rethrowRedirectError,
 } from "@/lib/errors";
 
 const createOrgSchema = z.object({
@@ -56,16 +54,8 @@ export async function createOrganization(
     revalidatePath("/");
     revalidatePath("/onboarding");
 
-    redirect({
-      href: "/onboarding",
-      locale: data.locale,
-    });
-
     return actionSuccess(organization);
   } catch (error) {
-    // Re-throw redirect errors - they're not actual errors
-    rethrowRedirectError(error);
-
     if (isUniqueConstraintError(error)) {
       const field = getUniqueConstraintField(error);
       if (field === "slug") {
