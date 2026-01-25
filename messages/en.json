@@ -351,7 +351,8 @@
     "description": "Manage your organization and account settings",
     "nav": {
       "user": "User Settings",
-      "organization": "Organization Settings"
+      "organization": "Organization Settings",
+      "members": "Members"
     },
     "user": {
       "description": "Manage your profile and security settings"
@@ -453,6 +454,91 @@
         "title": "Delete Exchange Rate",
         "description": "Are you sure you want to delete the exchange rate for {currency}? This action cannot be undone."
       }
+    },
+    "members": {
+      "title": "Members",
+      "description": "Manage organization members and invitations",
+      "currentMembers": "Current Members",
+      "currentMembersDescription": "People who have access to this organization",
+      "inviteTitle": "Invite New Member",
+      "inviteDescription": "Send an invitation to add a new member to your organization",
+      "pendingInvitations": "Pending Invitations",
+      "pendingInvitationsDescription": "Invitations that haven't been accepted yet",
+      "noPendingInvitations": "No pending invitations",
+      "you": "you",
+      "adminOnlyDescription": "Only administrators can manage members and invitations",
+      "inviteButton": "Send Invitation",
+      "fields": {
+        "email": "Email Address",
+        "emailPlaceholder": "colleague@company.com",
+        "role": "Role",
+        "selectRole": "Select role"
+      },
+      "table": {
+        "member": "Member",
+        "email": "Email",
+        "role": "Role",
+        "invitedBy": "Invited By",
+        "expires": "Expires"
+      },
+      "actions": {
+        "makeAdmin": "Make Admin",
+        "makeMember": "Make Member",
+        "remove": "Remove from Organization",
+        "resend": "Resend Invitation",
+        "cancel": "Cancel Invitation"
+      },
+      "messages": {
+        "inviteSuccess": "Invitation sent successfully",
+        "inviteError": "Failed to send invitation",
+        "cancelSuccess": "Invitation cancelled",
+        "cancelError": "Failed to cancel invitation",
+        "resendSuccess": "Invitation resent successfully",
+        "resendError": "Failed to resend invitation",
+        "removeSuccess": "Member removed successfully",
+        "removeError": "Failed to remove member",
+        "roleChangeSuccess": "Role updated successfully",
+        "roleChangeError": "Failed to update role"
+      },
+      "errors": {
+        "invitation_already_exists": "An invitation has already been sent to this email",
+        "invitation_already_member": "This user is already a member of the organization"
+      },
+      "cancelDialog": {
+        "title": "Cancel Invitation",
+        "description": "Are you sure you want to cancel the invitation for {email}? They will no longer be able to join.",
+        "confirm": "Cancel Invitation"
+      },
+      "removeDialog": {
+        "title": "Remove Member",
+        "description": "Are you sure you want to remove {name} from this organization? They will lose access immediately.",
+        "confirm": "Remove"
+      }
+    }
+  },
+  "invitation": {
+    "title": "You've Been Invited",
+    "description": "You've been invited to join an organization",
+    "organization": "Organization",
+    "role": "Your Role",
+    "invitedBy": "Invited By",
+    "accept": "Accept Invitation",
+    "signInToAccept": "Sign In to Accept",
+    "loginRequired": "Please sign in with {email} to accept this invitation",
+    "emailMismatch": "This invitation was sent to {invitedEmail}, but you're signed in as {currentEmail}. Please sign in with the correct account.",
+    "readyToAccept": "You're ready to accept this invitation!",
+    "messages": {
+      "accepted": "Welcome! You've joined the organization"
+    },
+    "errors": {
+      "expiredTitle": "Invitation Expired",
+      "expiredDescription": "This invitation has expired. Please ask the organization admin to send a new invitation.",
+      "invalidTitle": "Invalid Invitation",
+      "invalidDescription": "This invitation link is invalid or has already been used.",
+      "genericTitle": "Something Went Wrong",
+      "genericDescription": "We couldn't process this invitation. Please try again or contact support.",
+      "contactAdmin": "If you believe this is a mistake, please contact the organization administrator.",
+      "forbidden": "This invitation was sent to a different email address"
     }
   }
 }

@@ -197,6 +197,19 @@ exports.Prisma.OrganizationMemberScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.InvitationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  organizationId: 'organizationId',
+  role: 'role',
+  token: 'token',
+  status: 'status',
+  invitedById: 'invitedById',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -286,6 +299,13 @@ exports.Role = exports.$Enums.Role = {
   MEMBER: 'MEMBER'
 };
 
+exports.InvitationStatus = exports.$Enums.InvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
@@ -309,6 +329,7 @@ exports.Prisma.ModelName = {
   Organization: 'Organization',
   ExchangeRate: 'ExchangeRate',
   OrganizationMember: 'OrganizationMember',
+  Invitation: 'Invitation',
   Customer: 'Customer',
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',

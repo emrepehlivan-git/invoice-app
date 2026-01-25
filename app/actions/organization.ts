@@ -4,18 +4,25 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
-import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg } from "@/types";
+import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg, OrganizationMember, User } from "@/types";
 import { Role } from "@/types";
 import {
   ErrorCode,
   type ActionResult,
+  type SimpleResult,
   handleActionError,
   actionError,
   actionSuccess,
+  simpleSuccess,
+  simpleError,
   assertAccess,
   isUniqueConstraintError,
   getUniqueConstraintField,
 } from "@/lib/errors";
+
+export type OrganizationMemberWithUser = OrganizationMember & {
+  user: Pick<User, "id" | "name" | "email" | "image">;
+};
 
 const createOrgSchema = z.object({
   name: z.string().min(2).max(100),
@@ -151,5 +158,167 @@ export async function updateOrganizationSettings(
     return actionSuccess(organization);
   } catch (error) {
     return handleActionError(error, "updateOrganizationSettings", { organizationId, data });
+  }
+}
+
+/**
+ * Get all members of an organization
+ */
+export async function getOrganizationMembers(
+  organizationId: string
+): Promise<OrganizationMemberWithUser[]> {
+  try {
+    const session = await requireAuth();
+
+    // Verify user has access to the organization
+    const membership = await prisma.organizationMember.findFirst({
+      where: {
+        userId: session.user.id,
+        organizationId,
+      },
+    });
+
+    if (!membership) {
+      return [];
+    }
+
+    const members = await prisma.organizationMember.findMany({
+      where: { organizationId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: [{ role: "asc" }, { createdAt: "asc" }],
+    });
+
+    return members;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Remove a member from the organization
+ * Only admins can remove members, and cannot remove themselves if they are the last admin
+ */
+export async function removeMember(
+  memberId: string
+): Promise<SimpleResult> {
+  try {
+    const session = await requireAuth();
+
+    const memberToRemove = await prisma.organizationMember.findUnique({
+      where: { id: memberId },
+    });
+
+    if (!memberToRemove) {
+      return simpleError(ErrorCode.NOT_FOUND);
+    }
+
+    // Verify user has admin access
+    const currentUserMembership = await prisma.organizationMember.findFirst({
+      where: {
+        userId: session.user.id,
+        organizationId: memberToRemove.organizationId,
+        role: Role.ADMIN,
+      },
+    });
+    assertAccess(!!currentUserMembership, "Admin access required");
+
+    // Prevent removing yourself
+    if (memberToRemove.userId === session.user.id) {
+      return simpleError(ErrorCode.CANNOT_DELETE, "Cannot remove yourself from the organization");
+    }
+
+    // Check if this is the last admin
+    if (memberToRemove.role === Role.ADMIN) {
+      const adminCount = await prisma.organizationMember.count({
+        where: {
+          organizationId: memberToRemove.organizationId,
+          role: Role.ADMIN,
+        },
+      });
+
+      if (adminCount <= 1) {
+        return simpleError(ErrorCode.CANNOT_DELETE, "Cannot remove the last admin");
+      }
+    }
+
+    await prisma.organizationMember.delete({
+      where: { id: memberId },
+    });
+
+    revalidatePath("/");
+
+    return simpleSuccess();
+  } catch (error) {
+    return handleActionError(error, "removeMember", { memberId }) as SimpleResult;
+  }
+}
+
+/**
+ * Update a member's role
+ * Only admins can update roles, and cannot demote the last admin
+ */
+export async function updateMemberRole(
+  memberId: string,
+  newRole: Role
+): Promise<ActionResult<OrganizationMember>> {
+  try {
+    const session = await requireAuth();
+
+    const memberToUpdate = await prisma.organizationMember.findUnique({
+      where: { id: memberId },
+    });
+
+    if (!memberToUpdate) {
+      return actionError(ErrorCode.NOT_FOUND);
+    }
+
+    // Verify user has admin access
+    const currentUserMembership = await prisma.organizationMember.findFirst({
+      where: {
+        userId: session.user.id,
+        organizationId: memberToUpdate.organizationId,
+        role: Role.ADMIN,
+      },
+    });
+    assertAccess(!!currentUserMembership, "Admin access required");
+
+    // Prevent demoting yourself
+    if (memberToUpdate.userId === session.user.id && newRole !== Role.ADMIN) {
+      return actionError(ErrorCode.CANNOT_EDIT, "Cannot demote yourself");
+    }
+
+    // If demoting an admin, check if this is the last admin
+    if (memberToUpdate.role === Role.ADMIN && newRole !== Role.ADMIN) {
+      const adminCount = await prisma.organizationMember.count({
+        where: {
+          organizationId: memberToUpdate.organizationId,
+          role: Role.ADMIN,
+        },
+      });
+
+      if (adminCount <= 1) {
+        return actionError(ErrorCode.CANNOT_EDIT, "Cannot demote the last admin");
+      }
+    }
+
+    const updatedMember = await prisma.organizationMember.update({
+      where: { id: memberId },
+      data: { role: newRole },
+    });
+
+    revalidatePath("/");
+
+    return actionSuccess(updatedMember);
+  } catch (error) {
+    return handleActionError(error, "updateMemberRole", { memberId, newRole });
   }
 }

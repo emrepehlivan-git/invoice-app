@@ -13,6 +13,13 @@ enum Role {
   MEMBER
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
 enum InvoiceStatus {
   DRAFT
   SENT
@@ -34,6 +41,7 @@ model User {
   sessions            Session[]
   accounts            Account[]
   organizationMembers OrganizationMember[]
+  sentInvitations     Invitation[]
 }
 
 model Session {
@@ -94,6 +102,7 @@ model Organization {
   customers     Customer[]
   invoices      Invoice[]
   exchangeRates ExchangeRate[]
+  invitations   Invitation[]
 }
 
 // Exchange rate for currency conversion
@@ -129,6 +138,29 @@ model OrganizationMember {
   @@unique([userId, organizationId])
   @@index([userId])
   @@index([organizationId])
+}
+
+// Organization Invitation model
+model Invitation {
+  id             String           @id @default(cuid())
+  email          String
+  organizationId String
+  role           Role             @default(MEMBER)
+  token          String           @unique @default(cuid())
+  status         InvitationStatus @default(PENDING)
+  invitedById    String
+  expiresAt      DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy    User         @relation(fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@unique([email, organizationId, status])
+  @@index([organizationId])
+  @@index([email])
+  @@index([token])
+  @@index([status])
 }
 
 // Customer model

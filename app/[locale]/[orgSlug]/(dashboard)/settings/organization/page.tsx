@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { CurrencySettingsForm } from "@/components/settings/currency-settings-form";
 import { ExchangeRatesForm } from "@/components/settings/exchange-rates-form";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Role } from "@/types";
@@ -43,6 +44,8 @@ export default async function OrganizationSettingsPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
+      <SettingsNav orgSlug={orgSlug} />
+
       <div>
         <h1 className="text-3xl font-bold">{t("nav.organization")}</h1>
         <p className="text-muted-foreground">{t("organization.description")}</p>

@@ -35,6 +35,12 @@ export const ErrorCode = {
   INVOICE_ALREADY_PAID: "invoice_already_paid",
   INVALID_STATUS_TRANSITION: "invalid_status_transition",
 
+  // Invitation specific
+  INVITATION_ALREADY_EXISTS: "invitation_already_exists",
+  INVITATION_EXPIRED: "invitation_expired",
+  INVITATION_INVALID: "invitation_invalid",
+  INVITATION_ALREADY_MEMBER: "invitation_already_member",
+
   // Database errors
   DATABASE_ERROR: "database_error",
   CONSTRAINT_VIOLATION: "constraint_violation",

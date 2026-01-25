@@ -351,7 +351,8 @@
     "description": "Organizasyon ve hesap ayarlarınızı yönetin",
     "nav": {
       "user": "Kullanıcı Ayarları",
-      "organization": "Organizasyon Ayarları"
+      "organization": "Organizasyon Ayarları",
+      "members": "Üyeler"
     },
     "user": {
       "description": "Profil ve güvenlik ayarlarınızı yönetin"
@@ -453,6 +454,91 @@
         "title": "Döviz Kurunu Sil",
         "description": "{currency} için döviz kurunu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
       }
+    },
+    "members": {
+      "title": "Üyeler",
+      "description": "Organizasyon üyelerini ve davetleri yönetin",
+      "currentMembers": "Mevcut Üyeler",
+      "currentMembersDescription": "Bu organizasyona erişimi olan kişiler",
+      "inviteTitle": "Yeni Üye Davet Et",
+      "inviteDescription": "Organizasyonunuza yeni bir üye eklemek için davet gönderin",
+      "pendingInvitations": "Bekleyen Davetler",
+      "pendingInvitationsDescription": "Henüz kabul edilmemiş davetler",
+      "noPendingInvitations": "Bekleyen davet bulunmuyor",
+      "you": "siz",
+      "adminOnlyDescription": "Sadece yöneticiler üyeleri ve davetleri yönetebilir",
+      "inviteButton": "Davet Gönder",
+      "fields": {
+        "email": "E-posta Adresi",
+        "emailPlaceholder": "calisan@sirket.com",
+        "role": "Rol",
+        "selectRole": "Rol seçin"
+      },
+      "table": {
+        "member": "Üye",
+        "email": "E-posta",
+        "role": "Rol",
+        "invitedBy": "Davet Eden",
+        "expires": "Süre Sonu"
+      },
+      "actions": {
+        "makeAdmin": "Yönetici Yap",
+        "makeMember": "Üye Yap",
+        "remove": "Organizasyondan Çıkar",
+        "resend": "Daveti Yeniden Gönder",
+        "cancel": "Daveti İptal Et"
+      },
+      "messages": {
+        "inviteSuccess": "Davet başarıyla gönderildi",
+        "inviteError": "Davet gönderilemedi",
+        "cancelSuccess": "Davet iptal edildi",
+        "cancelError": "Davet iptal edilemedi",
+        "resendSuccess": "Davet yeniden gönderildi",
+        "resendError": "Davet yeniden gönderilemedi",
+        "removeSuccess": "Üye başarıyla çıkarıldı",
+        "removeError": "Üye çıkarılamadı",
+        "roleChangeSuccess": "Rol başarıyla güncellendi",
+        "roleChangeError": "Rol güncellenemedi"
+      },
+      "errors": {
+        "invitation_already_exists": "Bu e-postaya zaten bir davet gönderilmiş",
+        "invitation_already_member": "Bu kullanıcı zaten organizasyonun üyesi"
+      },
+      "cancelDialog": {
+        "title": "Daveti İptal Et",
+        "description": "{email} için daveti iptal etmek istediğinizden emin misiniz? Artık katılamayacaklar.",
+        "confirm": "Daveti İptal Et"
+      },
+      "removeDialog": {
+        "title": "Üyeyi Çıkar",
+        "description": "{name} kullanıcısını bu organizasyondan çıkarmak istediğinizden emin misiniz? Erişimi hemen kaybedecek.",
+        "confirm": "Çıkar"
+      }
+    }
+  },
+  "invitation": {
+    "title": "Davet Aldınız",
+    "description": "Bir organizasyona katılmaya davet edildiniz",
+    "organization": "Organizasyon",
+    "role": "Rolünüz",
+    "invitedBy": "Davet Eden",
+    "accept": "Daveti Kabul Et",
+    "signInToAccept": "Kabul Etmek İçin Giriş Yapın",
+    "loginRequired": "Bu daveti kabul etmek için lütfen {email} ile giriş yapın",
+    "emailMismatch": "Bu davet {invitedEmail} adresine gönderilmiş, ancak siz {currentEmail} olarak giriş yapmışsınız. Lütfen doğru hesapla giriş yapın.",
+    "readyToAccept": "Bu daveti kabul etmeye hazırsınız!",
+    "messages": {
+      "accepted": "Hoş geldiniz! Organizasyona katıldınız"
+    },
+    "errors": {
+      "expiredTitle": "Davetin Süresi Dolmuş",
+      "expiredDescription": "Bu davetin süresi dolmuş. Lütfen organizasyon yöneticisinden yeni bir davet isteyin.",
+      "invalidTitle": "Geçersiz Davet",
+      "invalidDescription": "Bu davet bağlantısı geçersiz veya zaten kullanılmış.",
+      "genericTitle": "Bir Şeyler Ters Gitti",
+      "genericDescription": "Bu daveti işleyemedik. Lütfen tekrar deneyin veya destek ile iletişime geçin.",
+      "contactAdmin": "Bunun bir hata olduğunu düşünüyorsanız, lütfen organizasyon yöneticisi ile iletişime geçin.",
+      "forbidden": "Bu davet farklı bir e-posta adresine gönderilmiş"
     }
   }
 }

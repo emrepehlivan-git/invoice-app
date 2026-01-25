@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { PasswordForm } from "@/components/settings/password-form";
+import { SettingsNav } from "@/components/settings/settings-nav";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -42,6 +43,8 @@ export default async function UserSettingsPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
+      <SettingsNav orgSlug={orgSlug} />
+
       <div>
         <h1 className="text-3xl font-bold">{t("nav.user")}</h1>
         <p className="text-muted-foreground">{t("user.description")}</p>
