@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import type { ExchangeRate } from "@/prisma/generated/prisma";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
+import { verifyAccess, requireAdminAccess } from "@/lib/auth/rbac";
 import {
   ErrorCode,
   type ActionResult,
@@ -16,7 +16,6 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-  assertAccess,
 } from "@/lib/errors";
 
 const exchangeRateSchema = z.object({
@@ -26,19 +25,6 @@ const exchangeRateSchema = z.object({
 
 type ExchangeRateInput = z.infer<typeof exchangeRateSchema>;
 
-async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
-  const session = await requireAuth();
-
-  const membership = await prisma.organizationMember.findFirst({
-    where: {
-      userId: session.user.id,
-      organizationId,
-    },
-  });
-
-  return !!membership;
-}
-
 /**
  * Get all exchange rates for an organization
  */
@@ -46,10 +32,8 @@ export async function getExchangeRates(
   organizationId: string
 ): Promise<ExchangeRate[]> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return [];
-    }
+    // All members can view exchange rates
+    await verifyAccess(organizationId, "read");
 
     const organization = await prisma.organization.findUnique({
       where: { id: organizationId },
@@ -84,10 +68,8 @@ export async function getLatestExchangeRate(
   fromCurrency: string
 ): Promise<ExchangeRate | null> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return null;
-    }
+    // All members can view exchange rates
+    await verifyAccess(organizationId, "read");
 
     const organization = await prisma.organization.findUnique({
       where: { id: organizationId },
@@ -121,8 +103,8 @@ export async function upsertExchangeRate(
   data: ExchangeRateInput
 ): Promise<ActionResult<ExchangeRate>> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    assertAccess(hasAccess);
+    // Only admins can manage exchange rates
+    await requireAdminAccess(organizationId);
 
     const validated = exchangeRateSchema.parse(data);
 
@@ -234,8 +216,8 @@ export async function deleteExchangeRate(
     });
     assertExists(exchangeRate, "ExchangeRate", exchangeRateId);
 
-    const hasAccess = await verifyOrganizationAccess(exchangeRate.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can delete exchange rates
+    await requireAdminAccess(exchangeRate.organizationId);
 
     await prisma.exchangeRate.delete({
       where: { id: exchangeRateId },

@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import type { Customer } from "@/types";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
+import { verifyAccess } from "@/lib/auth/rbac";
 import {
   ErrorCode,
   type ActionResult,
@@ -16,7 +16,6 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-  assertAccess,
   isUniqueConstraintError,
   getUniqueConstraintField,
 } from "@/lib/errors";
@@ -35,26 +34,13 @@ const customerSchema = z.object({
 
 type CustomerInput = z.infer<typeof customerSchema>;
 
-async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
-  const session = await requireAuth();
-
-  const membership = await prisma.organizationMember.findFirst({
-    where: {
-      userId: session.user.id,
-      organizationId,
-    },
-  });
-
-  return !!membership;
-}
-
 export async function createCustomer(
   organizationId: string,
   data: CustomerInput
 ): Promise<ActionResult<Customer>> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    assertAccess(hasAccess);
+    // Members can create customers
+    await verifyAccess(organizationId, "create");
 
     const validated = customerSchema.parse(data);
 
@@ -118,8 +104,8 @@ export async function updateCustomer(
     });
     assertExists(existingCustomer, "Customer", customerId);
 
-    const hasAccess = await verifyOrganizationAccess(existingCustomer.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can update customers
+    await verifyAccess(existingCustomer.organizationId, "update");
 
     const validated = customerSchema.parse(data);
 
@@ -186,8 +172,8 @@ export async function deleteCustomer(customerId: string): Promise<SimpleResult> 
     });
     assertExists(existingCustomer, "Customer", customerId);
 
-    const hasAccess = await verifyOrganizationAccess(existingCustomer.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can delete customers
+    await verifyAccess(existingCustomer.organizationId, "delete");
 
     await prisma.customer.delete({
       where: { id: customerId },
@@ -219,10 +205,8 @@ export async function getCustomer(customerId: string): Promise<Customer | null> 
       return null;
     }
 
-    const hasAccess = await verifyOrganizationAccess(customer.organizationId);
-    if (!hasAccess) {
-      return null;
-    }
+    // All members can read customers
+    await verifyAccess(customer.organizationId, "read");
 
     return customer;
   } catch {
@@ -232,10 +216,8 @@ export async function getCustomer(customerId: string): Promise<Customer | null> 
 
 export async function getCustomers(organizationId: string): Promise<Customer[]> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return [];
-    }
+    // All members can read customers
+    await verifyAccess(organizationId, "read");
 
     const customers = await prisma.customer.findMany({
       where: { organizationId },
@@ -253,10 +235,8 @@ export async function searchCustomers(
   query: string
 ): Promise<Customer[]> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return [];
-    }
+    // All members can read/search customers
+    await verifyAccess(organizationId, "read");
 
     const customers = await prisma.customer.findMany({
       where: {

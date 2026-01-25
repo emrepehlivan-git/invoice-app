@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { requireAuth } from "@/lib/auth/session";
 import { z } from "zod";
 import { InvoiceStatus } from "@/types";
 import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
 import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { auditCreate, auditUpdate, auditDelete, auditStatusChange } from "@/lib/audit";
+import { verifyAccess } from "@/lib/auth/rbac";
 import { getExchangeRatesMap } from "./exchange-rate";
 import {
   ErrorCode,
@@ -20,7 +20,6 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-  assertAccess,
 } from "@/lib/errors";
 
 const invoiceItemSchema = z.object({
@@ -40,19 +39,6 @@ const invoiceSchema = z.object({
 });
 
 type InvoiceInput = z.infer<typeof invoiceSchema>;
-
-async function verifyOrganizationAccess(organizationId: string): Promise<boolean> {
-  const session = await requireAuth();
-
-  const membership = await prisma.organizationMember.findFirst({
-    where: {
-      userId: session.user.id,
-      organizationId,
-    },
-  });
-
-  return !!membership;
-}
 
 async function generateInvoiceNumber(organizationId: string): Promise<string> {
   const year = new Date().getFullYear();
@@ -154,8 +140,8 @@ export async function createInvoice(
   data: InvoiceInput
 ): Promise<ActionResult<InvoiceWithRelations>> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    assertAccess(hasAccess);
+    // Members can create invoices
+    await verifyAccess(organizationId, "create");
 
     const validated = invoiceSchema.parse(data);
 
@@ -241,8 +227,8 @@ export async function updateInvoice(
     });
     assertExists(existingInvoice, "Invoice", invoiceId);
 
-    const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can update invoices
+    await verifyAccess(existingInvoice.organizationId, "update");
 
     // Can only edit DRAFT invoices
     if (existingInvoice.status !== InvoiceStatus.DRAFT) {
@@ -340,8 +326,8 @@ export async function updateInvoiceStatus(
     });
     assertExists(existingInvoice, "Invoice", invoiceId);
 
-    const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can update invoice status
+    await verifyAccess(existingInvoice.organizationId, "update");
 
     const invoice = await prisma.invoice.update({
       where: { id: invoiceId },
@@ -376,8 +362,8 @@ export async function deleteInvoice(invoiceId: string): Promise<SimpleResult> {
     });
     assertExists(existingInvoice, "Invoice", invoiceId);
 
-    const hasAccess = await verifyOrganizationAccess(existingInvoice.organizationId);
-    assertAccess(hasAccess);
+    // Only admins can delete invoices
+    await verifyAccess(existingInvoice.organizationId, "delete");
 
     // Can only delete DRAFT or CANCELLED invoices
     if (
@@ -425,10 +411,8 @@ export async function getInvoice(
       return null;
     }
 
-    const hasAccess = await verifyOrganizationAccess(invoice.organizationId);
-    if (!hasAccess) {
-      return null;
-    }
+    // All members can read invoices
+    await verifyAccess(invoice.organizationId, "read");
 
     return invoice;
   } catch {
@@ -440,10 +424,8 @@ export async function getInvoices(
   organizationId: string
 ): Promise<InvoiceWithCustomer[]> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return [];
-    }
+    // All members can read invoices
+    await verifyAccess(organizationId, "read");
 
     const invoices = await prisma.invoice.findMany({
       where: { organizationId },
@@ -478,10 +460,8 @@ export type InvoiceStats = {
 
 export async function getInvoiceStats(organizationId: string): Promise<InvoiceStats | null> {
   try {
-    const hasAccess = await verifyOrganizationAccess(organizationId);
-    if (!hasAccess) {
-      return null;
-    }
+    // All members can view stats
+    await verifyAccess(organizationId, "read");
 
     const organization = await prisma.organization.findUnique({
       where: { id: organizationId },
