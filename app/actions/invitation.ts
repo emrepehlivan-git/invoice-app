@@ -18,6 +18,7 @@ import {
   simpleError,
   assertAccess,
 } from "@/lib/errors";
+import { getEmailService, getAppBaseUrl } from "@/lib/email";
 
 const INVITATION_EXPIRY_DAYS = 7;
 
@@ -78,6 +79,12 @@ export async function createInvitation(
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS);
 
+    // Get organization name for the email
+    const organization = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { name: true },
+    });
+
     const invitation = await prisma.invitation.create({
       data: {
         email: validated.email,
@@ -87,6 +94,26 @@ export async function createInvitation(
         expiresAt,
       },
     });
+
+    // Send invitation email (non-blocking, don't fail if email fails)
+    try {
+      const emailService = await getEmailService();
+      const baseUrl = getAppBaseUrl();
+      const acceptUrl = `${baseUrl}/invite/${invitation.token}`;
+
+      await emailService.sendInvitation({
+        recipientEmail: validated.email,
+        organizationName: organization?.name || "Organization",
+        inviterName: session.user.name || session.user.email,
+        role: validated.role,
+        acceptUrl,
+        expiresAt,
+        locale: "en", // TODO: Get from user preference or request
+      });
+    } catch (emailError) {
+      // Log but don't fail the invitation creation
+      console.error("[Invitation] Failed to send invitation email:", emailError);
+    }
 
     revalidatePath("/");
 
@@ -222,6 +249,32 @@ export async function resendInvitation(
         updatedAt: new Date(),
       },
     });
+
+    // Get organization name for the email
+    const organization = await prisma.organization.findUnique({
+      where: { id: invitation.organizationId },
+      select: { name: true },
+    });
+
+    // Send invitation email (non-blocking)
+    try {
+      const emailService = await getEmailService();
+      const baseUrl = getAppBaseUrl();
+      const acceptUrl = `${baseUrl}/invite/${updatedInvitation.token}`;
+
+      await emailService.sendInvitation({
+        recipientEmail: invitation.email,
+        organizationName: organization?.name || "Organization",
+        inviterName: session.user.name || session.user.email,
+        role: invitation.role,
+        acceptUrl,
+        expiresAt,
+        locale: "en", // TODO: Get from user preference or request
+      });
+    } catch (emailError) {
+      // Log but don't fail the resend operation
+      console.error("[Invitation] Failed to resend invitation email:", emailError);
+    }
 
     revalidatePath("/");
 

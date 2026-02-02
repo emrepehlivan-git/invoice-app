@@ -35,7 +35,10 @@
     "internalError": "Dahili bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
     "unknownError": "Beklenmeyen bir hata oluştu",
     "networkError": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
-    "rateLimitExceeded": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin."
+    "rateLimitExceeded": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.",
+    "emailSendFailed": "E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin.",
+    "emailTemplateError": "E-posta hazırlanırken bir hata oluştu.",
+    "emailConfigError": "E-posta servisi düzgün yapılandırılmamış."
   },
   "auth": {
     "login": {

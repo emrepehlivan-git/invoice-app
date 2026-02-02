@@ -35,7 +35,10 @@
     "internalError": "An internal error occurred. Please try again later.",
     "unknownError": "An unexpected error occurred",
     "networkError": "Network error. Please check your connection.",
-    "rateLimitExceeded": "Too many requests. Please wait a moment and try again."
+    "rateLimitExceeded": "Too many requests. Please wait a moment and try again.",
+    "emailSendFailed": "Failed to send email. Please try again later.",
+    "emailTemplateError": "An error occurred while preparing the email.",
+    "emailConfigError": "Email service is not properly configured."
   },
   "auth": {
     "login": {

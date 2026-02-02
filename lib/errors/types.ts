@@ -50,6 +50,11 @@ export const ErrorCode = {
   EXTERNAL_SERVICE_ERROR: "external_service_error",
   RATE_LIMIT_EXCEEDED: "rate_limit_exceeded",
 
+  // Email errors
+  EMAIL_SEND_FAILED: "email_send_failed",
+  EMAIL_TEMPLATE_ERROR: "email_template_error",
+  EMAIL_CONFIG_ERROR: "email_config_error",
+
   // Generic errors
   INTERNAL_ERROR: "internal_error",
   UNKNOWN_ERROR: "unknown_error",
