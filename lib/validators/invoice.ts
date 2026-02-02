@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DiscountType } from "@/types";
 import type { TranslationFunction } from "@/types";
 
 export function createInvoiceItemSchema(t: TranslationFunction) {
@@ -24,6 +25,13 @@ export function createInvoiceSchema(t: TranslationFunction) {
     currency: z.string().min(1, t("validation.required")),
     issueDate: z.date({ message: t("validation.required") }),
     dueDate: z.date({ message: t("validation.required") }),
+    discountType: z.nativeEnum(DiscountType).nullable().optional(),
+    discountValue: z
+      .number()
+      .min(0, t("invoices.validation.minDiscount"))
+      .max(100, t("invoices.validation.maxDiscountPercent"))
+      .nullable()
+      .optional(),
     taxRate: z
       .number()
       .min(0, t("invoices.validation.minTaxRate"))

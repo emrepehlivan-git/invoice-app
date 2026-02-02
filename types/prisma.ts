@@ -17,4 +17,4 @@ export type {
   Invitation,
 } from "@/prisma/generated/prisma";
 
-export { Role, InvoiceStatus, AuditAction, InvitationStatus } from "@/prisma/generated/prisma";
+export { Role, InvoiceStatus, AuditAction, InvitationStatus, DiscountType } from "@/prisma/generated/prisma";

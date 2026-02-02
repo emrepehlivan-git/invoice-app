@@ -24,7 +24,7 @@ import {
 import { ArrowLeft, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
-import { InvoiceStatus } from "@/types";
+import { InvoiceStatus, DiscountType } from "@/types";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string; invoiceId: string }>;
@@ -240,6 +240,18 @@ export default async function InvoiceDetailPage({ params }: Props) {
                   {formatCurrency(Number(invoice.subtotal))}
                 </TableCell>
               </TableRow>
+              {invoice.discountAmount && Number(invoice.discountAmount) > 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-medium text-green-600 dark:text-green-400">
+                    {t("invoices.fields.discount")}
+                    {invoice.discountType === DiscountType.PERCENTAGE &&
+                      ` (${Number(invoice.discountValue)}%)`}
+                  </TableCell>
+                  <TableCell className="text-right text-green-600 dark:text-green-400">
+                    -{formatCurrency(Number(invoice.discountAmount))}
+                  </TableCell>
+                </TableRow>
+              )}
               <TableRow>
                 <TableCell colSpan={3} className="text-right font-medium">
                   {t("invoices.fields.taxAmount")} ({Number(invoice.taxRate)}%)

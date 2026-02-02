@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
-import { InvoiceStatus } from "@/types";
+import { InvoiceStatus, DiscountType } from "@/types";
 import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
 import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
@@ -33,6 +33,8 @@ const invoiceSchema = z.object({
   currency: z.string().min(1),
   issueDate: z.coerce.date(),
   dueDate: z.coerce.date(),
+  discountType: z.nativeEnum(DiscountType).nullable().optional(),
+  discountValue: z.number().min(0).max(100).nullable().optional(),
   taxRate: z.number().min(0).max(100),
   notes: z.string().max(1000).optional().or(z.literal("")),
   items: z.array(invoiceItemSchema).min(1),
@@ -67,16 +69,34 @@ async function generateInvoiceNumber(organizationId: string): Promise<string> {
   return `INV-${year}-${nextNumber.toString().padStart(4, "0")}`;
 }
 
-function calculateTotals(items: InvoiceInput["items"], taxRate: number) {
+function calculateTotals(
+  items: InvoiceInput["items"],
+  taxRate: number,
+  discountType?: DiscountType | null,
+  discountValue?: number | null
+) {
   const subtotal = items.reduce((sum, item) => {
     return sum + item.quantity * item.unitPrice;
   }, 0);
 
-  const taxAmount = subtotal * (taxRate / 100);
-  const total = subtotal + taxAmount;
+  // Calculate discount amount based on type
+  let discountAmount = 0;
+  if (discountType && discountValue && discountValue > 0) {
+    if (discountType === DiscountType.PERCENTAGE) {
+      discountAmount = subtotal * (discountValue / 100);
+    } else if (discountType === DiscountType.FIXED) {
+      discountAmount = Math.min(discountValue, subtotal); // Can't discount more than subtotal
+    }
+  }
+
+  // Calculate tax on discounted amount
+  const taxableAmount = subtotal - discountAmount;
+  const taxAmount = taxableAmount * (taxRate / 100);
+  const total = taxableAmount + taxAmount;
 
   return {
     subtotal: new Decimal(subtotal.toFixed(2)),
+    discountAmount: new Decimal(discountAmount.toFixed(2)),
     taxAmount: new Decimal(taxAmount.toFixed(2)),
     total: new Decimal(total.toFixed(2)),
   };
@@ -158,9 +178,11 @@ export async function createInvoice(
     }
 
     const invoiceNumber = await generateInvoiceNumber(organizationId);
-    const { subtotal, taxAmount, total } = calculateTotals(
+    const { subtotal, discountAmount, taxAmount, total } = calculateTotals(
       validated.items,
-      validated.taxRate
+      validated.taxRate,
+      validated.discountType,
+      validated.discountValue
     );
 
     // Capture exchange rate snapshot at invoice creation time
@@ -178,6 +200,9 @@ export async function createInvoice(
         currency: validated.currency,
         issueDate: validated.issueDate,
         dueDate: validated.dueDate,
+        discountType: validated.discountType || null,
+        discountValue: validated.discountValue ? new Decimal(validated.discountValue) : null,
+        discountAmount,
         taxRate: new Decimal(validated.taxRate),
         subtotal,
         taxAmount,
@@ -249,9 +274,11 @@ export async function updateInvoice(
       return actionError(ErrorCode.NOT_FOUND, "Customer not found");
     }
 
-    const { subtotal, taxAmount, total } = calculateTotals(
+    const { subtotal, discountAmount, taxAmount, total } = calculateTotals(
       validated.items,
-      validated.taxRate
+      validated.taxRate,
+      validated.discountType,
+      validated.discountValue
     );
 
     // Recalculate exchange rate snapshot when invoice is updated
@@ -273,6 +300,9 @@ export async function updateInvoice(
         currency: validated.currency,
         issueDate: validated.issueDate,
         dueDate: validated.dueDate,
+        discountType: validated.discountType || null,
+        discountValue: validated.discountValue ? new Decimal(validated.discountValue) : null,
+        discountAmount,
         taxRate: new Decimal(validated.taxRate),
         subtotal,
         taxAmount,

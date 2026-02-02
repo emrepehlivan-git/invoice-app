@@ -15,7 +15,7 @@ export type {
   AuditLog,
   Invitation,
 } from "./prisma";
-export { Role, InvoiceStatus, AuditAction, InvitationStatus } from "./prisma";
+export { Role, InvoiceStatus, AuditAction, InvitationStatus, DiscountType } from "./prisma";
 
 // Organization types
 export type { OrganizationWithRole, OrganizationMemberWithOrg } from "./organization";

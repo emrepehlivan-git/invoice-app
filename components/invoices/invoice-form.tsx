@@ -50,6 +50,7 @@ import { createInvoiceSchema, type InvoiceInput } from "@/lib/validators/invoice
 import { ErrorCode } from "@/lib/errors/types";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import type { Customer, InvoiceWithRelations, Organization } from "@/types";
+import { DiscountType } from "@/types";
 
 type InvoiceFormProps = {
   organization: Organization;
@@ -90,6 +91,8 @@ export function InvoiceForm({
       dueDate: invoice?.dueDate
         ? new Date(invoice.dueDate)
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      discountType: invoice?.discountType ?? null,
+      discountValue: invoice?.discountValue ? Number(invoice.discountValue) : null,
       taxRate: invoice?.taxRate ? Number(invoice.taxRate) : 0,
       notes: invoice?.notes ?? "",
       items: defaultItems,
@@ -104,13 +107,26 @@ export function InvoiceForm({
   const watchItems = form.watch("items");
   const watchTaxRate = form.watch("taxRate");
   const watchCurrency = form.watch("currency");
+  const watchDiscountType = form.watch("discountType");
+  const watchDiscountValue = form.watch("discountValue");
 
   const subtotal = watchItems.reduce((sum, item) => {
     return sum + (item.quantity || 0) * (item.unitPrice || 0);
   }, 0);
 
-  const taxAmount = subtotal * ((watchTaxRate || 0) / 100);
-  const total = subtotal + taxAmount;
+  // Calculate discount amount
+  let discountAmount = 0;
+  if (watchDiscountType && watchDiscountValue && watchDiscountValue > 0) {
+    if (watchDiscountType === DiscountType.PERCENTAGE) {
+      discountAmount = subtotal * (watchDiscountValue / 100);
+    } else if (watchDiscountType === DiscountType.FIXED) {
+      discountAmount = Math.min(watchDiscountValue, subtotal);
+    }
+  }
+
+  const taxableAmount = subtotal - discountAmount;
+  const taxAmount = taxableAmount * ((watchTaxRate || 0) / 100);
+  const total = taxableAmount + taxAmount;
 
   async function onSubmit(data: InvoiceInput) {
     setIsLoading(true);
@@ -220,6 +236,73 @@ export function InvoiceForm({
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="discountType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("invoices.fields.discountType")}</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value === "none" ? null : value);
+                    if (value === "none") {
+                      form.setValue("discountValue", null);
+                    }
+                  }}
+                  value={field.value ?? "none"}
+                  disabled={isLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("invoices.fields.selectDiscountType")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="none">{t("invoices.fields.noDiscount")}</SelectItem>
+                    <SelectItem value={DiscountType.PERCENTAGE}>
+                      {t("invoices.fields.discountPercent")}
+                    </SelectItem>
+                    <SelectItem value={DiscountType.FIXED}>
+                      {t("invoices.fields.discountFixed")}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="discountValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  {watchDiscountType === DiscountType.PERCENTAGE
+                    ? t("invoices.fields.discountPercent")
+                    : t("invoices.fields.discountAmount")}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min="0"
+                    max={watchDiscountType === DiscountType.PERCENTAGE ? 100 : undefined}
+                    step="0.01"
+                    disabled={isLoading || !watchDiscountType}
+                    placeholder={watchDiscountType ? "" : t("invoices.fields.selectDiscountTypeFirst")}
+                    {...field}
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      field.onChange(isNaN(val) ? null : val);
+                    }}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -482,6 +565,18 @@ export function InvoiceForm({
                   </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
+                {discountAmount > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-right font-medium text-green-600 dark:text-green-400">
+                      {t("invoices.fields.discount")}
+                      {watchDiscountType === DiscountType.PERCENTAGE && ` (${watchDiscountValue}%)`}
+                    </TableCell>
+                    <TableCell className="text-right text-green-600 dark:text-green-400">
+                      -{formatCurrency(discountAmount, watchCurrency)}
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                )}
                 <TableRow>
                   <TableCell colSpan={3} className="text-right font-medium">
                     {t("invoices.fields.taxAmount")} ({watchTaxRate || 0}%)

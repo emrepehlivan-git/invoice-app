@@ -28,6 +28,11 @@ enum InvoiceStatus {
   CANCELLED
 }
 
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
 // Better Auth tables
 model User {
   id            String   @id @default(cuid())
@@ -198,6 +203,9 @@ model Invoice {
   issueDate           DateTime      @default(now())
   dueDate             DateTime
   subtotal            Decimal       @db.Decimal(10, 2)
+  discountType        DiscountType? // PERCENTAGE or FIXED
+  discountValue       Decimal?      @db.Decimal(10, 2) // Percentage (0-100) or fixed amount
+  discountAmount      Decimal       @default(0) @db.Decimal(10, 2) // Calculated discount amount
   taxRate             Decimal       @default(0) @db.Decimal(5, 2)
   taxAmount           Decimal       @db.Decimal(10, 2)
   total               Decimal       @db.Decimal(10, 2)
