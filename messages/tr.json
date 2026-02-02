@@ -147,6 +147,16 @@
       "title": "Son Müşteriler",
       "description": "En son eklenen müşteriler",
       "empty": "Henüz müşteri eklenmedi"
+    },
+    "chart": {
+      "title": "Gelir Özeti",
+      "monthly": "Aylık",
+      "yearly": "Yıllık",
+      "monthlyDescription": "Son 12 ay",
+      "yearlyDescription": "Son 5 yıl",
+      "revenue": "Gelir",
+      "outstanding": "Bekleyen",
+      "totalRevenue": "Toplam Gelir"
     }
   },
   "invoices": {

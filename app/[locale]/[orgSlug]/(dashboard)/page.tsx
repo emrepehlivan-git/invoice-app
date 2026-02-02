@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
-import { getInvoiceStats, getInvoices } from "@/app/actions/invoice";
+import { getInvoiceStats, getInvoices, getMonthlyRevenueStats, getYearlyRevenueStats } from "@/app/actions/invoice";
 import { getCustomers } from "@/app/actions/customer";
 import { redirect, Link } from "@/i18n/navigation";
 import {
@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus } from "@/types";
 import { formatCurrency, formatMultiCurrencyTotal } from "@/lib/currency";
+import { RevenueBreakdown } from "@/components/dashboard";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -52,10 +53,12 @@ export default async function DashboardPage({ params }: Props) {
     notFound();
   }
 
-  const [stats, invoices, customers] = await Promise.all([
+  const [stats, invoices, customers, monthlyData, yearlyData] = await Promise.all([
     getInvoiceStats(organization.id),
     getInvoices(organization.id),
     getCustomers(organization.id),
+    getMonthlyRevenueStats(organization.id, 12),
+    getYearlyRevenueStats(organization.id, 5),
   ]);
 
   const t = await getTranslations();
@@ -184,6 +187,13 @@ export default async function DashboardPage({ params }: Props) {
           </CardContent>
         </Card>
       </div>
+
+      <RevenueBreakdown
+        monthlyData={monthlyData}
+        yearlyData={yearlyData}
+        baseCurrency={baseCurrency}
+        locale={locale}
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>

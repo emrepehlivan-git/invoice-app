@@ -605,3 +605,231 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
     return null;
   }
 }
+
+/**
+ * Monthly revenue data point
+ */
+export type MonthlyRevenueData = {
+  month: string; // YYYY-MM format
+  year: number;
+  monthNumber: number;
+  revenue: number; // Paid invoices total in base currency
+  invoiceCount: number;
+  outstanding: number; // Sent + Overdue total in base currency
+};
+
+/**
+ * Period type for stats
+ */
+export type StatsPeriod = "monthly" | "yearly";
+
+/**
+ * Get monthly revenue breakdown for the last N months
+ */
+export async function getMonthlyRevenueStats(
+  organizationId: string,
+  months: number = 12
+): Promise<MonthlyRevenueData[]> {
+  try {
+    await verifyAccess(organizationId, "read");
+
+    const organization = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { baseCurrency: true },
+    });
+
+    if (!organization) {
+      return [];
+    }
+
+    const baseCurrency = organization.baseCurrency;
+
+    // Calculate date range (last N months)
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - months + 1);
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
+
+    // Get all invoices in the date range
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        organizationId,
+        issueDate: {
+          gte: startDate,
+          lte: endDate,
+        },
+        status: {
+          in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
+        },
+      },
+      select: {
+        status: true,
+        issueDate: true,
+        total: true,
+        currency: true,
+        totalInBaseCurrency: true,
+      },
+    });
+
+    // Initialize all months in the range
+    const monthlyData: Map<string, MonthlyRevenueData> = new Map();
+    const current = new Date(startDate);
+
+    while (current <= endDate) {
+      const year = current.getFullYear();
+      const monthNumber = current.getMonth() + 1;
+      const monthKey = `${year}-${String(monthNumber).padStart(2, "0")}`;
+
+      monthlyData.set(monthKey, {
+        month: monthKey,
+        year,
+        monthNumber,
+        revenue: 0,
+        invoiceCount: 0,
+        outstanding: 0,
+      });
+
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    // Aggregate invoice data by month
+    for (const invoice of invoices) {
+      const invoiceDate = new Date(invoice.issueDate);
+      const year = invoiceDate.getFullYear();
+      const monthNumber = invoiceDate.getMonth() + 1;
+      const monthKey = `${year}-${String(monthNumber).padStart(2, "0")}`;
+
+      const monthData = monthlyData.get(monthKey);
+      if (!monthData) continue;
+
+      // Get amount in base currency
+      let amountInBase: number;
+      if (invoice.totalInBaseCurrency !== null) {
+        amountInBase = Number(invoice.totalInBaseCurrency);
+      } else if (invoice.currency === baseCurrency) {
+        amountInBase = Number(invoice.total);
+      } else {
+        // No exchange rate - use original amount (not ideal but better than 0)
+        amountInBase = Number(invoice.total);
+      }
+
+      if (invoice.status === InvoiceStatus.PAID) {
+        monthData.revenue += amountInBase;
+        monthData.invoiceCount += 1;
+      } else {
+        // SENT or OVERDUE
+        monthData.outstanding += amountInBase;
+      }
+    }
+
+    // Convert to array and sort by date
+    return Array.from(monthlyData.values()).sort((a, b) =>
+      a.month.localeCompare(b.month)
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Yearly revenue data point
+ */
+export type YearlyRevenueData = {
+  year: number;
+  revenue: number;
+  invoiceCount: number;
+  outstanding: number;
+};
+
+/**
+ * Get yearly revenue breakdown for the last N years
+ */
+export async function getYearlyRevenueStats(
+  organizationId: string,
+  years: number = 5
+): Promise<YearlyRevenueData[]> {
+  try {
+    await verifyAccess(organizationId, "read");
+
+    const organization = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { baseCurrency: true },
+    });
+
+    if (!organization) {
+      return [];
+    }
+
+    const baseCurrency = organization.baseCurrency;
+
+    // Calculate date range
+    const currentYear = new Date().getFullYear();
+    const startYear = currentYear - years + 1;
+    const startDate = new Date(startYear, 0, 1);
+    const endDate = new Date();
+
+    // Get all invoices in the date range
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        organizationId,
+        issueDate: {
+          gte: startDate,
+          lte: endDate,
+        },
+        status: {
+          in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
+        },
+      },
+      select: {
+        status: true,
+        issueDate: true,
+        total: true,
+        currency: true,
+        totalInBaseCurrency: true,
+      },
+    });
+
+    // Initialize all years in the range
+    const yearlyData: Map<number, YearlyRevenueData> = new Map();
+    for (let year = startYear; year <= currentYear; year++) {
+      yearlyData.set(year, {
+        year,
+        revenue: 0,
+        invoiceCount: 0,
+        outstanding: 0,
+      });
+    }
+
+    // Aggregate invoice data by year
+    for (const invoice of invoices) {
+      const invoiceDate = new Date(invoice.issueDate);
+      const year = invoiceDate.getFullYear();
+
+      const yearData = yearlyData.get(year);
+      if (!yearData) continue;
+
+      // Get amount in base currency
+      let amountInBase: number;
+      if (invoice.totalInBaseCurrency !== null) {
+        amountInBase = Number(invoice.totalInBaseCurrency);
+      } else if (invoice.currency === baseCurrency) {
+        amountInBase = Number(invoice.total);
+      } else {
+        amountInBase = Number(invoice.total);
+      }
+
+      if (invoice.status === InvoiceStatus.PAID) {
+        yearData.revenue += amountInBase;
+        yearData.invoiceCount += 1;
+      } else {
+        yearData.outstanding += amountInBase;
+      }
+    }
+
+    // Convert to array and sort by year
+    return Array.from(yearlyData.values()).sort((a, b) => a.year - b.year);
+  } catch {
+    return [];
+  }
+}

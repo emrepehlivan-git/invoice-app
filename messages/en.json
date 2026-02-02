@@ -147,6 +147,16 @@
       "title": "Recent Customers",
       "description": "Latest added customers",
       "empty": "No customers added yet"
+    },
+    "chart": {
+      "title": "Revenue Overview",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "monthlyDescription": "Last 12 months",
+      "yearlyDescription": "Last 5 years",
+      "revenue": "Revenue",
+      "outstanding": "Outstanding",
+      "totalRevenue": "Total Revenue"
     }
   },
   "invoices": {
