@@ -57,6 +57,7 @@
       "hasAccount": "Zaten hesabınız var mı?",
       "login": "Giriş Yap",
       "success": "Kayıt başarılı! Giriş yapabilirsiniz.",
+      "verifyEmailSent": "Hesabınızı doğrulamak için e-postanızı kontrol edin, ardından giriş yapın.",
       "error": "Kayıt oluşturulamadı"
     },
     "google": {
@@ -72,6 +73,13 @@
       "password": "Şifre",
       "passwordPlaceholder": "********",
       "confirmPassword": "Şifre Tekrar"
+    },
+    "emailVerification": {
+      "required": "Giriş yapmadan önce e-posta adresinizi doğrulayın. Doğrulama bağlantısı için gelen kutunuzu kontrol edin.",
+      "resend": "Doğrulama e-postasını tekrar gönder",
+      "resendDescription": "E-posta adresiniz doğrulanmamış. Yeni bir doğrulama bağlantısı almak için tıklayın.",
+      "sent": "Doğrulama e-postası gönderildi. Gelen kutunuzu kontrol edin.",
+      "error": "Doğrulama e-postası gönderilemedi"
     }
   },
   "organization": {

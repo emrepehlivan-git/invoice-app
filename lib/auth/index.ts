@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/db";
+import { getEmailService } from "@/lib/email";
 import logger from "@/lib/logger";
 
 let auth: ReturnType<typeof betterAuth>;
@@ -14,6 +15,24 @@ try {
       enabled: true,
       minPasswordLength: 8,
       maxPasswordLength: 128,
+    },
+    emailVerification: {
+      sendOnSignUp: true,
+      sendOnSignIn: true,
+      autoSignInAfterVerification: true,
+      sendVerificationEmail: async ({ user, url }) => {
+        try {
+          const emailService = await getEmailService();
+          void emailService.sendEmailVerification({
+            recipientEmail: user.email,
+            recipientName: user.name ?? user.email,
+            verificationUrl: url,
+            locale: "en",
+          });
+        } catch (err) {
+          logger.error("Failed to send verification email", { error: err });
+        }
+      },
     },
     socialProviders: {
       google: {

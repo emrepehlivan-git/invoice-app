@@ -110,6 +110,7 @@ export async function getUserProfile() {
         name: true,
         email: true,
         image: true,
+        emailVerified: true,
         createdAt: true,
       },
     });

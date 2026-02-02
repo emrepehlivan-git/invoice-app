@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { PasswordForm } from "@/components/settings/password-form";
+import { EmailVerificationCard } from "@/components/settings/email-verification-card";
 import { SettingsNav } from "@/components/settings/settings-nav";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -51,6 +52,10 @@ export default async function UserSettingsPage({ params }: Props) {
       </div>
 
       <div className="space-y-4">
+        {user && user.emailVerified === false && (
+          <EmailVerificationCard email={user.email} />
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle>{t("profile.title")}</CardTitle>

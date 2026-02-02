@@ -57,6 +57,7 @@
       "hasAccount": "Already have an account?",
       "login": "Sign In",
       "success": "Signed up successfully! You can now sign in.",
+      "verifyEmailSent": "Check your email to verify your account, then sign in.",
       "error": "Failed to create account"
     },
     "google": {
@@ -72,6 +73,13 @@
       "password": "Password",
       "passwordPlaceholder": "********",
       "confirmPassword": "Confirm Password"
+    },
+    "emailVerification": {
+      "required": "Please verify your email address before signing in. Check your inbox for the verification link.",
+      "resend": "Resend verification email",
+      "resendDescription": "Your email is not verified. Click below to receive a new verification link.",
+      "sent": "Verification email sent. Check your inbox.",
+      "error": "Failed to send verification email"
     }
   },
   "organization": {
