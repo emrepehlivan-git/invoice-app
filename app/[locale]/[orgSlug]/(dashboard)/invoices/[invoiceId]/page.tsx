@@ -21,7 +21,7 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, FileDown, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus, DiscountType } from "@/types";
@@ -96,14 +96,27 @@ export default async function InvoiceDetailPage({ params }: Props) {
             </p>
           </div>
         </div>
-        {invoice.status === InvoiceStatus.DRAFT && (
-          <Button asChild>
-            <Link href={`/${orgSlug}/invoices/${invoiceId}/edit`}>
-              <Pencil className="mr-2 size-4" />
-              {t("invoices.edit")}
-            </Link>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <a
+              href={`/api/invoices/${invoiceId}/pdf?locale=${locale}`}
+              download={`${invoice.invoiceNumber}.pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FileDown className="mr-2 size-4" />
+              {t("invoices.actions.download")}
+            </a>
           </Button>
-        )}
+          {invoice.status === InvoiceStatus.DRAFT && (
+            <Button asChild>
+              <Link href={`/${orgSlug}/invoices/${invoiceId}/edit`}>
+                <Pencil className="mr-2 size-4" />
+                {t("invoices.edit")}
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

@@ -16,6 +16,7 @@ import type {
   EmailDefaults,
 } from "../types";
 import { EmailConnectionError } from "../errors";
+import logger from "@/lib/logger";
 
 interface EtherealAccount {
   user: string;
@@ -51,7 +52,7 @@ export class EtherealProvider implements EmailProvider {
         },
       });
 
-      console.log("[Email] Ethereal test account created:", testAccount.user);
+      logger.info("Ethereal test account created:", testAccount.user);
 
       return new EtherealProvider(transporter, defaults);
     } catch (error) {
@@ -84,8 +85,8 @@ export class EtherealProvider implements EmailProvider {
       // Get preview URL for the sent email
       const previewUrl = nodemailer.getTestMessageUrl(info);
 
-      console.log("[Email] Ethereal preview URL:", previewUrl);
-
+      logger.info("Ethereal preview URL:", previewUrl);
+      logger.info("Ethereal messageId:", info.messageId);
       return {
         success: true,
         messageId: info.messageId,
@@ -94,7 +95,7 @@ export class EtherealProvider implements EmailProvider {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown error sending email";
-      console.error("[Email] Failed to send via Ethereal:", message);
+      logger.error("Failed to send via Ethereal:", { error });
 
       return {
         success: false,
@@ -108,7 +109,7 @@ export class EtherealProvider implements EmailProvider {
       await this.transporter.verify();
       return true;
     } catch (error) {
-      console.error("[Email] Ethereal verification failed:", error);
+      logger.error("Ethereal verification failed:", { error });
       return false;
     }
   }

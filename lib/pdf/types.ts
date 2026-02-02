@@ -1,0 +1,24 @@
+export type InvoicePdfLabels = {
+  billTo: string;
+  invoiceInfo: string;
+  itemsTitle: string;
+  invoiceNumber: string;
+  status: string;
+  issueDate: string;
+  dueDate: string;
+  subtotal: string;
+  discount: string;
+  taxAmount: string;
+  total: string;
+  notes: string;
+  description: string;
+  quantity: string;
+  unitPrice: string;
+  itemTotal: string;
+  taxNumber: string;
+  statusDraft: string;
+  statusSent: string;
+  statusPaid: string;
+  statusOverdue: string;
+  statusCancelled: string;
+};

@@ -14,6 +14,7 @@ import type {
   EmailDefaults,
   SMTPConfig,
 } from "../types";
+import logger from "@/lib/logger";
 
 export class SMTPProvider implements EmailProvider {
   readonly name = "smtp";
@@ -52,7 +53,7 @@ export class SMTPProvider implements EmailProvider {
         })),
       });
 
-      console.log("[Email] Sent via SMTP, messageId:", info.messageId);
+      logger.info("Sent via SMTP, messageId:", info.messageId);
 
       return {
         success: true,
@@ -61,7 +62,7 @@ export class SMTPProvider implements EmailProvider {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown error sending email";
-      console.error("[Email] Failed to send via SMTP:", message);
+      logger.error("Failed to send via SMTP:", { error });
 
       return {
         success: false,
@@ -73,10 +74,10 @@ export class SMTPProvider implements EmailProvider {
   async verify(): Promise<boolean> {
     try {
       await this.transporter.verify();
-      console.log("[Email] SMTP connection verified");
+      logger.info("SMTP connection verified");
       return true;
     } catch (error) {
-      console.error("[Email] SMTP verification failed:", error);
+      logger.error("SMTP verification failed:", { error });
       return false;
     }
   }

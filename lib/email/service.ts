@@ -34,6 +34,7 @@ import {
   renderPasswordResetText,
 } from "./templates/auth";
 import { EmailSendError, EmailTemplateError } from "./errors";
+import logger from "../logger";
 
 /**
  * Email service singleton
@@ -88,8 +89,8 @@ export class EmailService {
         );
       }
 
-      console.log(
-        `[Email] Invitation sent to ${data.recipientEmail}`,
+      logger.info(
+        `Invitation sent to ${data.recipientEmail}`,
         result.previewUrl ? `Preview: ${result.previewUrl}` : ""
       );
 
@@ -138,8 +139,8 @@ export class EmailService {
         );
       }
 
-      console.log(
-        `[Email] Invoice ${data.invoiceNumber} sent to ${data.recipientEmail}`,
+      logger.info(
+        `Invoice ${data.invoiceNumber} sent to ${data.recipientEmail}`,
         result.previewUrl ? `Preview: ${result.previewUrl}` : ""
       );
 
@@ -174,8 +175,8 @@ export class EmailService {
         );
       }
 
-      console.log(
-        `[Email] Verification email sent to ${data.recipientEmail}`,
+      logger.info(
+        `Verification email sent to ${data.recipientEmail}`,
         result.previewUrl ? `Preview: ${result.previewUrl}` : ""
       );
 
@@ -213,8 +214,8 @@ export class EmailService {
         );
       }
 
-      console.log(
-        `[Email] Password reset email sent to ${data.recipientEmail}`,
+      logger.info(
+        `Password reset email sent to ${data.recipientEmail}`,
         result.previewUrl ? `Preview: ${result.previewUrl}` : ""
       );
 
