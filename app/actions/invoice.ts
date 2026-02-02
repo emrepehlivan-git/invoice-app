@@ -450,6 +450,45 @@ export async function getInvoice(
   }
 }
 
+/**
+ * Mark SENT invoices with dueDate < today as OVERDUE.
+ * Safe to call from cron or on invoice list load; idempotent.
+ */
+export async function markOverdueInvoices(): Promise<{ updated: number }> {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const overdueCandidates = await prisma.invoice.findMany({
+    where: {
+      status: InvoiceStatus.SENT,
+      dueDate: { lt: startOfToday },
+    },
+    select: { id: true, organizationId: true, invoiceNumber: true, status: true },
+  });
+
+  let updated = 0;
+  for (const inv of overdueCandidates) {
+    await prisma.invoice.update({
+      where: { id: inv.id },
+      data: { status: InvoiceStatus.OVERDUE },
+    });
+    await auditStatusChange(
+      "Invoice",
+      inv.id,
+      inv.status,
+      InvoiceStatus.OVERDUE,
+      inv.organizationId
+    );
+    updated++;
+  }
+
+  if (updated > 0) {
+    revalidatePath("/");
+  }
+
+  return { updated };
+}
+
 export async function getInvoices(
   organizationId: string
 ): Promise<InvoiceWithCustomer[]> {

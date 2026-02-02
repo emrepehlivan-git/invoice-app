@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
-import { getInvoices } from "@/app/actions/invoice";
+import { getInvoices, markOverdueInvoices } from "@/app/actions/invoice";
 import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
@@ -35,6 +35,7 @@ export default async function InvoicesPage({ params }: Props) {
     notFound();
   }
 
+  await markOverdueInvoices();
   const invoices = await getInvoices(organization.id);
 
   const t = await getTranslations();

@@ -208,6 +208,7 @@ invoice-app/
 │   ├── errors/                   # Error handling
 │   ├── logger/                   # Winston logger
 │   └── audit/                    # Audit logging
+├── instrumentation.ts            # Next.js instrumentation (node-cron: overdue invoices daily)
 ├── i18n/                         # Internationalization
 │   ├── config.ts
 │   ├── navigation.ts
@@ -340,6 +341,16 @@ The application is configured for Docker deployment with a multi-stage Dockerfil
    - PostgreSQL database service
    - Automatic migration service
    - Next.js application service
+
+### Scheduled Jobs (Self-Hosted)
+
+Overdue invoice marking runs as a **scheduled job** via `node-cron` and Next.js `instrumentation.ts`:
+
+- **Schedule:** Daily at 00:00 (server local time)
+- **Behavior:** Faturaların vadesi geçmiş ve status `SENT` olan kayıtlar otomatik `OVERDUE` yapılır
+- **Gereksinim:** Uygulama uzun süre çalışan bir Node süreci olarak çalışmalı (`next start` veya Docker); serverless (Vercel vb.) ortamda bu job çalışmaz, sadece fatura listesi sayfası açıldığında güncelleme yapılır
+
+Ek cron kütüphanesi veya harici servis gerekmez; self-hosted veya Docker deploy'da otomatik devreye girer.
 
 ## Security Features
 
