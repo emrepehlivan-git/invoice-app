@@ -75,6 +75,7 @@ export function LoginForm() {
     try {
       await signIn.social({
         provider: "google",
+        callbackURL: "/onboarding",
       });
     } catch {
       toast.error(t("auth.google.error"));
