@@ -201,5 +201,6 @@ export function generateInvoicePdf(
     doc.text(splitNotes, margin, y);
   }
 
-  return doc.output("arraybuffer") as unknown as Uint8Array;
+  const arrayBuffer = doc.output("arraybuffer");
+  return new Uint8Array(arrayBuffer);
 }
