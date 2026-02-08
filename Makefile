@@ -1,24 +1,36 @@
-.PHONY: up down logs migrate build restart ps
+.PHONY: up down logs migrate build restart ps migrate-dev migrate-status migration-new migrate-reset
 
-DOCKER_DIR = docker
+PRISMA_SCHEMA = prisma/schema.prisma
 
 up:
-	cd $(DOCKER_DIR) && docker compose up -d
+	docker compose up -d
 
 down:
-	cd $(DOCKER_DIR) && docker compose down
+	docker compose down
 
 logs:
-	cd $(DOCKER_DIR) && docker compose logs -f app
+	docker compose logs -f app
 
 migrate:
-	cd $(DOCKER_DIR) && docker compose --profile migrate up migrate
+	docker compose run --rm migrate
+
+migrate-dev:
+	bunx prisma migrate dev --schema $(PRISMA_SCHEMA)
+
+migrate-status:
+	bunx prisma migrate status --schema $(PRISMA_SCHEMA)
+
+migration-new:
+	bunx prisma migrate dev --schema $(PRISMA_SCHEMA) --name $(name) --create-only
+
+migrate-reset:
+	bunx prisma migrate reset --schema $(PRISMA_SCHEMA)
 
 build:
-	cd $(DOCKER_DIR) && docker compose up -d --build
+	docker compose up -d --build
 
 restart:
-	cd $(DOCKER_DIR) && docker compose restart
+	docker compose restart
 
 ps:
-	cd $(DOCKER_DIR) && docker compose ps
+	docker compose ps

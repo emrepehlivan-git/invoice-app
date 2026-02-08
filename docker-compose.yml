@@ -19,8 +19,8 @@ services:
   # Database Migrations
   migrate:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: Dockerfile
       target: migrate
     container_name: invoice-migrate
     command: bunx prisma migrate deploy
@@ -36,8 +36,8 @@ services:
   # Next.js Application
   app:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: invoice-app
     restart: unless-stopped
     ports:
@@ -51,7 +51,7 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
-        
+
 volumes:
   postgres_data:
     driver: local

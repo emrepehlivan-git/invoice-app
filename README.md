@@ -68,8 +68,7 @@ A modern, secure, and scalable invoice management application built with Next.js
 
 2. **Set up environment variables**
    ```bash
-   cd docker
-   cp .env.example .env  # Create .env file if it doesn't exist
+   cp .env.example .env  # Create .env file if it doesn't exist (project root)
    ```
    
    Edit `.env` file with your configuration:
@@ -98,7 +97,7 @@ A modern, secure, and scalable invoice management application built with Next.js
    make up
    
    # Or directly with Docker Compose
-   cd docker && docker compose up -d
+   docker compose up -d
    ```
 
 4. **Run database migrations**
@@ -106,7 +105,7 @@ A modern, secure, and scalable invoice management application built with Next.js
    make migrate
    
    # Or directly
-   cd docker && docker compose --profile migrate up migrate
+   docker compose run --rm migrate
    ```
 
 5. **Access the application**
@@ -219,9 +218,8 @@ invoice-app/
 ├── prisma/                       # Prisma configuration
 │   ├── schema.prisma
 │   └── migrations/
-├── docker/                       # Docker configuration
-│   ├── Dockerfile
-│   └── docker-compose.yml
+├── docker-compose.yml            # Docker Compose
+├── Dockerfile                    # Multi-stage Dockerfile
 └── types/                        # TypeScript type definitions
 ```
 
@@ -333,8 +331,8 @@ The application is configured for Docker deployment with a multi-stage Dockerfil
 
 1. **Build and start with Docker Compose**
    ```bash
-   cd docker
-   docker compose up -d --build
+   make build
+   # or: docker compose up -d --build
    ```
 
 2. **The Docker setup includes:**
