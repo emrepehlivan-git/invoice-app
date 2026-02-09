@@ -79,7 +79,15 @@
       "resend": "Resend verification email",
       "resendDescription": "Your email is not verified. Click below to receive a new verification link.",
       "sent": "Verification email sent. Check your inbox.",
-      "error": "Failed to send verification email"
+      "error": "Failed to send verification email",
+      "successTitle": "Email Verified",
+      "successDescription": "Your email address has been successfully verified. You can now access all features.",
+      "successFooter": "You will be automatically redirected to your dashboard.",
+      "continue": "Continue to Dashboard",
+      "errorTitle": "Verification Failed",
+      "errorDescription": "We couldn't verify your email address. The link may be invalid.",
+      "expiredDescription": "This verification link has expired. Please request a new one.",
+      "backToLogin": "Back to Sign In"
     }
   },
   "organization": {

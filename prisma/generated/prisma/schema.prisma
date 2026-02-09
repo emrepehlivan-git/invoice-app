@@ -49,6 +49,7 @@ model User {
   email         String   @unique
   emailVerified Boolean  @default(false)
   image         String?
+  locale        String   @default("en") // User's preferred locale for emails
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

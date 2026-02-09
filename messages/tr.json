@@ -79,7 +79,15 @@
       "resend": "Doğrulama e-postasını tekrar gönder",
       "resendDescription": "E-posta adresiniz doğrulanmamış. Yeni bir doğrulama bağlantısı almak için tıklayın.",
       "sent": "Doğrulama e-postası gönderildi. Gelen kutunuzu kontrol edin.",
-      "error": "Doğrulama e-postası gönderilemedi"
+      "error": "Doğrulama e-postası gönderilemedi",
+      "successTitle": "E-posta Doğrulandı",
+      "successDescription": "E-posta adresiniz başarıyla doğrulandı. Artık tüm özelliklere erişebilirsiniz.",
+      "successFooter": "Kontrol panelinize otomatik olarak yönlendirileceksiniz.",
+      "continue": "Kontrol Paneline Devam Et",
+      "errorTitle": "Doğrulama Başarısız",
+      "errorDescription": "E-posta adresinizi doğrulayamadık. Bağlantı geçersiz olabilir.",
+      "expiredDescription": "Bu doğrulama bağlantısının süresi dolmuş. Lütfen yeni bir bağlantı isteyin.",
+      "backToLogin": "Giriş Sayfasına Dön"
     }
   },
   "organization": {

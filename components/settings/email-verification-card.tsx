@@ -28,7 +28,7 @@ export function EmailVerificationCard({ email }: EmailVerificationCardProps) {
     try {
       const { error } = await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/onboarding",
+        callbackURL: "/verify-email?success=true",
       });
 
       if (error) {
