@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAuth, getSession } from "@/lib/auth/session";
+import { verifyAccess, requireAdminAccess } from "@/lib/auth/rbac";
 import { z } from "zod";
 import type { Invitation } from "@/types";
 import type { InvitationWithRelations } from "@/types";
@@ -16,7 +17,6 @@ import {
   actionSuccess,
   simpleSuccess,
   simpleError,
-  assertAccess,
 } from "@/lib/errors";
 import { getEmailService, getAppBaseUrl } from "@/lib/email";
 
@@ -36,17 +36,8 @@ export async function createInvitation(
   data: { email: string; role: Role }
 ): Promise<ActionResult<Invitation>> {
   try {
-    const session = await requireAuth();
-
-    // Verify user has admin access
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!membership, "Admin access required");
+    // Only admins can invite users
+    const access = await requireAdminAccess(organizationId);
 
     const validated = createInvitationSchema.parse(data);
 
@@ -79,18 +70,24 @@ export async function createInvitation(
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS);
 
-    // Get organization name for the email
-    const organization = await prisma.organization.findUnique({
-      where: { id: organizationId },
-      select: { name: true },
-    });
+    // Get organization name and inviter info for the email
+    const [organization, inviter] = await Promise.all([
+      prisma.organization.findUnique({
+        where: { id: organizationId },
+        select: { name: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: access.userId },
+        select: { name: true, email: true },
+      }),
+    ]);
 
     const invitation = await prisma.invitation.create({
       data: {
         email: validated.email,
         role: validated.role,
         organizationId,
-        invitedById: session.user.id,
+        invitedById: access.userId,
         expiresAt,
       },
     });
@@ -104,7 +101,7 @@ export async function createInvitation(
       await emailService.sendInvitation({
         recipientEmail: validated.email,
         organizationName: organization?.name || "Organization",
-        inviterName: session.user.name || session.user.email,
+        inviterName: inviter?.name || inviter?.email || "Admin",
         role: validated.role,
         acceptUrl,
         expiresAt,
@@ -130,19 +127,8 @@ export async function getOrganizationInvitations(
   organizationId: string
 ): Promise<InvitationWithRelations[]> {
   try {
-    const session = await requireAuth();
-
-    // Verify user has access to the organization
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId,
-      },
-    });
-
-    if (!membership) {
-      return [];
-    }
+    // All members can view the invitation list
+    await verifyAccess(organizationId, "read");
 
     const invitations = await prisma.invitation.findMany({
       where: {
@@ -176,26 +162,16 @@ export async function cancelInvitation(
   invitationId: string
 ): Promise<SimpleResult> {
   try {
-    const session = await requireAuth();
-
     const invitation = await prisma.invitation.findUnique({
       where: { id: invitationId },
-      include: { organization: true },
     });
 
     if (!invitation) {
       return simpleError(ErrorCode.NOT_FOUND);
     }
 
-    // Verify user has admin access
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId: invitation.organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!membership, "Admin access required");
+    // Only admins can cancel invitations
+    await requireAdminAccess(invitation.organizationId);
 
     await prisma.invitation.update({
       where: { id: invitationId },
@@ -218,8 +194,6 @@ export async function resendInvitation(
   invitationId: string
 ): Promise<ActionResult<Invitation>> {
   try {
-    const session = await requireAuth();
-
     const invitation = await prisma.invitation.findUnique({
       where: { id: invitationId },
     });
@@ -228,15 +202,8 @@ export async function resendInvitation(
       return actionError(ErrorCode.NOT_FOUND);
     }
 
-    // Verify user has admin access
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId: invitation.organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!membership, "Admin access required");
+    // Only admins can resend invitations
+    const access = await requireAdminAccess(invitation.organizationId);
 
     // Create new expiration date
     const expiresAt = new Date();
@@ -250,11 +217,17 @@ export async function resendInvitation(
       },
     });
 
-    // Get organization name for the email
-    const organization = await prisma.organization.findUnique({
-      where: { id: invitation.organizationId },
-      select: { name: true },
-    });
+    // Get organization name and resender info for the email
+    const [organization, resender] = await Promise.all([
+      prisma.organization.findUnique({
+        where: { id: invitation.organizationId },
+        select: { name: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: access.userId },
+        select: { name: true, email: true },
+      }),
+    ]);
 
     // Send invitation email (non-blocking)
     try {
@@ -265,7 +238,7 @@ export async function resendInvitation(
       await emailService.sendInvitation({
         recipientEmail: invitation.email,
         organizationName: organization?.name || "Organization",
-        inviterName: session.user.name || session.user.email,
+        inviterName: resender?.name || resender?.email || "Admin",
         role: invitation.role,
         acceptUrl,
         expiresAt,
