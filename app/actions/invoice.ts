@@ -968,9 +968,18 @@ export async function getYearlyRevenueStats(
       },
     });
 
+    // Calculate year range
+    const currentYear = new Date().getFullYear();
+    const startYear = filters?.dateRange
+      ? filters.dateRange.from.getFullYear()
+      : currentYear - years + 1;
+    const endYear = filters?.dateRange
+      ? filters.dateRange.to.getFullYear()
+      : currentYear;
+
     // Initialize all years in the range
     const yearlyData: Map<number, YearlyRevenueData> = new Map();
-    for (let year = startYear; year <= currentYear; year++) {
+    for (let year = startYear; year <= endYear; year++) {
       yearlyData.set(year, {
         year,
         revenue: 0,

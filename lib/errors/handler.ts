@@ -4,7 +4,9 @@
  * Provides utilities for handling errors in server actions consistently.
  */
 
+import { headers } from "next/headers";
 import logger from "@/lib/logger";
+import { getSession } from "@/lib/auth/session";
 import { parseError } from "./parsers";
 import {
   ErrorCode,
@@ -14,6 +16,24 @@ import {
   type ErrorCodeType,
 } from "./types";
 import { AppError } from "./classes";
+
+/**
+ * Get client information from request headers
+ */
+async function getClientInfo() {
+  try {
+    const headersList = await headers();
+    return {
+      ipAddress: headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown",
+      userAgent: headersList.get("user-agent") || "unknown",
+    };
+  } catch {
+    return {
+      ipAddress: "unknown",
+      userAgent: "unknown",
+    };
+  }
+}
 
 /**
  * Options for the action handler
@@ -51,10 +71,22 @@ export function withErrorHandler<TArgs extends unknown[], TResult>(
     } catch (error) {
       const parsedError = parseError(error);
 
+      // Get additional context for logging
+      const [session, clientInfo] = await Promise.all([
+        getSession().catch(() => null),
+        getClientInfo(),
+      ]);
+
       logger.error(`Action failed: ${options.actionName}`, {
         error: parsedError,
-        context: options.context,
+        context: {
+          ...options.context,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email,
+        },
+        client: clientInfo,
         stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString(),
       });
 
       if (options.rethrow) {
@@ -79,10 +111,22 @@ export function withSimpleErrorHandler<TArgs extends unknown[]>(
     } catch (error) {
       const parsedError = parseError(error);
 
+      // Get additional context for logging
+      const [session, clientInfo] = await Promise.all([
+        getSession().catch(() => null),
+        getClientInfo(),
+      ]);
+
       logger.error(`Action failed: ${options.actionName}`, {
         error: parsedError,
-        context: options.context,
+        context: {
+          ...options.context,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email,
+        },
+        client: clientInfo,
         stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString(),
       });
 
       if (options.rethrow) {
@@ -114,11 +158,30 @@ export function handleActionError(
 ): ActionError {
   const parsedError = parseError(error);
 
-  logger.error(`Action failed: ${actionName}`, {
-    error: parsedError,
-    context,
-    stack: error instanceof Error ? error.stack : undefined,
-  });
+  // Log error with additional context (async, non-blocking)
+  void (async () => {
+    try {
+      const [session, clientInfo] = await Promise.all([
+        getSession().catch(() => null),
+        getClientInfo(),
+      ]);
+
+      logger.error(`Action failed: ${actionName}`, {
+        error: parsedError,
+        context: {
+          ...context,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email,
+        },
+        client: clientInfo,
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (logError) {
+      // Don't fail if logging fails
+      logger.error(`Failed to log error for ${actionName}`, { logError });
+    }
+  })();
 
   return parsedError;
 }

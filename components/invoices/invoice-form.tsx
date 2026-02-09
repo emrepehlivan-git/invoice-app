@@ -47,7 +47,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { createInvoice, updateInvoice } from "@/app/actions/invoice";
 import { createInvoiceSchema, type InvoiceInput } from "@/lib/validators/invoice";
-import { ErrorCode } from "@/lib/errors/types";
+import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import type { Customer, InvoiceWithRelations, Organization } from "@/types";
 import { DiscountType } from "@/types";
@@ -136,20 +136,15 @@ export function InvoiceForm({
           ? await createInvoice(organization.id, data)
           : await updateInvoice(invoice!.id, data);
 
-      if (result?.error) {
-        if (result.error === ErrorCode.NOT_FOUND) {
-          toast.error(t("invoices.errors.customerNotFound"));
-        } else if (result.error === ErrorCode.CANNOT_EDIT) {
-          toast.error(t("invoices.errors.cannotEdit"));
-        } else if (result.error === ErrorCode.UNAUTHORIZED) {
-          toast.error(t("invoices.errors.unauthorized"));
-        } else {
-          toast.error(
-            mode === "create"
-              ? t("invoices.messages.createError")
-              : t("invoices.messages.updateError")
-          );
-        }
+      if (isActionError(result)) {
+        setFormErrorsFromActionError(result, form.setError, t);
+        handleActionErrorToast(
+          result,
+          t,
+          mode === "create"
+            ? t("invoices.messages.createError")
+            : t("invoices.messages.updateError")
+        );
         return;
       }
 

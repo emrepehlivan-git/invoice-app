@@ -38,7 +38,19 @@
     "rateLimitExceeded": "Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.",
     "emailSendFailed": "E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin.",
     "emailTemplateError": "E-posta hazırlanırken bir hata oluştu.",
-    "emailConfigError": "E-posta servisi düzgün yapılandırılmamış."
+    "emailConfigError": "E-posta servisi düzgün yapılandırılmamış.",
+    "alreadyExists": "Bu kaynak zaten mevcut",
+    "invalidInput": "Geçersiz girdi sağlandı",
+    "invoiceNotDraft": "Bu işlemi gerçekleştirmek için fatura taslak durumunda olmalıdır",
+    "invoiceAlreadyPaid": "Fatura zaten ödendi",
+    "invalidStatusTransition": "Geçersiz durum geçişi",
+    "invitationAlreadyExists": "Bu e-posta için zaten bir davet mevcut",
+    "invitationExpired": "Davet süresi dolmuş",
+    "invitationInvalid": "Geçersiz davet",
+    "invitationAlreadyMember": "Kullanıcı zaten bu organizasyonun üyesi",
+    "constraintViolation": "Veri kısıtlaması ihlali",
+    "uniqueConstraint": "Bu değere sahip bir kayıt zaten mevcut",
+    "externalServiceError": "Harici servis hatası oluştu"
   },
   "auth": {
     "login": {

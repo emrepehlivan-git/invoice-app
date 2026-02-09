@@ -36,6 +36,7 @@ import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createPayment } from "@/app/actions/payment";
 import { PaymentMethod } from "@/types";
+import { isActionError, handleActionErrorToast } from "@/lib/errors";
 
 const paymentMethods = [
   PaymentMethod.CASH,
@@ -98,13 +99,14 @@ export function PaymentForm({
         notes: values.notes || undefined,
       });
 
-      if (result.success) {
-        toast.success(t("messages.createSuccess"));
-        setOpen(false);
-        form.reset();
-      } else {
-        toast.error(result.message || t("messages.createError"));
+      if (isActionError(result)) {
+        handleActionErrorToast(result, t, t("messages.createError"));
+        return;
       }
+
+      toast.success(t("messages.createSuccess"));
+      setOpen(false);
+      form.reset();
     } catch {
       toast.error(t("messages.createError"));
     } finally {

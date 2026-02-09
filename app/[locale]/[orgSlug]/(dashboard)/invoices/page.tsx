@@ -35,7 +35,7 @@ export default async function InvoicesPage({ params }: Props) {
     notFound();
   }
 
-  await markOverdueInvoices();
+  await markOverdueInvoices(organization.id);
   const invoices = await getInvoices(organization.id);
 
   const t = await getTranslations();

@@ -25,7 +25,7 @@ import {
   type CustomerInput,
 } from "@/lib/validators/customer";
 import type { Customer } from "@/types";
-import { ErrorCode } from "@/lib/errors/types";
+import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors";
 
 type CustomerFormProps = {
   organizationId: string;
@@ -69,15 +69,16 @@ export function CustomerForm({
           ? await createCustomer(organizationId, data)
           : await updateCustomer(customer!.id, data);
 
-      if (result?.error) {
+      if (isActionError(result)) {
         if (result.error === ErrorCode.EMAIL_EXISTS) {
           form.setError("email", {
             message: t("customers.errors.emailExists"),
           });
-        } else if (result.error === ErrorCode.UNAUTHORIZED) {
-          toast.error(t("customers.errors.unauthorized"));
         } else {
-          toast.error(
+          setFormErrorsFromActionError(result, form.setError, t);
+          handleActionErrorToast(
+            result,
+            t,
             mode === "create"
               ? t("customers.messages.createError")
               : t("customers.messages.updateError")

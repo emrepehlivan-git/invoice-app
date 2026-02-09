@@ -38,7 +38,19 @@
     "rateLimitExceeded": "Too many requests. Please wait a moment and try again.",
     "emailSendFailed": "Failed to send email. Please try again later.",
     "emailTemplateError": "An error occurred while preparing the email.",
-    "emailConfigError": "Email service is not properly configured."
+    "emailConfigError": "Email service is not properly configured.",
+    "alreadyExists": "This resource already exists",
+    "invalidInput": "Invalid input provided",
+    "invoiceNotDraft": "Invoice must be in draft status to perform this action",
+    "invoiceAlreadyPaid": "Invoice is already paid",
+    "invalidStatusTransition": "Invalid status transition",
+    "invitationAlreadyExists": "An invitation already exists for this email",
+    "invitationExpired": "Invitation has expired",
+    "invitationInvalid": "Invalid invitation",
+    "invitationAlreadyMember": "User is already a member of this organization",
+    "constraintViolation": "Data constraint violation",
+    "uniqueConstraint": "A record with this value already exists",
+    "externalServiceError": "External service error occurred"
   },
   "auth": {
     "login": {

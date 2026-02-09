@@ -8,6 +8,7 @@ import { CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getPaddleCheckoutData } from "@/app/actions/paddle";
 import { useRouter } from "@/i18n/navigation";
+import { isActionError, handleActionErrorToast } from "@/lib/errors";
 
 interface PaddleCheckoutButtonProps {
   invoiceId: string;
@@ -65,8 +66,8 @@ export function PaddleCheckoutButton({
     try {
       const result = await getPaddleCheckoutData(invoiceId);
 
-      if (!result.success) {
-        toast.error(result.message || t("messages.createError"));
+      if (isActionError(result)) {
+        handleActionErrorToast(result, t, t("messages.createError"));
         setIsLoading(false);
         return;
       }

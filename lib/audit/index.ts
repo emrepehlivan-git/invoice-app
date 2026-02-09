@@ -11,7 +11,8 @@ export type AuditEntityType =
   | "Invoice"
   | "Customer"
   | "ExchangeRate"
-  | "Organization";
+  | "Organization"
+  | "Payment";
 
 type AuditLogInput = {
   action: AuditAction;
