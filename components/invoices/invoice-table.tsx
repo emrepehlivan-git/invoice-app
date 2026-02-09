@@ -13,9 +13,11 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
+import { exportInvoicesToCSV, downloadCSV } from "@/lib/export/invoice-export";
 
 import {
   Table,
@@ -145,6 +147,18 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
     }
   }
 
+  function handleExportCSV() {
+    try {
+      const csvContent = exportInvoicesToCSV(invoices, locale);
+      const filename = `invoices-${format(new Date(), "yyyy-MM-dd")}.csv`;
+      downloadCSV(csvContent, filename);
+      toast.success(t("invoices.export.success"));
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error(t("invoices.export.error"));
+    }
+  }
+
   if (invoices.length === 0) {
     return (
       <p className="text-center text-sm text-muted-foreground py-8">
@@ -155,6 +169,12 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
 
   return (
     <>
+      <div className="flex justify-end mb-4">
+        <Button variant="outline" size="sm" onClick={handleExportCSV}>
+          <Download className="mr-2 size-4" />
+          {t("invoices.export.csv")}
+        </Button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

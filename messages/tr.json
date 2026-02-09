@@ -173,7 +173,16 @@
       "revenue": "Gelir",
       "outstanding": "Bekleyen",
       "totalRevenue": "Toplam Gelir"
-    }
+    },
+    "filters": {
+      "dateRange": "Tarih Aralığı Seçin",
+      "customer": "Müşteri",
+      "status": "Durum",
+      "allCustomers": "Tüm Müşteriler",
+      "allStatuses": "Tüm Durumlar",
+      "clear": "Temizle"
+    },
+    "loading": "Yükleniyor..."
   },
   "invoices": {
     "title": "Faturalar",
@@ -258,6 +267,12 @@
       "status": "Durum",
       "actions": "İşlemler",
       "noResults": "Sonuç bulunamadı"
+    },
+    "export": {
+      "csv": "CSV Olarak Dışa Aktar",
+      "excel": "Excel Olarak Dışa Aktar",
+      "success": "Faturalar başarıyla dışa aktarıldı",
+      "error": "Dışa aktarma başarısız oldu"
     },
     "detail": {
       "title": "Fatura Detayı",

@@ -173,7 +173,16 @@
       "revenue": "Revenue",
       "outstanding": "Outstanding",
       "totalRevenue": "Total Revenue"
-    }
+    },
+    "filters": {
+      "dateRange": "Select Date Range",
+      "customer": "Customer",
+      "status": "Status",
+      "allCustomers": "All Customers",
+      "allStatuses": "All Statuses",
+      "clear": "Clear"
+    },
+    "loading": "Loading..."
   },
   "invoices": {
     "title": "Invoices",
@@ -258,6 +267,12 @@
       "status": "Status",
       "actions": "Actions",
       "noResults": "No results found"
+    },
+    "export": {
+      "csv": "Export as CSV",
+      "excel": "Export as Excel",
+      "success": "Invoices exported successfully",
+      "error": "Export failed"
     },
     "detail": {
       "title": "Invoice Details",

@@ -539,15 +539,39 @@ export async function markOverdueInvoicesSystem(): Promise<{ updated: number }> 
   return { updated };
 }
 
+export type InvoiceFilters = {
+  dateRange?: { from: Date; to: Date };
+  customerId?: string;
+  status?: InvoiceStatus;
+};
+
 export async function getInvoices(
-  organizationId: string
+  organizationId: string,
+  filters?: InvoiceFilters
 ): Promise<InvoiceWithCustomer[]> {
   try {
     // All members can read invoices
     await verifyAccess(organizationId, "read");
 
+    const where: any = { organizationId };
+
+    if (filters?.dateRange) {
+      where.issueDate = {
+        gte: filters.dateRange.from,
+        lte: filters.dateRange.to,
+      };
+    }
+
+    if (filters?.customerId) {
+      where.customerId = filters.customerId;
+    }
+
+    if (filters?.status) {
+      where.status = filters.status;
+    }
+
     const invoices = await prisma.invoice.findMany({
-      where: { organizationId },
+      where,
       include: {
         customer: true,
       },
@@ -577,7 +601,10 @@ export type InvoiceStats = {
   missingHistoricalRates: string[];
 };
 
-export async function getInvoiceStats(organizationId: string): Promise<InvoiceStats | null> {
+export async function getInvoiceStats(
+  organizationId: string,
+  filters?: InvoiceFilters
+): Promise<InvoiceStats | null> {
   try {
     // All members can view stats
     await verifyAccess(organizationId, "read");
@@ -593,23 +620,50 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
 
     const baseCurrency = organization.baseCurrency;
 
+    const baseWhere: any = { organizationId };
+    if (filters?.dateRange) {
+      baseWhere.issueDate = {
+        gte: filters.dateRange.from,
+        lte: filters.dateRange.to,
+      };
+    }
+    if (filters?.customerId) {
+      baseWhere.customerId = filters.customerId;
+    }
+
+    const paidWhere = {
+      ...baseWhere,
+      status: InvoiceStatus.PAID,
+    };
+    if (filters?.status) {
+      paidWhere.status = filters.status;
+    }
+
+    const outstandingWhere = {
+      ...baseWhere,
+      status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] },
+    };
+    if (filters?.status) {
+      outstandingWhere.status = filters.status;
+    }
+
     const [totalCount, draftCount, sentCount, paidCount, overdueCount, paidInvoices, outstandingInvoices] =
       await Promise.all([
-        prisma.invoice.count({ where: { organizationId } }),
+        prisma.invoice.count({ where: baseWhere }),
         prisma.invoice.count({
-          where: { organizationId, status: InvoiceStatus.DRAFT },
+          where: { ...baseWhere, status: InvoiceStatus.DRAFT },
         }),
         prisma.invoice.count({
-          where: { organizationId, status: InvoiceStatus.SENT },
+          where: { ...baseWhere, status: InvoiceStatus.SENT },
         }),
         prisma.invoice.count({
-          where: { organizationId, status: InvoiceStatus.PAID },
+          where: { ...baseWhere, status: InvoiceStatus.PAID },
         }),
         prisma.invoice.count({
-          where: { organizationId, status: InvoiceStatus.OVERDUE },
+          where: { ...baseWhere, status: InvoiceStatus.OVERDUE },
         }),
         prisma.invoice.findMany({
-          where: { organizationId, status: InvoiceStatus.PAID },
+          where: paidWhere,
           select: {
             currency: true,
             total: true,
@@ -618,10 +672,7 @@ export async function getInvoiceStats(organizationId: string): Promise<InvoiceSt
           },
         }),
         prisma.invoice.findMany({
-          where: {
-            organizationId,
-            status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] },
-          },
+          where: outstandingWhere,
           select: {
             currency: true,
             total: true,
@@ -717,7 +768,8 @@ export type StatsPeriod = "monthly" | "yearly";
  */
 export async function getMonthlyRevenueStats(
   organizationId: string,
-  months: number = 12
+  months: number = 12,
+  filters?: InvoiceFilters
 ): Promise<MonthlyRevenueData[]> {
   try {
     await verifyAccess(organizationId, "read");
@@ -733,25 +785,43 @@ export async function getMonthlyRevenueStats(
 
     const baseCurrency = organization.baseCurrency;
 
-    // Calculate date range (last N months)
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - months + 1);
-    startDate.setDate(1);
-    startDate.setHours(0, 0, 0, 0);
+    // Calculate date range (last N months) or use filter date range
+    let startDate: Date;
+    let endDate: Date;
+
+    if (filters?.dateRange) {
+      startDate = filters.dateRange.from;
+      endDate = filters.dateRange.to;
+    } else {
+      endDate = new Date();
+      startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - months + 1);
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+    }
+
+    const where: any = {
+      organizationId,
+      issueDate: {
+        gte: startDate,
+        lte: endDate,
+      },
+      status: {
+        in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
+      },
+    };
+
+    if (filters?.customerId) {
+      where.customerId = filters.customerId;
+    }
+
+    if (filters?.status) {
+      where.status = filters.status;
+    }
 
     // Get all invoices in the date range
     const invoices = await prisma.invoice.findMany({
-      where: {
-        organizationId,
-        issueDate: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status: {
-          in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
-        },
-      },
+      where,
       select: {
         status: true,
         issueDate: true,
@@ -836,7 +906,8 @@ export type YearlyRevenueData = {
  */
 export async function getYearlyRevenueStats(
   organizationId: string,
-  years: number = 5
+  years: number = 5,
+  filters?: InvoiceFilters
 ): Promise<YearlyRevenueData[]> {
   try {
     await verifyAccess(organizationId, "read");
@@ -852,24 +923,42 @@ export async function getYearlyRevenueStats(
 
     const baseCurrency = organization.baseCurrency;
 
-    // Calculate date range
-    const currentYear = new Date().getFullYear();
-    const startYear = currentYear - years + 1;
-    const startDate = new Date(startYear, 0, 1);
-    const endDate = new Date();
+    // Calculate date range or use filter date range
+    let startDate: Date;
+    let endDate: Date;
+
+    if (filters?.dateRange) {
+      startDate = filters.dateRange.from;
+      endDate = filters.dateRange.to;
+    } else {
+      const currentYear = new Date().getFullYear();
+      const startYear = currentYear - years + 1;
+      startDate = new Date(startYear, 0, 1);
+      endDate = new Date();
+    }
+
+    const where: any = {
+      organizationId,
+      issueDate: {
+        gte: startDate,
+        lte: endDate,
+      },
+      status: {
+        in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
+      },
+    };
+
+    if (filters?.customerId) {
+      where.customerId = filters.customerId;
+    }
+
+    if (filters?.status) {
+      where.status = filters.status;
+    }
 
     // Get all invoices in the date range
     const invoices = await prisma.invoice.findMany({
-      where: {
-        organizationId,
-        issueDate: {
-          gte: startDate,
-          lte: endDate,
-        },
-        status: {
-          in: [InvoiceStatus.PAID, InvoiceStatus.SENT, InvoiceStatus.OVERDUE],
-        },
-      },
+      where,
       select: {
         status: true,
         issueDate: true,
