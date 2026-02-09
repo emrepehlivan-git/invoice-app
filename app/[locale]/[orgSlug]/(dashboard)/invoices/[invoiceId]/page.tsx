@@ -302,6 +302,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
         currency={invoice.currency}
         locale={locale}
         payments={invoice.payments || []}
+        customerEmail={invoice.customer.email}
       />
 
       {invoice.notes && (

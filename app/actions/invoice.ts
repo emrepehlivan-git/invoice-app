@@ -459,10 +459,56 @@ export async function getInvoice(
 }
 
 /**
- * Mark SENT invoices with dueDate < today as OVERDUE.
- * Safe to call from cron or on invoice list load; idempotent.
+ * Mark SENT invoices with dueDate < today as OVERDUE for a specific organization.
+ * Requires update permission to modify invoice statuses.
  */
-export async function markOverdueInvoices(): Promise<{ updated: number }> {
+export async function markOverdueInvoices(
+  organizationId: string
+): Promise<{ updated: number }> {
+  // Verify user has update access to this organization
+  await verifyAccess(organizationId, "update");
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const overdueCandidates = await prisma.invoice.findMany({
+    where: {
+      organizationId,
+      status: InvoiceStatus.SENT,
+      dueDate: { lt: startOfToday },
+    },
+    select: { id: true, organizationId: true, invoiceNumber: true, status: true },
+  });
+
+  let updated = 0;
+  for (const inv of overdueCandidates) {
+    await prisma.invoice.update({
+      where: { id: inv.id },
+      data: { status: InvoiceStatus.OVERDUE },
+    });
+    await auditStatusChange(
+      "Invoice",
+      inv.id,
+      inv.status,
+      InvoiceStatus.OVERDUE,
+      inv.organizationId
+    );
+    updated++;
+  }
+
+  if (updated > 0) {
+    revalidatePath("/");
+  }
+
+  return { updated };
+}
+
+/**
+ * Internal function to mark overdue invoices across all organizations.
+ * For use in scheduled jobs/cron only - no user context required.
+ * @internal
+ */
+export async function markOverdueInvoicesSystem(): Promise<{ updated: number }> {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
 
@@ -488,10 +534,6 @@ export async function markOverdueInvoices(): Promise<{ updated: number }> {
       inv.organizationId
     );
     updated++;
-  }
-
-  if (updated > 0) {
-    revalidatePath("/");
   }
 
   return { updated };

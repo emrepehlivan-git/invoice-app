@@ -303,6 +303,8 @@
     "payments": {
       "title": "Ödemeler",
       "addPayment": "Ödeme Ekle",
+      "payOnline": "Online Öde",
+      "paddleProcessing": "İşleniyor...",
       "noPayments": "Henüz ödeme kaydedilmedi",
       "totalPaid": "Toplam Ödenen",
       "remaining": "Kalan",
@@ -312,6 +314,7 @@
         "BANK_TRANSFER": "Havale/EFT",
         "CREDIT_CARD": "Kredi Kartı",
         "CHECK": "Çek",
+        "PADDLE": "Online Ödeme",
         "OTHER": "Diğer"
       },
       "fields": {
@@ -329,11 +332,14 @@
         "createSuccess": "Ödeme başarıyla kaydedildi",
         "createError": "Ödeme kaydedilemedi",
         "deleteSuccess": "Ödeme başarıyla silindi",
-        "deleteError": "Ödeme silinemedi"
+        "deleteError": "Ödeme silinemedi",
+        "paddleSuccess": "Ödeme başarıyla tamamlandı!"
       },
       "errors": {
         "exceedsBalance": "Ödeme tutarı kalan bakiyeyi aşıyor",
-        "invalidInvoice": "Taslak veya iptal edilmiş faturalara ödeme eklenemez"
+        "invalidInvoice": "Taslak veya iptal edilmiş faturalara ödeme eklenemez",
+        "paddleNotReady": "Ödeme sistemi hazır değil. Lütfen tekrar deneyin.",
+        "paddleNotConfigured": "Online ödeme yapılandırılmamış."
       },
       "deleteDialog": {
         "title": "Ödemeyi Sil",

@@ -303,6 +303,8 @@
     "payments": {
       "title": "Payments",
       "addPayment": "Add Payment",
+      "payOnline": "Pay Online",
+      "paddleProcessing": "Processing...",
       "noPayments": "No payments recorded yet",
       "totalPaid": "Total Paid",
       "remaining": "Remaining",
@@ -312,6 +314,7 @@
         "BANK_TRANSFER": "Bank Transfer",
         "CREDIT_CARD": "Credit Card",
         "CHECK": "Check",
+        "PADDLE": "Online Payment",
         "OTHER": "Other"
       },
       "fields": {
@@ -329,11 +332,14 @@
         "createSuccess": "Payment recorded successfully",
         "createError": "Failed to record payment",
         "deleteSuccess": "Payment deleted successfully",
-        "deleteError": "Failed to delete payment"
+        "deleteError": "Failed to delete payment",
+        "paddleSuccess": "Payment completed successfully!"
       },
       "errors": {
         "exceedsBalance": "Payment amount exceeds remaining balance",
-        "invalidInvoice": "Cannot add payment to draft or cancelled invoices"
+        "invalidInvoice": "Cannot add payment to draft or cancelled invoices",
+        "paddleNotReady": "Payment system is not ready. Please try again.",
+        "paddleNotConfigured": "Online payment is not configured."
       },
       "deleteDialog": {
         "title": "Delete Payment",

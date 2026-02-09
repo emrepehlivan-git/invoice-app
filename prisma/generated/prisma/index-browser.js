@@ -258,6 +258,21 @@ exports.Prisma.InvoiceItemScalarFieldEnum = {
   total: 'total'
 };
 
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  organizationId: 'organizationId',
+  amount: 'amount',
+  paymentDate: 'paymentDate',
+  method: 'method',
+  reference: 'reference',
+  paddleTransactionId: 'paddleTransactionId',
+  paddleCustomerId: 'paddleCustomerId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AuditLogScalarFieldEnum = {
   id: 'id',
   action: 'action',
@@ -322,6 +337,15 @@ exports.DiscountType = exports.$Enums.DiscountType = {
   FIXED: 'FIXED'
 };
 
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CREDIT_CARD: 'CREDIT_CARD',
+  CHECK: 'CHECK',
+  PADDLE: 'PADDLE',
+  OTHER: 'OTHER'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
@@ -341,6 +365,7 @@ exports.Prisma.ModelName = {
   Customer: 'Customer',
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',
+  Payment: 'Payment',
   AuditLog: 'AuditLog'
 };
 

@@ -13,8 +13,9 @@ export type {
   Customer,
   Invoice,
   InvoiceItem,
+  Payment,
   AuditLog,
   Invitation,
 } from "@/prisma/generated/prisma";
 
-export { Role, InvoiceStatus, AuditAction, InvitationStatus, DiscountType } from "@/prisma/generated/prisma";
+export { Role, InvoiceStatus, AuditAction, InvitationStatus, DiscountType, PaymentMethod } from "@/prisma/generated/prisma";

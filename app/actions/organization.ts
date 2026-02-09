@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth/session";
+import { verifyAccess, requireAdminAccess } from "@/lib/auth/rbac";
 import { z } from "zod";
 import type { Organization, OrganizationWithRole, OrganizationMemberWithOrg, OrganizationMember, User } from "@/types";
 import { Role } from "@/types";
@@ -15,7 +16,6 @@ import {
   actionSuccess,
   simpleSuccess,
   simpleError,
-  assertAccess,
   isUniqueConstraintError,
   getUniqueConstraintField,
 } from "@/lib/errors";
@@ -132,17 +132,8 @@ export async function updateOrganizationSettings(
   data: { baseCurrency: string }
 ): Promise<ActionResult<Organization>> {
   try {
-    const session = await requireAuth();
-
-    // Verify user has access and is admin
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!membership, "Admin access required");
+    // Only admins can update organization settings
+    await requireAdminAccess(organizationId);
 
     const validated = updateOrgSchema.parse(data);
 
@@ -168,19 +159,8 @@ export async function getOrganizationMembers(
   organizationId: string
 ): Promise<OrganizationMemberWithUser[]> {
   try {
-    const session = await requireAuth();
-
-    // Verify user has access to the organization
-    const membership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId,
-      },
-    });
-
-    if (!membership) {
-      return [];
-    }
+    // All members can view the member list
+    await verifyAccess(organizationId, "read");
 
     const members = await prisma.organizationMember.findMany({
       where: { organizationId },
@@ -211,8 +191,6 @@ export async function removeMember(
   memberId: string
 ): Promise<SimpleResult> {
   try {
-    const session = await requireAuth();
-
     const memberToRemove = await prisma.organizationMember.findUnique({
       where: { id: memberId },
     });
@@ -221,18 +199,11 @@ export async function removeMember(
       return simpleError(ErrorCode.NOT_FOUND);
     }
 
-    // Verify user has admin access
-    const currentUserMembership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId: memberToRemove.organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!currentUserMembership, "Admin access required");
+    // Only admins can remove members
+    const access = await requireAdminAccess(memberToRemove.organizationId);
 
     // Prevent removing yourself
-    if (memberToRemove.userId === session.user.id) {
+    if (memberToRemove.userId === access.userId) {
       return simpleError(ErrorCode.CANNOT_DELETE, "Cannot remove yourself from the organization");
     }
 
@@ -271,8 +242,6 @@ export async function updateMemberRole(
   newRole: Role
 ): Promise<ActionResult<OrganizationMember>> {
   try {
-    const session = await requireAuth();
-
     const memberToUpdate = await prisma.organizationMember.findUnique({
       where: { id: memberId },
     });
@@ -281,18 +250,11 @@ export async function updateMemberRole(
       return actionError(ErrorCode.NOT_FOUND);
     }
 
-    // Verify user has admin access
-    const currentUserMembership = await prisma.organizationMember.findFirst({
-      where: {
-        userId: session.user.id,
-        organizationId: memberToUpdate.organizationId,
-        role: Role.ADMIN,
-      },
-    });
-    assertAccess(!!currentUserMembership, "Admin access required");
+    // Only admins can update member roles
+    const access = await requireAdminAccess(memberToUpdate.organizationId);
 
     // Prevent demoting yourself
-    if (memberToUpdate.userId === session.user.id && newRole !== Role.ADMIN) {
+    if (memberToUpdate.userId === access.userId && newRole !== Role.ADMIN) {
       return actionError(ErrorCode.CANNOT_EDIT, "Cannot demote yourself");
     }
 

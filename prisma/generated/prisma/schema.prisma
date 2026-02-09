@@ -33,6 +33,15 @@ enum DiscountType {
   FIXED
 }
 
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CREDIT_CARD
+  CHECK
+  PADDLE
+  OTHER
+}
+
 // Better Auth tables
 model User {
   id            String   @id @default(cuid())
@@ -106,6 +115,7 @@ model Organization {
   members       OrganizationMember[]
   customers     Customer[]
   invoices      Invoice[]
+  payments      Payment[]
   exchangeRates ExchangeRate[]
   invitations   Invitation[]
 }
@@ -219,6 +229,7 @@ model Invoice {
   organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   customer     Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
   items        InvoiceItem[]
+  payments     Payment[]
 
   @@unique([organizationId, invoiceNumber])
   @@index([organizationId])
@@ -240,6 +251,30 @@ model InvoiceItem {
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@index([invoiceId])
+}
+
+// Payment model
+model Payment {
+  id                  String        @id @default(cuid())
+  invoiceId           String
+  organizationId      String
+  amount              Decimal       @db.Decimal(10, 2)
+  paymentDate         DateTime      @default(now())
+  method              PaymentMethod @default(BANK_TRANSFER)
+  reference           String? // Check number, transfer reference, etc.
+  paddleTransactionId String?       @unique // Paddle transaction ID for online payments
+  paddleCustomerId    String? // Paddle customer ID
+  notes               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([organizationId])
+  @@index([paymentDate])
+  @@index([paddleTransactionId])
 }
 
 // Audit Log model for tracking critical actions
