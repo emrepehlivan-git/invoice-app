@@ -25,6 +25,8 @@ import { ArrowLeft, FileDown, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus, DiscountType } from "@/types";
+import { SendEmailButton } from "@/components/invoices/send-email-button";
+import { PaymentSection } from "@/components/invoices/payment-section";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string; invoiceId: string }>;
@@ -97,6 +99,12 @@ export default async function InvoiceDetailPage({ params }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <SendEmailButton
+            invoiceId={invoiceId}
+            locale={locale}
+            customerEmail={invoice.customer.email}
+            disabled={invoice.status === InvoiceStatus.CANCELLED}
+          />
           <Button variant="outline" asChild>
             <a
               href={`/api/invoices/${invoiceId}/pdf?locale=${locale}`}
@@ -285,6 +293,16 @@ export default async function InvoiceDetailPage({ params }: Props) {
           </Table>
         </CardContent>
       </Card>
+
+      <PaymentSection
+        invoiceId={invoiceId}
+        organizationId={organization.id}
+        invoiceTotal={Number(invoice.total)}
+        invoiceStatus={invoice.status}
+        currency={invoice.currency}
+        locale={locale}
+        payments={invoice.payments || []}
+      />
 
       {invoice.notes && (
         <Card>

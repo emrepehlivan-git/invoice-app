@@ -1,4 +1,4 @@
-import type { Invoice, InvoiceItem, Customer, Organization } from "@/prisma/generated/prisma";
+import type { Invoice, InvoiceItem, Customer, Organization, Payment } from "@/prisma/generated/prisma";
 
 /**
  * Invoice with all relations included
@@ -7,6 +7,7 @@ export type InvoiceWithRelations = Invoice & {
   customer: Customer;
   organization: Organization;
   items: InvoiceItem[];
+  payments?: Payment[];
 };
 
 /**

@@ -21,6 +21,11 @@ import {
   simpleError,
   assertExists,
 } from "@/lib/errors";
+import { getEmailService } from "@/lib/email/service";
+import { generateInvoicePdf } from "@/lib/pdf/invoice-pdf";
+import { getInvoicePdfLabels } from "@/lib/pdf/labels";
+import en from "@/messages/en.json";
+import tr from "@/messages/tr.json";
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1).max(500),
@@ -434,6 +439,9 @@ export async function getInvoice(
         customer: true,
         organization: true,
         items: true,
+        payments: {
+          orderBy: { paymentDate: "desc" },
+        },
       },
     });
 
@@ -870,5 +878,86 @@ export async function getYearlyRevenueStats(
     return Array.from(yearlyData.values()).sort((a, b) => a.year - b.year);
   } catch {
     return [];
+  }
+}
+
+/**
+ * Send invoice via email with PDF attachment
+ * Updates invoice status to SENT if currently DRAFT
+ */
+export async function sendInvoiceEmail(
+  invoiceId: string,
+  locale: string = "en"
+): Promise<SimpleResult> {
+  try {
+    const invoice = await prisma.invoice.findUnique({
+      where: { id: invoiceId },
+      include: {
+        customer: true,
+        organization: true,
+        items: true,
+      },
+    });
+    assertExists(invoice, "Invoice", invoiceId);
+
+    // Only admins can send invoices via email
+    await verifyAccess(invoice.organizationId, "update");
+
+    // Check if customer has an email
+    if (!invoice.customer.email) {
+      return simpleError(
+        ErrorCode.VALIDATION_ERROR,
+        "Customer does not have an email address"
+      );
+    }
+
+    // Generate PDF attachment
+    const messages: Record<string, Parameters<typeof getInvoicePdfLabels>[0]> = {
+      en: en as Parameters<typeof getInvoicePdfLabels>[0],
+      tr: tr as Parameters<typeof getInvoicePdfLabels>[0],
+    };
+    const localeKey = locale === "tr" ? "tr" : "en";
+    const msg = messages[localeKey] ?? messages.en;
+    const labels = getInvoicePdfLabels(msg);
+    const pdfBuffer = generateInvoicePdf(invoice, labels, localeKey);
+
+    // Send email with PDF attachment
+    const emailService = await getEmailService();
+    await emailService.sendInvoice({
+      locale: localeKey,
+      recipientEmail: invoice.customer.email,
+      recipientName: invoice.customer.name,
+      invoiceNumber: invoice.invoiceNumber,
+      amount: Number(invoice.total).toFixed(2),
+      currency: invoice.currency,
+      dueDate: new Date(invoice.dueDate),
+      organizationName: invoice.organization.name,
+      pdfAttachment: Buffer.from(pdfBuffer),
+    });
+
+    // Update status to SENT if currently DRAFT
+    if (invoice.status === InvoiceStatus.DRAFT) {
+      await prisma.invoice.update({
+        where: { id: invoiceId },
+        data: { status: InvoiceStatus.SENT },
+      });
+
+      await auditStatusChange(
+        "Invoice",
+        invoiceId,
+        InvoiceStatus.DRAFT,
+        InvoiceStatus.SENT,
+        invoice.organizationId
+      );
+
+      revalidatePath("/");
+    }
+
+    logger.info(`Invoice ${invoice.invoiceNumber} sent to ${invoice.customer.email}`);
+
+    return simpleSuccess();
+  } catch (error) {
+    const result = handleActionError(error, "sendInvoiceEmail", { invoiceId });
+    return simpleError(result.error, result.message);
   }
 }

@@ -237,7 +237,9 @@
       "markAsOverdue": "Mark as Overdue",
       "cancel": "Cancel Invoice",
       "download": "Download PDF",
-      "print": "Print"
+      "print": "Print",
+      "sendEmail": "Send Email",
+      "sendingEmail": "Sending..."
     },
     "table": {
       "invoiceNumber": "Invoice No",
@@ -265,13 +267,16 @@
       "deleteError": "Failed to delete invoice",
       "statusUpdateSuccess": "Invoice status updated",
       "statusUpdateError": "Failed to update invoice status",
-      "notFound": "Invoice not found"
+      "notFound": "Invoice not found",
+      "emailSentSuccess": "Invoice sent via email successfully",
+      "emailSentError": "Failed to send invoice via email"
     },
     "errors": {
       "unauthorized": "You do not have permission for this action",
       "cannotEdit": "Only draft invoices can be edited",
       "cannotDelete": "Only draft or cancelled invoices can be deleted",
-      "customerNotFound": "Customer not found"
+      "customerNotFound": "Customer not found",
+      "customerNoEmail": "Customer does not have an email address"
     },
     "validation": {
       "customerRequired": "Customer selection is required",
@@ -294,6 +299,48 @@
       "description": "Are you sure you want to change the invoice status to \"{status}\"?",
       "confirm": "Change",
       "cancel": "Cancel"
+    },
+    "payments": {
+      "title": "Payments",
+      "addPayment": "Add Payment",
+      "noPayments": "No payments recorded yet",
+      "totalPaid": "Total Paid",
+      "remaining": "Remaining",
+      "fullyPaid": "Fully Paid",
+      "method": {
+        "CASH": "Cash",
+        "BANK_TRANSFER": "Bank Transfer",
+        "CREDIT_CARD": "Credit Card",
+        "CHECK": "Check",
+        "OTHER": "Other"
+      },
+      "fields": {
+        "amount": "Amount",
+        "amountPlaceholder": "0.00",
+        "paymentDate": "Payment Date",
+        "method": "Payment Method",
+        "selectMethod": "Select method",
+        "reference": "Reference",
+        "referencePlaceholder": "Check number, transfer ID, etc.",
+        "notes": "Notes",
+        "notesPlaceholder": "Additional notes..."
+      },
+      "messages": {
+        "createSuccess": "Payment recorded successfully",
+        "createError": "Failed to record payment",
+        "deleteSuccess": "Payment deleted successfully",
+        "deleteError": "Failed to delete payment"
+      },
+      "errors": {
+        "exceedsBalance": "Payment amount exceeds remaining balance",
+        "invalidInvoice": "Cannot add payment to draft or cancelled invoices"
+      },
+      "deleteDialog": {
+        "title": "Delete Payment",
+        "description": "Are you sure you want to delete this payment? This action cannot be undone.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
     }
   },
   "customers": {

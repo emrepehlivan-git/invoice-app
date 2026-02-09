@@ -237,7 +237,9 @@
       "markAsOverdue": "Vadesi Geçmiş Olarak İşaretle",
       "cancel": "Faturayı İptal Et",
       "download": "PDF İndir",
-      "print": "Yazdır"
+      "print": "Yazdır",
+      "sendEmail": "E-posta Gönder",
+      "sendingEmail": "Gönderiliyor..."
     },
     "table": {
       "invoiceNumber": "Fatura No",
@@ -265,13 +267,16 @@
       "deleteError": "Fatura silinemedi",
       "statusUpdateSuccess": "Fatura durumu güncellendi",
       "statusUpdateError": "Fatura durumu güncellenemedi",
-      "notFound": "Fatura bulunamadı"
+      "notFound": "Fatura bulunamadı",
+      "emailSentSuccess": "Fatura e-posta ile başarıyla gönderildi",
+      "emailSentError": "Fatura e-posta ile gönderilemedi"
     },
     "errors": {
       "unauthorized": "Bu işlem için yetkiniz yok",
       "cannotEdit": "Sadece taslak faturalar düzenlenebilir",
       "cannotDelete": "Sadece taslak veya iptal edilmiş faturalar silinebilir",
-      "customerNotFound": "Müşteri bulunamadı"
+      "customerNotFound": "Müşteri bulunamadı",
+      "customerNoEmail": "Müşterinin e-posta adresi bulunmuyor"
     },
     "validation": {
       "customerRequired": "Müşteri seçimi zorunludur",
@@ -294,6 +299,48 @@
       "description": "Fatura durumunu \"{status}\" olarak değiştirmek istediğinizden emin misiniz?",
       "confirm": "Değiştir",
       "cancel": "İptal"
+    },
+    "payments": {
+      "title": "Ödemeler",
+      "addPayment": "Ödeme Ekle",
+      "noPayments": "Henüz ödeme kaydedilmedi",
+      "totalPaid": "Toplam Ödenen",
+      "remaining": "Kalan",
+      "fullyPaid": "Tamamen Ödendi",
+      "method": {
+        "CASH": "Nakit",
+        "BANK_TRANSFER": "Havale/EFT",
+        "CREDIT_CARD": "Kredi Kartı",
+        "CHECK": "Çek",
+        "OTHER": "Diğer"
+      },
+      "fields": {
+        "amount": "Tutar",
+        "amountPlaceholder": "0.00",
+        "paymentDate": "Ödeme Tarihi",
+        "method": "Ödeme Yöntemi",
+        "selectMethod": "Yöntem seçin",
+        "reference": "Referans",
+        "referencePlaceholder": "Çek no, havale referansı vb.",
+        "notes": "Notlar",
+        "notesPlaceholder": "Ek notlar..."
+      },
+      "messages": {
+        "createSuccess": "Ödeme başarıyla kaydedildi",
+        "createError": "Ödeme kaydedilemedi",
+        "deleteSuccess": "Ödeme başarıyla silindi",
+        "deleteError": "Ödeme silinemedi"
+      },
+      "errors": {
+        "exceedsBalance": "Ödeme tutarı kalan bakiyeyi aşıyor",
+        "invalidInvoice": "Taslak veya iptal edilmiş faturalara ödeme eklenemez"
+      },
+      "deleteDialog": {
+        "title": "Ödemeyi Sil",
+        "description": "Bu ödemeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "confirm": "Sil",
+        "cancel": "İptal"
+      }
     }
   },
   "customers": {
