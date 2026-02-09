@@ -125,8 +125,8 @@ model Organization {
 model ExchangeRate {
   id             String   @id @default(cuid())
   organizationId String
-  fromCurrency   String   // Source currency (e.g., USD)
-  toCurrency     String   // Target currency (e.g., TRY) - usually org's baseCurrency
+  fromCurrency   String // Source currency (e.g., USD)
+  toCurrency     String // Target currency (e.g., TRY) - usually org's baseCurrency
   rate           Decimal  @db.Decimal(12, 6) // Exchange rate with 6 decimal precision
   effectiveDate  DateTime @default(now()) // When this rate becomes effective
   createdAt      DateTime @default(now())
@@ -256,18 +256,18 @@ model InvoiceItem {
 
 // Payment model
 model Payment {
-  id                   String        @id @default(cuid())
-  invoiceId            String
-  organizationId       String
-  amount               Decimal       @db.Decimal(10, 2)
-  paymentDate          DateTime      @default(now())
-  method               PaymentMethod @default(BANK_TRANSFER)
-  reference            String?       // Check number, transfer reference, etc.
-  paddleTransactionId  String?       @unique // Paddle transaction ID for online payments
-  paddleCustomerId     String?       // Paddle customer ID
-  notes                String?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  id                  String        @id @default(cuid())
+  invoiceId           String
+  organizationId      String
+  amount              Decimal       @db.Decimal(10, 2)
+  paymentDate         DateTime      @default(now())
+  method              PaymentMethod @default(BANK_TRANSFER)
+  reference           String? // Check number, transfer reference, etc.
+  paddleTransactionId String?       @unique // Paddle transaction ID for online payments
+  paddleCustomerId    String? // Paddle customer ID
+  notes               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
   invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -289,12 +289,12 @@ enum AuditAction {
 model AuditLog {
   id             String      @id @default(cuid())
   action         AuditAction
-  entityType     String      // e.g., "Invoice", "Customer", "ExchangeRate"
-  entityId       String      // ID of the affected entity
-  userId         String?     // User who performed the action (null for system actions)
-  organizationId String?     // Organization context
-  oldData        Json?       // Previous state (for updates/deletes)
-  newData        Json?       // New state (for creates/updates)
+  entityType     String // e.g., "Invoice", "Customer", "ExchangeRate"
+  entityId       String // ID of the affected entity
+  userId         String? // User who performed the action (null for system actions)
+  organizationId String? // Organization context
+  oldData        Json? // Previous state (for updates/deletes)
+  newData        Json? // New state (for creates/updates)
   ipAddress      String?
   userAgent      String?
   createdAt      DateTime    @default(now())
