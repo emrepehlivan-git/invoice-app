@@ -383,7 +383,8 @@
         "exceedsBalance": "Ödeme tutarı kalan bakiyeyi aşıyor",
         "invalidInvoice": "Taslak veya iptal edilmiş faturalara ödeme eklenemez",
         "paddleNotReady": "Ödeme sistemi hazır değil. Lütfen tekrar deneyin.",
-        "paddleNotConfigured": "Online ödeme yapılandırılmamış."
+        "paddleNotConfigured": "Online ödeme yapılandırılmamış.",
+        "paddleDefaultCheckoutUrlNotSet": "Paddle Dashboard → Checkout ayarlarında Varsayılan Ödeme Linki tanımlayın (Sandbox: sandbox-vendors.paddle.com/checkout-settings)"
       },
       "deleteDialog": {
         "title": "Ödemeyi Sil",

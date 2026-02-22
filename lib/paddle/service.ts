@@ -30,44 +30,55 @@ export interface CheckoutResult {
 }
 
 /**
- * Create a Paddle transaction for invoice payment
+ * Create a Paddle transaction for invoice payment with the actual invoice amount.
+ * Uses a non-catalog custom product and price (no product ID required).
+ * Returns transactionId so the client can open Checkout.open({ transactionId }).
  */
 export async function createInvoiceCheckout(
   params: CreateCheckoutParams
 ): Promise<CheckoutResult> {
   try {
     const paddle = getPaddleClient();
+    const amountCents = Math.round(params.amount * 100);
+    const currencyCode =
+      params.currency === "EUR"
+        ? "EUR"
+        : params.currency === "GBP"
+          ? "GBP"
+          : "USD";
 
-    // Get or create Paddle price for this amount
-    // Note: In production, you might want to use catalog prices
-    // For invoices, we create ad-hoc prices based on invoice amount
-    const priceId = process.env.PADDLE_DEFAULT_PRICE_ID;
-
-    if (!priceId) {
-      throw new Error("PADDLE_DEFAULT_PRICE_ID is not configured");
-    }
-
-    // Create transaction with custom data to identify the invoice
     const transaction = await paddle.transactions.create({
       items: [
         {
-          priceId: priceId,
           quantity: 1,
+          price: {
+            description: "Invoice payment",
+            name: "Invoice payment",
+            unitPrice: {
+              amount: String(amountCents),
+              currencyCode,
+            },
+            product: {
+              name: "Invoice payment",
+              description: "Invoice payment",
+              taxCategory: "standard",
+            },
+          },
         },
       ],
+      currencyCode,
       customData: {
         invoiceId: params.invoiceId,
         organizationId: params.organizationId,
         type: "invoice_payment",
       },
-      checkout: {
-        url: params.successUrl,
-      },
+      checkout: params.successUrl ? { url: params.successUrl } : undefined,
     });
 
     logger.info("Paddle transaction created", {
       transactionId: transaction.id,
       invoiceId: params.invoiceId,
+      amount: params.amount,
     });
 
     return {
@@ -86,7 +97,8 @@ export async function createInvoiceCheckout(
 
 /**
  * Process a completed Paddle transaction
- * Called from webhook handler
+ * Called from webhook handler.
+ * Supports both camelCase and snake_case in customData (Paddle may echo keys either way).
  */
 export async function processCompletedTransaction(
   transactionId: string,
@@ -94,13 +106,17 @@ export async function processCompletedTransaction(
   amount: string,
   customData: Record<string, unknown>
 ): Promise<void> {
-  const invoiceId = customData?.invoiceId as string;
-  const organizationId = customData?.organizationId as string;
+  const invoiceId = (customData?.invoiceId ?? customData?.invoice_id) as
+    | string
+    | undefined;
+  const organizationId = (customData?.organizationId ??
+    customData?.organization_id) as string | undefined;
 
   if (!invoiceId || !organizationId) {
     logger.warn("Transaction missing invoice data", {
       transactionId,
       customData,
+      keys: Object.keys(customData ?? {}),
     });
     return;
   }
@@ -129,8 +145,10 @@ export async function processCompletedTransaction(
     return;
   }
 
-  // Parse amount (Paddle returns amount in smallest unit, e.g., cents)
-  const paymentAmount = parseFloat(amount) / 100;
+  const amountStr = String(amount).trim();
+  const amountNum = parseFloat(amountStr);
+  const paymentAmount =
+    amountStr.includes(".") && amountNum < 100000 ? amountNum : amountNum / 100;
 
   // Create payment record
   const payment = await prisma.payment.create({

@@ -383,7 +383,8 @@
         "exceedsBalance": "Payment amount exceeds remaining balance",
         "invalidInvoice": "Cannot add payment to draft or cancelled invoices",
         "paddleNotReady": "Payment system is not ready. Please try again.",
-        "paddleNotConfigured": "Online payment is not configured."
+        "paddleNotConfigured": "Online payment is not configured.",
+        "paddleDefaultCheckoutUrlNotSet": "Set the Default Payment Link in Paddle Dashboard → Checkout settings (Sandbox: sandbox-vendors.paddle.com/checkout-settings)"
       },
       "deleteDialog": {
         "title": "Delete Payment",

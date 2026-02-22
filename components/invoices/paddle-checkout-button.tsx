@@ -4,9 +4,15 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { getPaddleCheckoutData } from "@/app/actions/paddle";
+import { createPaddleTransaction } from "@/app/actions/paddle";
 import { useRouter } from "@/i18n/navigation";
 import { isActionError, handleActionErrorToast } from "@/lib/errors/client-public";
 
@@ -24,11 +30,12 @@ export function PaddleCheckoutButton({
   const t = useTranslations("invoices.payments");
   const router = useRouter();
 
-  // Initialize Paddle.js
   useEffect(() => {
-    const clientToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
+    const clientToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.trim();
     if (!clientToken) {
-      console.error("Paddle client token not configured");
+      console.error(
+        "Paddle: NEXT_PUBLIC_PADDLE_CLIENT_TOKEN is missing. Add it to .env and restart the dev server (bun run dev)."
+      );
       return;
     }
 
@@ -41,18 +48,31 @@ export function PaddleCheckoutButton({
       eventCallback: (event) => {
         if (event.name === "checkout.completed") {
           toast.success(t("messages.paddleSuccess"));
-          // Refresh the page to show updated payment status
           router.refresh();
         } else if (event.name === "checkout.closed") {
-          // User closed checkout without completing
           setIsLoading(false);
+        } else if (event.name === "checkout.error") {
+          setIsLoading(false);
+          const err = (event as { data?: { error?: { code?: string; message?: string; detail?: string } } }).data?.error;
+          const detail = err?.detail;
+          const message =
+            detail === "transaction_default_checkout_url_not_set"
+              ? t("errors.paddleDefaultCheckoutUrlNotSet")
+              : err?.message ?? err?.code ?? "Checkout error";
+          console.error("Paddle checkout.error:", err ?? event);
+          toast.error(message);
         }
       },
-    }).then((paddleInstance) => {
-      if (paddleInstance) {
-        setPaddle(paddleInstance);
-      }
-    });
+    })
+      .then((paddleInstance) => {
+        if (paddleInstance) {
+          setPaddle(paddleInstance);
+        }
+      })
+      .catch((err) => {
+        console.error("Paddle initialization failed:", err);
+        toast.error(t("errors.paddleNotConfigured"));
+      });
   }, [t, router]);
 
   const handleCheckout = async () => {
@@ -64,7 +84,7 @@ export function PaddleCheckoutButton({
     setIsLoading(true);
 
     try {
-      const result = await getPaddleCheckoutData(invoiceId);
+      const result = await createPaddleTransaction(invoiceId);
 
       if (isActionError(result)) {
         handleActionErrorToast(result, t, t("messages.createError"));
@@ -72,36 +92,14 @@ export function PaddleCheckoutButton({
         return;
       }
 
-      const checkoutData = result.data;
-      const priceId = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID;
+      const { transactionId } = result.data;
 
-      if (!priceId) {
-        toast.error(t("errors.paddleNotConfigured"));
-        setIsLoading(false);
-        return;
-      }
-
-      // Open Paddle checkout overlay
       paddle.Checkout.open({
+        transactionId,
         settings: {
           displayMode: "overlay",
           theme: "light",
-          locale: "en", // Could be dynamic based on user locale
-        },
-        items: [
-          {
-            priceId: priceId,
-            quantity: 1,
-          },
-        ],
-        customer: {
-          email: checkoutData.customerEmail,
-        },
-        customData: {
-          invoiceId: checkoutData.invoiceId,
-          organizationId: checkoutData.organizationId,
-          invoiceNumber: checkoutData.invoiceNumber,
-          type: "invoice_payment",
+          locale: "en",
         },
       });
     } catch {
@@ -110,10 +108,13 @@ export function PaddleCheckoutButton({
     }
   };
 
-  return (
+  const isDisabled = disabled || isLoading || !paddle;
+  const disabledDueToConfig = !disabled && !paddle;
+
+  const button = (
     <Button
       onClick={handleCheckout}
-      disabled={disabled || isLoading || !paddle}
+      disabled={isDisabled}
       variant="default"
     >
       {isLoading ? (
@@ -124,4 +125,19 @@ export function PaddleCheckoutButton({
       {isLoading ? t("paddleProcessing") : t("payOnline")}
     </Button>
   );
+
+  if (disabledDueToConfig) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{button}</TooltipTrigger>
+          <TooltipContent>
+            <p>{t("errors.paddleNotConfigured")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return button;
 }

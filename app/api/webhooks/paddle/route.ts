@@ -38,18 +38,32 @@ export async function POST(request: NextRequest) {
     // Process different event types
     switch (eventData.eventType) {
       case EventName.TransactionCompleted: {
-        const transaction = eventData.data;
+        const transaction = eventData.data as {
+          id: string;
+          customerId?: string | null;
+          customer_id?: string | null;
+          details?: {
+            totals?: { total?: string; grand_total?: string };
+          };
+          customData?: Record<string, unknown>;
+          custom_data?: Record<string, unknown>;
+        };
+        const customData =
+          (transaction.customData ?? transaction.custom_data) ?? {};
+        const totals = transaction.details?.totals;
+        const amount =
+          totals?.total ?? totals?.grand_total ?? "0";
         logger.info("Transaction completed", {
           transactionId: transaction.id,
-          customerId: transaction.customerId,
+          customDataKeys: Object.keys(customData),
+          amount,
         });
 
-        // Process the completed payment
         await processCompletedTransaction(
           transaction.id,
-          transaction.customerId ?? null,
-          transaction.details?.totals?.total ?? "0",
-          (transaction.customData as Record<string, unknown>) ?? {}
+          transaction.customerId ?? transaction.customer_id ?? null,
+          amount,
+          customData
         );
         break;
       }

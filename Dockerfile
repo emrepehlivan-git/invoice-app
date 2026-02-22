@@ -50,11 +50,18 @@ RUN ls -la prisma/generated/prisma/ || (echo "Prisma generate failed" && exit 1)
 # Copy rest of the application
 COPY . .
 
-# Set environment for build
+# NEXT_PUBLIC_* are inlined at build time; pass via build args (from .env via docker-compose)
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
+ARG NEXT_PUBLIC_PADDLE_ENVIRONMENT
+
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=$NEXT_PUBLIC_PADDLE_CLIENT_TOKEN
+ENV NEXT_PUBLIC_PADDLE_ENVIRONMENT=$NEXT_PUBLIC_PADDLE_ENVIRONMENT
+
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build the application
 RUN bun run build
 
 # ============================================

@@ -41,6 +41,18 @@ let auth: ReturnType<typeof betterAuth>;
 
 try {
   auth = betterAuth({
+    ...(process.env.NEXT_PUBLIC_APP_URL && {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }),
+    trustedOrigins: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "https://*.ngrok-free.dev",
+      "https://*.ngrok.io",
+    ],
+    advanced: {
+      trustedProxyHeaders: true,
+    },
     database: prismaAdapter(prisma, {
       provider: "postgresql",
     }),
