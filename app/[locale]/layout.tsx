@@ -5,11 +5,18 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
+import { Poppins } from "next/font/google";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Invoice App",
   description: "Invoice App",
 };
+
+const font = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 type Props = {
   children: React.ReactNode;
@@ -33,7 +40,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <body className="font-sans antialiased">
+      <body className={cn("antialiased", font.className)}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
