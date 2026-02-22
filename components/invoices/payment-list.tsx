@@ -106,9 +106,8 @@ export function PaymentList({
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="icon"
-                      className="size-8 text-destructive hover:text-destructive"
                       disabled={deletingId === payment.id}
                     >
                       {deletingId === payment.id ? (
@@ -133,7 +132,7 @@ export function PaymentList({
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => handleDelete(payment.id)}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        className="bg-destructive text-white hover:bg-destructive/90"
                       >
                         {t("deleteDialog.confirm")}
                       </AlertDialogAction>

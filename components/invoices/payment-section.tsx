@@ -66,27 +66,34 @@ export function PaymentSection({
               {t("totalPaid")}: {formatCurrency(totalPaid)} / {formatCurrency(invoiceTotal)}
             </CardDescription>
           </div>
-          <div className="flex items-center gap-3">
-            {isFullyPaid ? (
-              <Badge variant="default" className="bg-green-600">
-                {t("fullyPaid")}
-              </Badge>
-            ) : (
-              <span className="text-sm text-muted-foreground">
-                {t("remaining")}: {formatCurrency(remainingAmount)}
-              </span>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-3">
+              {isFullyPaid ? (
+                <Badge variant="default" className="bg-green-600">
+                  {t("fullyPaid")}
+                </Badge>
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  {t("remaining")}: {formatCurrency(remainingAmount)}
+                </span>
+              )}
+              <PaddleCheckoutButton
+                invoiceId={invoiceId}
+                disabled={!canPayOnline}
+              />
+              <PaymentForm
+                invoiceId={invoiceId}
+                organizationId={organizationId}
+                remainingAmount={remainingAmount}
+                currency={currency}
+                disabled={!canAddPayment}
+              />
+            </div>
+            {!canAddPayment && !isFullyPaid && (
+              <p className="text-xs text-muted-foreground text-right max-w-[320px]">
+                {t("disabledHint")}
+              </p>
             )}
-            <PaddleCheckoutButton
-              invoiceId={invoiceId}
-              disabled={!canPayOnline}
-            />
-            <PaymentForm
-              invoiceId={invoiceId}
-              organizationId={organizationId}
-              remainingAmount={remainingAmount}
-              currency={currency}
-              disabled={!canAddPayment}
-            />
           </div>
         </div>
       </CardHeader>

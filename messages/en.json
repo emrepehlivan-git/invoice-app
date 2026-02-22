@@ -341,6 +341,7 @@
       "payOnline": "Pay Online",
       "paddleProcessing": "Processing...",
       "noPayments": "No payments recorded yet",
+      "disabledHint": "Payments can be added after the invoice is sent. \"Add Payment\" opens a form where you can enter amount, date, and payment method.",
       "totalPaid": "Total Paid",
       "remaining": "Remaining",
       "fullyPaid": "Fully Paid",
@@ -360,6 +361,14 @@
         "selectMethod": "Select method",
         "reference": "Reference",
         "referencePlaceholder": "Check number, transfer ID, etc.",
+        "referencePlaceholderByMethod": {
+          "BANK_TRANSFER": "Transfer reference, transaction ID",
+          "CHECK": "Check number",
+          "CREDIT_CARD": "Last 4 digits or transaction ID",
+          "CASH": "Receipt number (optional)",
+          "PADDLE": "Transaction ID",
+          "OTHER": "Reference (optional)"
+        },
         "notes": "Notes",
         "notesPlaceholder": "Additional notes..."
       },

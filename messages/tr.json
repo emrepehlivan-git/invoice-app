@@ -341,6 +341,7 @@
       "payOnline": "Online Öde",
       "paddleProcessing": "İşleniyor...",
       "noPayments": "Henüz ödeme kaydedilmedi",
+      "disabledHint": "Ödemeler faturayı gönderdikten sonra eklenebilir. \"Ödeme Ekle\" ile tutar, tarih ve ödeme yöntemi girebileceğiniz form açılır.",
       "totalPaid": "Toplam Ödenen",
       "remaining": "Kalan",
       "fullyPaid": "Tamamen Ödendi",
@@ -360,6 +361,14 @@
         "selectMethod": "Yöntem seçin",
         "reference": "Referans",
         "referencePlaceholder": "Çek no, havale referansı vb.",
+        "referencePlaceholderByMethod": {
+          "BANK_TRANSFER": "Havale/EFT referansı, işlem no",
+          "CHECK": "Çek numarası",
+          "CREDIT_CARD": "Son 4 hane veya işlem no",
+          "CASH": "Makbuz no (isteğe bağlı)",
+          "PADDLE": "İşlem no",
+          "OTHER": "Referans (isteğe bağlı)"
+        },
         "notes": "Notlar",
         "notesPlaceholder": "Ek notlar..."
       },

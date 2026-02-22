@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -89,6 +89,16 @@ export function PaymentForm({
     },
   });
 
+  const selectedMethod = form.watch("method");
+
+  useEffect(() => {
+    form.setValue("reference", "");
+  }, [selectedMethod]);
+
+  const referencePlaceholder = selectedMethod
+    ? t(`fields.referencePlaceholderByMethod.${selectedMethod}`)
+    : t("fields.referencePlaceholder");
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
@@ -176,7 +186,7 @@ export function PaymentForm({
                   <FormLabel>{t("fields.method")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -204,7 +214,7 @@ export function PaymentForm({
                   <FormLabel>{t("fields.reference")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={t("fields.referencePlaceholder")}
+                      placeholder={referencePlaceholder}
                       {...field}
                     />
                   </FormControl>
