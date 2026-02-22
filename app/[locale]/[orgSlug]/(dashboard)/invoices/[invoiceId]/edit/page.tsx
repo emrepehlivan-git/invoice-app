@@ -37,13 +37,12 @@ export default async function EditInvoicePage({ params }: Props) {
     notFound();
   }
 
-  const invoice = await getInvoice(invoiceId);
+  const invoice = await getInvoice(invoiceId, organization.id);
 
   if (!invoice) {
     notFound();
   }
 
-  // Only allow editing DRAFT invoices
   if (invoice.status !== InvoiceStatus.DRAFT) {
     redirect({ href: `/${orgSlug}/invoices/${invoiceId}`, locale });
   }

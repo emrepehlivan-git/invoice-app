@@ -36,7 +36,7 @@ import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createPayment } from "@/app/actions/payment";
 import { PaymentMethod } from "@/types";
-import { isActionError, handleActionErrorToast } from "@/lib/errors";
+import { isActionError, handleActionErrorToast } from "@/lib/errors/client-public";
 
 const paymentMethods = [
   PaymentMethod.CASH,
@@ -76,8 +76,10 @@ export function PaymentForm({
     notes: z.string().max(500).optional(),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  type PaymentFormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<PaymentFormValues>({
+    resolver: zodResolver(formSchema) as import("react-hook-form").Resolver<PaymentFormValues>,
     defaultValues: {
       amount: remainingAmount,
       paymentDate: new Date().toISOString().split("T")[0],

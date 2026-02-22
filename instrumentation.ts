@@ -4,12 +4,12 @@ export async function register() {
   }
 
   const cron = await import("node-cron");
-  const { markOverdueInvoices } = await import("@/app/actions/invoice");
+  const { markOverdueInvoicesSystem } = await import("@/app/actions/invoice");
   const logger = (await import("@/lib/logger")).default;
 
   cron.default.schedule("0 0 * * *", async () => {
     try {
-      const { updated } = await markOverdueInvoices();
+      const { updated } = await markOverdueInvoicesSystem();
       if (updated > 0) {
         logger.info("Overdue invoices marked", { updated });
       }

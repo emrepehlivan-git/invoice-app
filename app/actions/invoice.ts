@@ -430,11 +430,16 @@ export async function deleteInvoice(invoiceId: string): Promise<SimpleResult> {
 }
 
 export async function getInvoice(
-  invoiceId: string
+  invoiceId: string,
+  organizationId?: string
 ): Promise<InvoiceWithRelations | null> {
   try {
-    const invoice = await prisma.invoice.findUnique({
-      where: { id: invoiceId },
+    const where =
+      organizationId != null
+        ? { id: invoiceId, organizationId }
+        : { id: invoiceId };
+    const invoice = await prisma.invoice.findFirst({
+      where,
       include: {
         customer: true,
         organization: true,
@@ -449,7 +454,6 @@ export async function getInvoice(
       return null;
     }
 
-    // All members can read invoices
     await verifyAccess(invoice.organizationId, "read");
 
     return invoice;

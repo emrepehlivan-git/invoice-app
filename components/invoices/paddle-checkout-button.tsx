@@ -8,7 +8,7 @@ import { CreditCard, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getPaddleCheckoutData } from "@/app/actions/paddle";
 import { useRouter } from "@/i18n/navigation";
-import { isActionError, handleActionErrorToast } from "@/lib/errors";
+import { isActionError, handleActionErrorToast } from "@/lib/errors/client-public";
 
 interface PaddleCheckoutButtonProps {
   invoiceId: string;

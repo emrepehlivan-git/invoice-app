@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/db";
-import { getEmailService } from "@/lib/email";
 import logger from "@/lib/logger";
 import { locales, defaultLocale } from "@/i18n/config";
 
@@ -70,15 +69,15 @@ try {
       sendOnSignUp: true,
       sendOnSignIn: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, url, request }) => {
+      sendVerificationEmail: async ({ user, url }) => {
         try {
-          // Get locale from user record (set during creation) or from request
           const dbUser = await prisma.user.findUnique({
             where: { id: user.id },
             select: { locale: true },
           });
-          const locale = dbUser?.locale || getLocaleFromRequest(request) || defaultLocale;
+          const locale = dbUser?.locale ?? defaultLocale;
 
+          const { getEmailService } = await import("@/lib/email");
           const emailService = await getEmailService();
           void emailService.sendEmailVerification({
             recipientEmail: user.email,

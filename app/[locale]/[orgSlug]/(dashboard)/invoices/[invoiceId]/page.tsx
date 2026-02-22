@@ -61,7 +61,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
     notFound();
   }
 
-  const invoice = await getInvoice(invoiceId);
+  const invoice = await getInvoice(invoiceId, organization.id);
 
   if (!invoice) {
     notFound();

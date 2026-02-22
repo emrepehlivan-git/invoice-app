@@ -47,7 +47,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { createInvoice, updateInvoice } from "@/app/actions/invoice";
 import { createInvoiceSchema, type InvoiceInput } from "@/lib/validators/invoice";
-import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors";
+import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors/client-public";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import type { Customer, InvoiceWithRelations, Organization } from "@/types";
 import { DiscountType } from "@/types";

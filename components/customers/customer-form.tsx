@@ -25,7 +25,7 @@ import {
   type CustomerInput,
 } from "@/lib/validators/customer";
 import type { Customer } from "@/types";
-import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors";
+import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors/client-public";
 
 type CustomerFormProps = {
   organizationId: string;

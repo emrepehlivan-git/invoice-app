@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { XCircle, Clock, AlertTriangle } from "lucide-react";
-import type { ErrorCodeType } from "@/lib/errors";
+import type { ErrorCodeType } from "@/lib/errors/client-public";
 
 type Props = {
   errorCode: ErrorCodeType;

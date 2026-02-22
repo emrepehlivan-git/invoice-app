@@ -1,9 +1,9 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { CheckCircle, XCircle, Mail, Loader2 } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth/client";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const t = useTranslations();
   const [isResending, setIsResending] = useState(false);
@@ -119,5 +119,13 @@ export default function VerifyEmailPage() {
         </p>
       </CardFooter>
     </Card>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={null}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

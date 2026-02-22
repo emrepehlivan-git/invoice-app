@@ -1,4 +1,5 @@
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import {
@@ -19,10 +20,11 @@ export default async function DashboardLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const session = await getSession();
-
-  if (!session?.user) {
-    redirect(`/${locale}/login`);
+  const sessionUser = session?.user;
+  if (!sessionUser) {
+    redirect({ href: "/login", locale });
   }
+  const user = sessionUser as NonNullable<typeof sessionUser>;
 
   const [organization, organizations] = await Promise.all([
     getOrganizationBySlug(orgSlug),
@@ -38,11 +40,11 @@ export default async function DashboardLayout({ children, params }: Props) {
       <DashboardSidebar
         organization={organization}
         organizations={organizations}
-        user={session.user}
+        user={user}
         locale={locale}
       />
       <SidebarInset className="flex flex-col overflow-hidden">
-        <DashboardHeader organization={organization} user={session.user} />
+        <DashboardHeader organization={organization} user={user} />
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>

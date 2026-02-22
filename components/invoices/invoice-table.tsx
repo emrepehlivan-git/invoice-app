@@ -254,15 +254,15 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
                     )}
                     {(invoice.status === InvoiceStatus.SENT ||
                       invoice.status === InvoiceStatus.OVERDUE) && (
-                      <DropdownMenuItem
-                        onClick={() =>
-                          handleStatusChange(invoice, InvoiceStatus.PAID)
-                        }
-                      >
-                        <CheckCircle className="mr-2 size-4" />
-                        {t("invoices.actions.markAsPaid")}
-                      </DropdownMenuItem>
-                    )}
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleStatusChange(invoice, InvoiceStatus.PAID)
+                          }
+                        >
+                          <CheckCircle className="mr-2 size-4" />
+                          {t("invoices.actions.markAsPaid")}
+                        </DropdownMenuItem>
+                      )}
                     {invoice.status === InvoiceStatus.SENT && (
                       <DropdownMenuItem
                         onClick={() =>
@@ -286,17 +286,17 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
                       )}
                     {(invoice.status === InvoiceStatus.DRAFT ||
                       invoice.status === InvoiceStatus.CANCELLED) && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
-                          onClick={() => handleDeleteClick(invoice)}
-                        >
-                          <Trash2 className="mr-2 size-4" />
-                          {t("invoices.delete")}
-                        </DropdownMenuItem>
-                      </>
-                    )}
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={() => handleDeleteClick(invoice)}
+                          >
+                            <Trash2 className="mr-2 size-4" />
+                            {t("invoices.delete")}
+                          </DropdownMenuItem>
+                        </>
+                      )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
