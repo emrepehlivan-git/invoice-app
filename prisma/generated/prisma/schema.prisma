@@ -227,6 +227,7 @@ model Invoice {
   exchangeRateToBase  Decimal?      @db.Decimal(12, 6) // Rate to convert from invoice currency to org's baseCurrency
   totalInBaseCurrency Decimal?      @db.Decimal(12, 2) // Pre-calculated total in base currency for efficient reporting
   notes               String?
+  lastReminderSentAt  DateTime? // Last time a reminder email was sent (overdue or due-soon)
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
 

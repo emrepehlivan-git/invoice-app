@@ -128,6 +128,26 @@ export interface InvoiceEmailData extends BaseEmailData {
 }
 
 /**
+ * Invoice reminder email type (overdue vs due-soon)
+ */
+export type InvoiceReminderType = "overdue" | "due_soon";
+
+/**
+ * Invoice reminder email template data
+ */
+export interface InvoiceReminderEmailData extends BaseEmailData {
+  recipientEmail: string;
+  recipientName: string;
+  invoiceNumber: string;
+  amount: string;
+  currency: string;
+  dueDate: Date;
+  organizationName: string;
+  reminderType: InvoiceReminderType;
+  viewUrl?: string;
+}
+
+/**
  * Email verification template data
  */
 export interface EmailVerificationData extends BaseEmailData {

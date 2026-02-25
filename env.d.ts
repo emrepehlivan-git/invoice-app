@@ -32,5 +32,7 @@ declare namespace NodeJS {
     SMTP_PASS: string;
     EMAIL_FROM_NAME: string;
     EMAIL_FROM_ADDRESS: string;
+
+    CRON_SECRET?: string;
   }
 }

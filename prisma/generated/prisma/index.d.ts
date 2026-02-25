@@ -12600,6 +12600,7 @@ export namespace Prisma {
     exchangeRateToBase: Decimal | null
     totalInBaseCurrency: Decimal | null
     notes: string | null
+    lastReminderSentAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -12623,6 +12624,7 @@ export namespace Prisma {
     exchangeRateToBase: Decimal | null
     totalInBaseCurrency: Decimal | null
     notes: string | null
+    lastReminderSentAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -12646,6 +12648,7 @@ export namespace Prisma {
     exchangeRateToBase: number
     totalInBaseCurrency: number
     notes: number
+    lastReminderSentAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -12693,6 +12696,7 @@ export namespace Prisma {
     exchangeRateToBase?: true
     totalInBaseCurrency?: true
     notes?: true
+    lastReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -12716,6 +12720,7 @@ export namespace Prisma {
     exchangeRateToBase?: true
     totalInBaseCurrency?: true
     notes?: true
+    lastReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -12739,6 +12744,7 @@ export namespace Prisma {
     exchangeRateToBase?: true
     totalInBaseCurrency?: true
     notes?: true
+    lastReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -12849,6 +12855,7 @@ export namespace Prisma {
     exchangeRateToBase: Decimal | null
     totalInBaseCurrency: Decimal | null
     notes: string | null
+    lastReminderSentAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: InvoiceCountAggregateOutputType | null
@@ -12891,6 +12898,7 @@ export namespace Prisma {
     exchangeRateToBase?: boolean
     totalInBaseCurrency?: boolean
     notes?: boolean
+    lastReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -12919,6 +12927,7 @@ export namespace Prisma {
     exchangeRateToBase?: boolean
     totalInBaseCurrency?: boolean
     notes?: boolean
+    lastReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -12944,6 +12953,7 @@ export namespace Prisma {
     exchangeRateToBase?: boolean
     totalInBaseCurrency?: boolean
     notes?: boolean
+    lastReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -12969,11 +12979,12 @@ export namespace Prisma {
     exchangeRateToBase?: boolean
     totalInBaseCurrency?: boolean
     notes?: boolean
+    lastReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "currency" | "status" | "issueDate" | "dueDate" | "subtotal" | "discountType" | "discountValue" | "discountAmount" | "taxRate" | "taxAmount" | "total" | "exchangeRateToBase" | "totalInBaseCurrency" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceNumber" | "organizationId" | "customerId" | "currency" | "status" | "issueDate" | "dueDate" | "subtotal" | "discountType" | "discountValue" | "discountAmount" | "taxRate" | "taxAmount" | "total" | "exchangeRateToBase" | "totalInBaseCurrency" | "notes" | "lastReminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -13017,6 +13028,7 @@ export namespace Prisma {
       exchangeRateToBase: Prisma.Decimal | null
       totalInBaseCurrency: Prisma.Decimal | null
       notes: string | null
+      lastReminderSentAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["invoice"]>
@@ -13464,6 +13476,7 @@ export namespace Prisma {
     readonly exchangeRateToBase: FieldRef<"Invoice", 'Decimal'>
     readonly totalInBaseCurrency: FieldRef<"Invoice", 'Decimal'>
     readonly notes: FieldRef<"Invoice", 'String'>
+    readonly lastReminderSentAt: FieldRef<"Invoice", 'DateTime'>
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
   }
@@ -17466,6 +17479,7 @@ export namespace Prisma {
     exchangeRateToBase: 'exchangeRateToBase',
     totalInBaseCurrency: 'totalInBaseCurrency',
     notes: 'notes',
+    lastReminderSentAt: 'lastReminderSentAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -18484,6 +18498,7 @@ export namespace Prisma {
     exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
+    lastReminderSentAt?: DateTimeNullableFilter<"Invoice"> | Date | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -18511,6 +18526,7 @@ export namespace Prisma {
     exchangeRateToBase?: SortOrderInput | SortOrder
     totalInBaseCurrency?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    lastReminderSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
@@ -18542,6 +18558,7 @@ export namespace Prisma {
     exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
+    lastReminderSentAt?: DateTimeNullableFilter<"Invoice"> | Date | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -18569,6 +18586,7 @@ export namespace Prisma {
     exchangeRateToBase?: SortOrderInput | SortOrder
     totalInBaseCurrency?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    lastReminderSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: InvoiceCountOrderByAggregateInput
@@ -18600,6 +18618,7 @@ export namespace Prisma {
     exchangeRateToBase?: DecimalNullableWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: DecimalNullableWithAggregatesFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
+    lastReminderSentAt?: DateTimeNullableWithAggregatesFilter<"Invoice"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
   }
@@ -19659,6 +19678,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutInvoicesInput
@@ -19686,6 +19706,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -19709,6 +19730,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutInvoicesNestedInput
@@ -19736,6 +19758,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -19761,6 +19784,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19782,6 +19806,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19805,6 +19830,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20814,6 +20840,7 @@ export namespace Prisma {
     exchangeRateToBase?: SortOrder
     totalInBaseCurrency?: SortOrder
     notes?: SortOrder
+    lastReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20848,6 +20875,7 @@ export namespace Prisma {
     exchangeRateToBase?: SortOrder
     totalInBaseCurrency?: SortOrder
     notes?: SortOrder
+    lastReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20871,6 +20899,7 @@ export namespace Prisma {
     exchangeRateToBase?: SortOrder
     totalInBaseCurrency?: SortOrder
     notes?: SortOrder
+    lastReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -22773,6 +22802,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutInvoicesInput
@@ -22798,6 +22828,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -23005,6 +23036,7 @@ export namespace Prisma {
     exchangeRateToBase?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: DecimalNullableFilter<"Invoice"> | Decimal | DecimalJsLike | number | string | null
     notes?: StringNullableFilter<"Invoice"> | string | null
+    lastReminderSentAt?: DateTimeNullableFilter<"Invoice"> | Date | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
   }
@@ -23555,6 +23587,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutInvoicesInput
@@ -23580,6 +23613,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -23952,6 +23986,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutInvoicesInput
@@ -23978,6 +24013,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payments?: PaymentUncheckedCreateNestedManyWithoutInvoiceInput
@@ -24016,6 +24052,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutInvoicesNestedInput
@@ -24042,6 +24079,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payments?: PaymentUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -24064,6 +24102,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutInvoicesInput
@@ -24090,6 +24129,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -24169,6 +24209,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutInvoicesNestedInput
@@ -24195,6 +24236,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -24468,6 +24510,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24596,6 +24639,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutInvoicesNestedInput
@@ -24621,6 +24665,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -24645,6 +24690,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24775,6 +24821,7 @@ export namespace Prisma {
     exchangeRateToBase?: Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: Decimal | DecimalJsLike | number | string | null
     notes?: string | null
+    lastReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24796,6 +24843,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutInvoicesNestedInput
@@ -24821,6 +24869,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -24845,6 +24894,7 @@ export namespace Prisma {
     exchangeRateToBase?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     totalInBaseCurrency?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    lastReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

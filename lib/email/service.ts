@@ -10,6 +10,7 @@ import type {
   EmailResult,
   InvitationEmailData,
   InvoiceEmailData,
+  InvoiceReminderEmailData,
   EmailVerificationData,
   PasswordResetData,
 } from "./types";
@@ -25,6 +26,11 @@ import {
   renderInvoiceHtml,
   renderInvoiceText,
 } from "./templates/invoice";
+import {
+  renderInvoiceReminderSubject,
+  renderInvoiceReminderHtml,
+  renderInvoiceReminderText,
+} from "./templates/invoice-reminder";
 import {
   renderVerificationSubject,
   renderVerificationHtml,
@@ -150,6 +156,45 @@ export class EmailService {
         throw error;
       }
       throw new EmailTemplateError("Failed to render invoice email", error);
+    }
+  }
+
+  /**
+   * Send an invoice reminder email (overdue or due-soon)
+   */
+  async sendInvoiceReminder(data: InvoiceReminderEmailData): Promise<EmailResult> {
+    try {
+      const subject = renderInvoiceReminderSubject(data);
+      const html = renderInvoiceReminderHtml(data);
+      const text = renderInvoiceReminderText(data);
+
+      const result = await this.provider.send({
+        to: data.recipientEmail,
+        subject,
+        html,
+        text,
+      });
+
+      if (!result.success) {
+        throw new EmailSendError(
+          result.error || "Failed to send invoice reminder email"
+        );
+      }
+
+      logger.info(
+        `Invoice reminder (${data.reminderType}) ${data.invoiceNumber} sent to ${data.recipientEmail}`,
+        result.previewUrl ? `Preview: ${result.previewUrl}` : ""
+      );
+
+      return result;
+    } catch (error) {
+      if (error instanceof EmailSendError) {
+        throw error;
+      }
+      throw new EmailTemplateError(
+        "Failed to render invoice reminder email",
+        error
+      );
     }
   }
 

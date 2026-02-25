@@ -249,6 +249,7 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   exchangeRateToBase: 'exchangeRateToBase',
   totalInBaseCurrency: 'totalInBaseCurrency',
   notes: 'notes',
+  lastReminderSentAt: 'lastReminderSentAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

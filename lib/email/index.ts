@@ -42,6 +42,8 @@ export type {
   EmailDefaults,
   InvitationEmailData,
   InvoiceEmailData,
+  InvoiceReminderEmailData,
+  InvoiceReminderType,
   EmailVerificationData,
   PasswordResetData,
   EmailTemplateData,
