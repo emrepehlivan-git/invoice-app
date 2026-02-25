@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { usePathname, Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { Building2, User, Users } from "lucide-react";
+import { Building2, User, Users, History } from "lucide-react";
 type Props = {
   orgSlug: string;
 };
@@ -30,6 +30,11 @@ export function SettingsNav({ orgSlug }: Props) {
       href: `${basePath}/user`,
       icon: User,
       label: t("nav.user"),
+    },
+    {
+      href: `${basePath}/audit-log`,
+      icon: History,
+      label: t("nav.auditLog"),
     },
   ];
 

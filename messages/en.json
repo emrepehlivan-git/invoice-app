@@ -497,7 +497,8 @@
     "nav": {
       "user": "User Settings",
       "organization": "Organization Settings",
-      "members": "Members"
+      "members": "Members",
+      "auditLog": "Audit Log"
     },
     "user": {
       "description": "Manage your profile and security settings"
@@ -678,6 +679,45 @@
         "title": "Remove Member",
         "description": "Are you sure you want to remove {name} from this organization? They will lose access immediately.",
         "confirm": "Remove"
+      }
+    },
+    "auditLog": {
+      "title": "Audit Log",
+      "description": "View activity and changes in your organization",
+      "adminOnly": "Admin Access Required",
+      "adminOnlyDescription": "Only administrators can view the audit log",
+      "cardTitle": "Activity Log",
+      "cardDescription": "Recent actions and changes. Use filters to narrow results.",
+      "filters": {
+        "action": "Action",
+        "allActions": "All actions",
+        "entityType": "Entity type",
+        "allTypes": "All types",
+        "dateRange": "Date range",
+        "search": "Search",
+        "searchPlaceholder": "Entity ID or user...",
+        "apply": "Apply"
+      },
+      "action": {
+        "CREATE": "Create",
+        "UPDATE": "Update",
+        "DELETE": "Delete",
+        "STATUS_CHANGE": "Status change"
+      },
+      "table": {
+        "date": "Date",
+        "action": "Action",
+        "entityType": "Entity type",
+        "entityId": "Entity ID",
+        "userId": "User ID",
+        "ip": "IP"
+      },
+      "export": "Export CSV",
+      "loading": "Loading...",
+      "noLogs": "No audit log entries found",
+      "pagination": {
+        "showing": "Showing {from}–{to} of {total}",
+        "page": "Page {current} of {total}"
       }
     }
   },

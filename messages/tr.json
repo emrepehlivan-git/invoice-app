@@ -497,7 +497,8 @@
     "nav": {
       "user": "Kullanıcı Ayarları",
       "organization": "Organizasyon Ayarları",
-      "members": "Üyeler"
+      "members": "Üyeler",
+      "auditLog": "Denetim Günlüğü"
     },
     "user": {
       "description": "Profil ve güvenlik ayarlarınızı yönetin"
@@ -678,6 +679,45 @@
         "title": "Üyeyi Çıkar",
         "description": "{name} kullanıcısını bu organizasyondan çıkarmak istediğinizden emin misiniz? Erişimi hemen kaybedecek.",
         "confirm": "Çıkar"
+      }
+    },
+    "auditLog": {
+      "title": "Denetim Günlüğü",
+      "description": "Organizasyonunuzdaki işlem ve değişiklikleri görüntüleyin",
+      "adminOnly": "Yönetici Yetkisi Gerekli",
+      "adminOnlyDescription": "Denetim günlüğünü yalnızca yöneticiler görüntüleyebilir",
+      "cardTitle": "İşlem Günlüğü",
+      "cardDescription": "Son işlemler ve değişiklikler. Sonuçları daraltmak için filtreleri kullanın.",
+      "filters": {
+        "action": "İşlem",
+        "allActions": "Tüm işlemler",
+        "entityType": "Varlık türü",
+        "allTypes": "Tüm türler",
+        "dateRange": "Tarih aralığı",
+        "search": "Ara",
+        "searchPlaceholder": "Varlık ID veya kullanıcı...",
+        "apply": "Uygula"
+      },
+      "action": {
+        "CREATE": "Oluşturma",
+        "UPDATE": "Güncelleme",
+        "DELETE": "Silme",
+        "STATUS_CHANGE": "Durum değişikliği"
+      },
+      "table": {
+        "date": "Tarih",
+        "action": "İşlem",
+        "entityType": "Varlık türü",
+        "entityId": "Varlık ID",
+        "userId": "Kullanıcı ID",
+        "ip": "IP"
+      },
+      "export": "CSV İndir",
+      "loading": "Yükleniyor...",
+      "noLogs": "Denetim günlüğü kaydı bulunamadı",
+      "pagination": {
+        "showing": "{from}–{to} / {total} kayıt",
+        "page": "Sayfa {current} / {total}"
       }
     }
   },
