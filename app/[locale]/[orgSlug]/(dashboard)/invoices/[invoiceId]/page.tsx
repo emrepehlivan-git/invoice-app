@@ -27,6 +27,11 @@ import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus, DiscountType } from "@/types";
 import { SendEmailButton } from "@/components/invoices/send-email-button";
 import { PaymentSection } from "@/components/invoices/payment-section";
+import { PrintInvoiceButton } from "@/components/invoices/print-invoice-button";
+import {
+  InvoicePrintView,
+  type InvoicePrintLabels,
+} from "@/components/invoices/invoice-print-view";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string; invoiceId: string }>;
@@ -77,8 +82,36 @@ export default async function InvoiceDetailPage({ params }: Props) {
     }).format(amount);
   }
 
+  const printLabels: InvoicePrintLabels = {
+    billTo: t("invoices.detail.billTo"),
+    invoiceInfo: t("invoices.detail.invoiceInfo"),
+    itemsTitle: t("invoices.detail.itemsTitle"),
+    invoiceNumber: t("invoices.fields.invoiceNumber"),
+    status: t("invoices.fields.status"),
+    issueDate: t("invoices.fields.issueDate"),
+    dueDate: t("invoices.fields.dueDate"),
+    description: t("invoices.items.description"),
+    quantity: t("invoices.items.quantity"),
+    unitPrice: t("invoices.items.unitPrice"),
+    total: t("invoices.fields.total"),
+    subtotal: t("invoices.fields.subtotal"),
+    discount: t("invoices.fields.discount"),
+    taxAmount: t("invoices.fields.taxAmount"),
+    notes: t("invoices.fields.notes"),
+    taxNumber: t("customers.fields.taxNumber"),
+  };
+
   return (
-    <div className="space-y-6">
+    <>
+      <div className="print-only hidden">
+        <InvoicePrintView
+          invoice={invoice}
+          locale={locale}
+          labels={printLabels}
+          statusLabel={t(`invoices.status.${invoice.status}`)}
+        />
+      </div>
+      <div className="no-print space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
@@ -105,6 +138,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
             customerEmail={invoice.customer.email}
             disabled={invoice.status === InvoiceStatus.CANCELLED}
           />
+          <PrintInvoiceButton />
           <Button variant="outline" asChild>
             <a
               href={`/api/invoices/${invoiceId}/pdf?locale=${locale}`}
@@ -315,6 +349,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </>
   );
 }

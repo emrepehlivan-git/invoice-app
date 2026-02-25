@@ -37,14 +37,18 @@ export default async function DashboardLayout({ children, params }: Props) {
 
   return (
     <SidebarProvider>
-      <DashboardSidebar
-        organization={organization}
-        organizations={organizations}
-        user={user}
-        locale={locale}
-      />
+      <div className="no-print">
+        <DashboardSidebar
+          organization={organization}
+          organizations={organizations}
+          user={user}
+          locale={locale}
+        />
+      </div>
       <SidebarInset className="flex flex-col overflow-hidden">
-        <DashboardHeader organization={organization} user={user} />
+        <div className="no-print">
+          <DashboardHeader organization={organization} user={user} />
+        </div>
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
