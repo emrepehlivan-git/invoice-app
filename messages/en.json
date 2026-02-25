@@ -553,6 +553,26 @@
         "error": "Failed to update base currency"
       }
     },
+    "invoiceNumberFormat": {
+      "title": "Invoice Number Format",
+      "description": "Customize how invoice numbers are generated (prefix, padding, year)",
+      "fields": {
+        "prefix": "Prefix",
+        "prefixHint": "Letters, numbers and hyphen only (e.g. INV, FTR). Used at the start of each invoice number.",
+        "prefixInvalid": "Only letters, numbers and hyphen allowed",
+        "padding": "Number padding",
+        "paddingHint": "How many digits for the sequence (e.g. 4 → 0001, 0002).",
+        "digits": "digits",
+        "includeYear": "Include year in number",
+        "includeYearHint": "When enabled, format is PREFIX-YEAR-NUMBER (e.g. INV-2025-0001). When disabled, PREFIX-NUMBER (e.g. INV-0001)."
+      },
+      "messages": {
+        "success": "Invoice number format updated successfully",
+        "error": "Failed to update invoice number format",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    },
     "exchangeRates": {
       "title": "Exchange Rates",
       "description": "Set exchange rates for currency conversion in reports",

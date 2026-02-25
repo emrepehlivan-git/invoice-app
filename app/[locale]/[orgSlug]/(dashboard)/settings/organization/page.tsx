@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { CurrencySettingsForm } from "@/components/settings/currency-settings-form";
 import { ExchangeRatesForm } from "@/components/settings/exchange-rates-form";
+import { InvoiceNumberFormatForm } from "@/components/settings/invoice-number-format-form";
 import { SettingsNav } from "@/components/settings/settings-nav";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -98,6 +99,23 @@ export default async function OrganizationSettingsPage({ params }: Props) {
                   baseCurrency={organization.baseCurrency}
                   exchangeRates={exchangeRates}
                   locale={locale}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("invoiceNumberFormat.title")}</CardTitle>
+                <CardDescription>
+                  {t("invoiceNumberFormat.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InvoiceNumberFormatForm
+                  organizationId={organization.id}
+                  currentPrefix={organization.invoiceNumberPrefix}
+                  currentPadding={organization.invoiceNumberPadding}
+                  currentIncludeYear={organization.invoiceNumberIncludeYear}
                 />
               </CardContent>
             </Card>

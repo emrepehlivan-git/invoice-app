@@ -174,6 +174,9 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   slug: 'slug',
   logo: 'logo',
   baseCurrency: 'baseCurrency',
+  invoiceNumberPrefix: 'invoiceNumberPrefix',
+  invoiceNumberPadding: 'invoiceNumberPadding',
+  invoiceNumberIncludeYear: 'invoiceNumberIncludeYear',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

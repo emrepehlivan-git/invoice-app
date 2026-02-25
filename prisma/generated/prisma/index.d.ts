@@ -6711,8 +6711,18 @@ export namespace Prisma {
 
   export type AggregateOrganization = {
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
+  }
+
+  export type OrganizationAvgAggregateOutputType = {
+    invoiceNumberPadding: number | null
+  }
+
+  export type OrganizationSumAggregateOutputType = {
+    invoiceNumberPadding: number | null
   }
 
   export type OrganizationMinAggregateOutputType = {
@@ -6721,6 +6731,9 @@ export namespace Prisma {
     slug: string | null
     logo: string | null
     baseCurrency: string | null
+    invoiceNumberPrefix: string | null
+    invoiceNumberPadding: number | null
+    invoiceNumberIncludeYear: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6731,6 +6744,9 @@ export namespace Prisma {
     slug: string | null
     logo: string | null
     baseCurrency: string | null
+    invoiceNumberPrefix: string | null
+    invoiceNumberPadding: number | null
+    invoiceNumberIncludeYear: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6741,11 +6757,22 @@ export namespace Prisma {
     slug: number
     logo: number
     baseCurrency: number
+    invoiceNumberPrefix: number
+    invoiceNumberPadding: number
+    invoiceNumberIncludeYear: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type OrganizationAvgAggregateInputType = {
+    invoiceNumberPadding?: true
+  }
+
+  export type OrganizationSumAggregateInputType = {
+    invoiceNumberPadding?: true
+  }
 
   export type OrganizationMinAggregateInputType = {
     id?: true
@@ -6753,6 +6780,9 @@ export namespace Prisma {
     slug?: true
     logo?: true
     baseCurrency?: true
+    invoiceNumberPrefix?: true
+    invoiceNumberPadding?: true
+    invoiceNumberIncludeYear?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6763,6 +6793,9 @@ export namespace Prisma {
     slug?: true
     logo?: true
     baseCurrency?: true
+    invoiceNumberPrefix?: true
+    invoiceNumberPadding?: true
+    invoiceNumberIncludeYear?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6773,6 +6806,9 @@ export namespace Prisma {
     slug?: true
     logo?: true
     baseCurrency?: true
+    invoiceNumberPrefix?: true
+    invoiceNumberPadding?: true
+    invoiceNumberIncludeYear?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6816,6 +6852,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: OrganizationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrganizationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: OrganizationMinAggregateInputType
@@ -6846,6 +6894,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OrganizationCountAggregateInputType | true
+    _avg?: OrganizationAvgAggregateInputType
+    _sum?: OrganizationSumAggregateInputType
     _min?: OrganizationMinAggregateInputType
     _max?: OrganizationMaxAggregateInputType
   }
@@ -6856,9 +6906,14 @@ export namespace Prisma {
     slug: string
     logo: string | null
     baseCurrency: string
+    invoiceNumberPrefix: string
+    invoiceNumberPadding: number
+    invoiceNumberIncludeYear: boolean
     createdAt: Date
     updatedAt: Date
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
   }
@@ -6883,6 +6938,9 @@ export namespace Prisma {
     slug?: boolean
     logo?: boolean
     baseCurrency?: boolean
+    invoiceNumberPrefix?: boolean
+    invoiceNumberPadding?: boolean
+    invoiceNumberIncludeYear?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     members?: boolean | Organization$membersArgs<ExtArgs>
@@ -6900,6 +6958,9 @@ export namespace Prisma {
     slug?: boolean
     logo?: boolean
     baseCurrency?: boolean
+    invoiceNumberPrefix?: boolean
+    invoiceNumberPadding?: boolean
+    invoiceNumberIncludeYear?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["organization"]>
@@ -6910,6 +6971,9 @@ export namespace Prisma {
     slug?: boolean
     logo?: boolean
     baseCurrency?: boolean
+    invoiceNumberPrefix?: boolean
+    invoiceNumberPadding?: boolean
+    invoiceNumberIncludeYear?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["organization"]>
@@ -6920,11 +6984,14 @@ export namespace Prisma {
     slug?: boolean
     logo?: boolean
     baseCurrency?: boolean
+    invoiceNumberPrefix?: boolean
+    invoiceNumberPadding?: boolean
+    invoiceNumberIncludeYear?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "baseCurrency" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "baseCurrency" | "invoiceNumberPrefix" | "invoiceNumberPadding" | "invoiceNumberIncludeYear" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Organization$membersArgs<ExtArgs>
     customers?: boolean | Organization$customersArgs<ExtArgs>
@@ -6953,6 +7020,9 @@ export namespace Prisma {
       slug: string
       logo: string | null
       baseCurrency: string
+      invoiceNumberPrefix: string
+      invoiceNumberPadding: number
+      invoiceNumberIncludeYear: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["organization"]>
@@ -7389,6 +7459,9 @@ export namespace Prisma {
     readonly slug: FieldRef<"Organization", 'String'>
     readonly logo: FieldRef<"Organization", 'String'>
     readonly baseCurrency: FieldRef<"Organization", 'String'>
+    readonly invoiceNumberPrefix: FieldRef<"Organization", 'String'>
+    readonly invoiceNumberPadding: FieldRef<"Organization", 'Int'>
+    readonly invoiceNumberIncludeYear: FieldRef<"Organization", 'Boolean'>
     readonly createdAt: FieldRef<"Organization", 'DateTime'>
     readonly updatedAt: FieldRef<"Organization", 'DateTime'>
   }
@@ -17303,6 +17376,9 @@ export namespace Prisma {
     slug: 'slug',
     logo: 'logo',
     baseCurrency: 'baseCurrency',
+    invoiceNumberPrefix: 'invoiceNumberPrefix',
+    invoiceNumberPadding: 'invoiceNumberPadding',
+    invoiceNumberIncludeYear: 'invoiceNumberIncludeYear',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -17526,6 +17602,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -17638,16 +17728,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'Float'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of type 'Float[]'
    */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -17964,6 +18054,9 @@ export namespace Prisma {
     slug?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
     baseCurrency?: StringFilter<"Organization"> | string
+    invoiceNumberPrefix?: StringFilter<"Organization"> | string
+    invoiceNumberPadding?: IntFilter<"Organization"> | number
+    invoiceNumberIncludeYear?: BoolFilter<"Organization"> | boolean
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     members?: OrganizationMemberListRelationFilter
@@ -17980,6 +18073,9 @@ export namespace Prisma {
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
     baseCurrency?: SortOrder
+    invoiceNumberPrefix?: SortOrder
+    invoiceNumberPadding?: SortOrder
+    invoiceNumberIncludeYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     members?: OrganizationMemberOrderByRelationAggregateInput
@@ -17999,6 +18095,9 @@ export namespace Prisma {
     name?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
     baseCurrency?: StringFilter<"Organization"> | string
+    invoiceNumberPrefix?: StringFilter<"Organization"> | string
+    invoiceNumberPadding?: IntFilter<"Organization"> | number
+    invoiceNumberIncludeYear?: BoolFilter<"Organization"> | boolean
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     members?: OrganizationMemberListRelationFilter
@@ -18015,11 +18114,16 @@ export namespace Prisma {
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
     baseCurrency?: SortOrder
+    invoiceNumberPrefix?: SortOrder
+    invoiceNumberPadding?: SortOrder
+    invoiceNumberIncludeYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: OrganizationCountOrderByAggregateInput
+    _avg?: OrganizationAvgOrderByAggregateInput
     _max?: OrganizationMaxOrderByAggregateInput
     _min?: OrganizationMinOrderByAggregateInput
+    _sum?: OrganizationSumOrderByAggregateInput
   }
 
   export type OrganizationScalarWhereWithAggregatesInput = {
@@ -18031,6 +18135,9 @@ export namespace Prisma {
     slug?: StringWithAggregatesFilter<"Organization"> | string
     logo?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     baseCurrency?: StringWithAggregatesFilter<"Organization"> | string
+    invoiceNumberPrefix?: StringWithAggregatesFilter<"Organization"> | string
+    invoiceNumberPadding?: IntWithAggregatesFilter<"Organization"> | number
+    invoiceNumberIncludeYear?: BoolWithAggregatesFilter<"Organization"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organization"> | Date | string
   }
@@ -19085,6 +19192,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -19101,6 +19211,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -19117,6 +19230,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -19133,6 +19249,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -19149,6 +19268,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19159,6 +19281,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19169,6 +19294,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20264,6 +20392,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type CustomerListRelationFilter = {
     every?: CustomerWhereInput
     some?: CustomerWhereInput
@@ -20310,8 +20449,15 @@ export namespace Prisma {
     slug?: SortOrder
     logo?: SortOrder
     baseCurrency?: SortOrder
+    invoiceNumberPrefix?: SortOrder
+    invoiceNumberPadding?: SortOrder
+    invoiceNumberIncludeYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type OrganizationAvgOrderByAggregateInput = {
+    invoiceNumberPadding?: SortOrder
   }
 
   export type OrganizationMaxOrderByAggregateInput = {
@@ -20320,6 +20466,9 @@ export namespace Prisma {
     slug?: SortOrder
     logo?: SortOrder
     baseCurrency?: SortOrder
+    invoiceNumberPrefix?: SortOrder
+    invoiceNumberPadding?: SortOrder
+    invoiceNumberIncludeYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20330,8 +20479,31 @@ export namespace Prisma {
     slug?: SortOrder
     logo?: SortOrder
     baseCurrency?: SortOrder
+    invoiceNumberPrefix?: SortOrder
+    invoiceNumberPadding?: SortOrder
+    invoiceNumberIncludeYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type OrganizationSumOrderByAggregateInput = {
+    invoiceNumberPadding?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type DecimalFilter<$PrismaModel = never> = {
@@ -21268,6 +21440,14 @@ export namespace Prisma {
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type OrganizationMemberUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -21901,6 +22081,33 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedDecimalFilter<$PrismaModel = never> = {
@@ -22888,6 +23095,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -22903,6 +23113,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -22934,6 +23147,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -22949,6 +23165,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -22997,6 +23216,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     customers?: CustomerCreateNestedManyWithoutOrganizationInput
@@ -23012,6 +23234,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
@@ -23082,6 +23307,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customers?: CustomerUpdateManyWithoutOrganizationNestedInput
@@ -23097,6 +23325,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -23112,6 +23343,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -23127,6 +23361,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -23191,6 +23428,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -23206,6 +23446,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -23260,6 +23503,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -23275,6 +23521,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -23364,6 +23613,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -23379,6 +23631,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -23410,6 +23665,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -23425,6 +23683,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -23557,6 +23818,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -23572,6 +23836,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -23839,6 +24106,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
@@ -23854,6 +24124,9 @@ export namespace Prisma {
     slug: string
     logo?: string | null
     baseCurrency?: string
+    invoiceNumberPrefix?: string
+    invoiceNumberPadding?: number
+    invoiceNumberIncludeYear?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
@@ -23944,6 +24217,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
@@ -23959,6 +24235,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
+    invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
+    invoiceNumberIncludeYear?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput

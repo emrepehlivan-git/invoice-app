@@ -132,7 +132,6 @@ export async function updateOrganizationSettings(
   data: { baseCurrency: string }
 ): Promise<ActionResult<Organization>> {
   try {
-    // Only admins can update organization settings
     await requireAdminAccess(organizationId);
 
     const validated = updateOrgSchema.parse(data);
@@ -149,6 +148,45 @@ export async function updateOrganizationSettings(
     return actionSuccess(organization);
   } catch (error) {
     return handleActionError(error, "updateOrganizationSettings", { organizationId, data });
+  }
+}
+
+const invoiceNumberFormatSchema = z.object({
+  invoiceNumberPrefix: z.string().min(1).max(20).regex(/^[A-Za-z0-9-]+$/),
+  invoiceNumberPadding: z.number().int().min(1).max(10),
+  invoiceNumberIncludeYear: z.boolean(),
+});
+
+export async function updateInvoiceNumberFormat(
+  organizationId: string,
+  data: {
+    invoiceNumberPrefix: string;
+    invoiceNumberPadding: number;
+    invoiceNumberIncludeYear: boolean;
+  }
+): Promise<ActionResult<Organization>> {
+  try {
+    await requireAdminAccess(organizationId);
+
+    const validated = invoiceNumberFormatSchema.parse({
+      ...data,
+      invoiceNumberPrefix: data.invoiceNumberPrefix.replace(/\s/g, "").toUpperCase() || "INV",
+    });
+
+    const organization = await prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        invoiceNumberPrefix: validated.invoiceNumberPrefix,
+        invoiceNumberPadding: validated.invoiceNumberPadding,
+        invoiceNumberIncludeYear: validated.invoiceNumberIncludeYear,
+      },
+    });
+
+    revalidatePath("/");
+
+    return actionSuccess(organization);
+  } catch (error) {
+    return handleActionError(error, "updateInvoiceNumberFormat", { organizationId, data });
   }
 }
 

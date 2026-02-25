@@ -48,30 +48,42 @@ const invoiceSchema = z.object({
 type InvoiceInput = z.infer<typeof invoiceSchema>;
 
 async function generateInvoiceNumber(organizationId: string): Promise<string> {
+  const org = await prisma.organization.findUnique({
+    where: { id: organizationId },
+    select: {
+      invoiceNumberPrefix: true,
+      invoiceNumberPadding: true,
+      invoiceNumberIncludeYear: true,
+    },
+  });
+
+  const prefix = (org?.invoiceNumberPrefix ?? "INV").replace(/\s/g, "").toUpperCase() || "INV";
+  const padding = Math.min(10, Math.max(1, org?.invoiceNumberPadding ?? 4));
+  const includeYear = org?.invoiceNumberIncludeYear ?? true;
   const year = new Date().getFullYear();
+
+  const searchPrefix = includeYear ? `${prefix}-${year}-` : `${prefix}-`;
 
   const lastInvoice = await prisma.invoice.findFirst({
     where: {
       organizationId,
-      invoiceNumber: {
-        startsWith: `INV-${year}-`,
-      },
+      invoiceNumber: { startsWith: searchPrefix },
     },
-    orderBy: {
-      invoiceNumber: "desc",
-    },
+    orderBy: { invoiceNumber: "desc" },
   });
 
   let nextNumber = 1;
   if (lastInvoice) {
     const parts = lastInvoice.invoiceNumber.split("-");
-    const lastNumber = parseInt(parts[2], 10);
-    if (!isNaN(lastNumber)) {
-      nextNumber = lastNumber + 1;
+    const lastPart = parts[parts.length - 1];
+    const lastNum = parseInt(lastPart, 10);
+    if (!isNaN(lastNum)) {
+      nextNumber = lastNum + 1;
     }
   }
 
-  return `INV-${year}-${nextNumber.toString().padStart(4, "0")}`;
+  const numberPart = nextNumber.toString().padStart(padding, "0");
+  return includeYear ? `${prefix}-${year}-${numberPart}` : `${prefix}-${numberPart}`;
 }
 
 function calculateTotals(

@@ -553,6 +553,26 @@
         "error": "Baz para birimi güncellenemedi"
       }
     },
+    "invoiceNumberFormat": {
+      "title": "Fatura Numarası Formatı",
+      "description": "Fatura numaralarının nasıl üretileceğini özelleştirin (önek, padding, yıl)",
+      "fields": {
+        "prefix": "Önek",
+        "prefixHint": "Sadece harf, rakam ve tire (örn. INV, FTR). Her fatura numarasının başında kullanılır.",
+        "prefixInvalid": "Sadece harf, rakam ve tire kullanılabilir",
+        "padding": "Numara hane sayısı",
+        "paddingHint": "Sıra numarası için kaç hane (örn. 4 → 0001, 0002).",
+        "digits": "haneli",
+        "includeYear": "Numarada yıl kullan",
+        "includeYearHint": "Açıkken format PREFIX-YIL-NUMARA (örn. INV-2025-0001). Kapalıyken PREFIX-NUMARA (örn. INV-0001)."
+      },
+      "messages": {
+        "success": "Fatura numarası formatı güncellendi",
+        "error": "Fatura numarası formatı güncellenemedi",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor..."
+      }
+    },
     "exchangeRates": {
       "title": "Döviz Kurları",
       "description": "Raporlarda para birimi dönüşümü için döviz kurlarını ayarlayın",
