@@ -3,6 +3,10 @@ import autoTable from "jspdf-autotable";
 import type { InvoiceWithRelations } from "@/types";
 import type { InvoicePdfLabels } from "./types";
 import { DiscountType } from "@/types";
+import { getImageFormatFromDataUrl } from "./logo-resolver";
+
+const LOGO_MAX_WIDTH_MM = 45;
+const LOGO_MAX_HEIGHT_MM = 18;
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat("en-US", {
@@ -25,19 +29,43 @@ function getStatusLabel(
   return map[status] ?? status;
 }
 
+export type GenerateInvoicePdfOptions = {
+  logoDataUrl?: string | null;
+};
+
 export function generateInvoicePdf(
   invoice: InvoiceWithRelations,
   labels: InvoicePdfLabels,
-  locale: string
+  locale: string,
+  options?: GenerateInvoicePdfOptions
 ): Uint8Array {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 20;
   let y = 20;
 
+  const logoDataUrl = options?.logoDataUrl ?? null;
+  if (logoDataUrl) {
+    try {
+      const format = getImageFormatFromDataUrl(logoDataUrl);
+      doc.addImage(
+        logoDataUrl,
+        format,
+        margin,
+        15,
+        LOGO_MAX_WIDTH_MM,
+        LOGO_MAX_HEIGHT_MM
+      );
+    } catch {
+      // Logo failed to embed; fall through to org name only
+    }
+  }
+
+  const nameX = logoDataUrl ? margin + LOGO_MAX_WIDTH_MM + 5 : margin;
+  const nameY = logoDataUrl ? 22 : y;
   doc.setFontSize(18);
-  doc.text(invoice.organization.name, margin, y);
-  y += 10;
+  doc.text(invoice.organization.name, nameX, nameY);
+  y = logoDataUrl ? 38 : 30;
 
   doc.setFontSize(12);
   doc.text(`${labels.invoiceNumber}: ${invoice.invoiceNumber}`, margin, y);
@@ -89,7 +117,7 @@ export function generateInvoicePdf(
     y += 5;
   }
 
-  const infoY = 45;
+  const infoY = y;
   doc.setFont("helvetica", "bold");
   doc.text(labels.invoiceInfo, pageWidth - margin - 70, infoY);
   doc.setFont("helvetica", "normal");

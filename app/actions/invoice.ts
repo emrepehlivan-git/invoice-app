@@ -24,6 +24,7 @@ import {
 import { getEmailService } from "@/lib/email/service";
 import { generateInvoicePdf } from "@/lib/pdf/invoice-pdf";
 import { getInvoicePdfLabels } from "@/lib/pdf/labels";
+import { resolveLogoToDataUrl } from "@/lib/pdf/logo-resolver";
 import en from "@/messages/en.json";
 import tr from "@/messages/tr.json";
 
@@ -1075,7 +1076,13 @@ export async function sendInvoiceEmail(
     const localeKey = locale === "tr" ? "tr" : "en";
     const msg = messages[localeKey] ?? messages.en;
     const labels = getInvoicePdfLabels(msg);
-    const pdfBuffer = generateInvoicePdf(invoice, labels, localeKey);
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const logoDataUrl = invoice.organization.logo
+      ? await resolveLogoToDataUrl(invoice.organization.logo, baseUrl)
+      : null;
+    const pdfBuffer = generateInvoicePdf(invoice, labels, localeKey, {
+      logoDataUrl,
+    });
 
     // Send email with PDF attachment
     const emailService = await getEmailService();

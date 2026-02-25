@@ -3,6 +3,7 @@ import { getInvoice } from "@/app/actions/invoice";
 import { getSession } from "@/lib/auth/session";
 import { generateInvoicePdf } from "@/lib/pdf/invoice-pdf";
 import { getInvoicePdfLabels } from "@/lib/pdf/labels";
+import { resolveLogoToDataUrl } from "@/lib/pdf/logo-resolver";
 import en from "@/messages/en.json";
 import tr from "@/messages/tr.json";
 import logger from "@/lib/logger";
@@ -13,7 +14,7 @@ const messages: Record<string, Parameters<typeof getInvoicePdfLabels>[0]> = {
 };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ invoiceId: string }> }
 ) {
   try {
@@ -28,13 +29,18 @@ export async function GET(
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
 
-    const url = new URL(_request.url);
+    const url = new URL(request.url);
     const locale = (url.searchParams.get("locale") ?? "en").toLowerCase();
     const localeKey = locale === "tr" ? "tr" : "en";
     const msg = messages[localeKey] ?? messages.en;
     const labels = getInvoicePdfLabels(msg);
 
-    const pdfBuffer = generateInvoicePdf(invoice, labels, localeKey);
+    const logoDataUrl = invoice.organization.logo
+      ? await resolveLogoToDataUrl(invoice.organization.logo, url.origin)
+      : null;
+    const pdfBuffer = generateInvoicePdf(invoice, labels, localeKey, {
+      logoDataUrl,
+    });
     const body = Buffer.from(
       pdfBuffer.buffer,
       pdfBuffer.byteOffset,
