@@ -473,6 +473,22 @@
       "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
       "confirm": "Delete",
       "cancel": "Cancel"
+    },
+    "export": {
+      "csv": "Export CSV",
+      "success": "Customers exported successfully",
+      "error": "Export failed"
+    },
+    "import": {
+      "title": "Import Customers",
+      "description": "Upload a CSV file or paste CSV content. First row can be headers (Name, Email, Phone, ...).",
+      "csv": "Import CSV",
+      "uploadOrPaste": "Upload file or paste CSV below",
+      "selectFile": "Select CSV file",
+      "success": "{created} created, {skipped} skipped",
+      "successOnlyCreated": "{created} customers imported",
+      "error": "Import failed",
+      "rowError": "Row {row}: {message}"
     }
   },
   "settings": {

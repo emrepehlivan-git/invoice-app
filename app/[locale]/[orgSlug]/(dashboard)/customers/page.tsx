@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CustomerTable } from "@/components/customers/customer-table";
+import { CustomerListActions } from "@/components/customers/customer-list-actions";
 
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
@@ -48,12 +49,19 @@ export default async function CustomersPage({ params }: Props) {
             {t("customers.description")}
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/${orgSlug}/customers/new`}>
-            <Plus className="mr-2 size-4" />
-            {t("customers.create")}
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <CustomerListActions
+            organizationId={organization.id}
+            customers={customers}
+            locale={locale}
+          />
+          <Button asChild>
+            <Link href={`/${orgSlug}/customers/new`}>
+              <Plus className="mr-2 size-4" />
+              {t("customers.create")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>

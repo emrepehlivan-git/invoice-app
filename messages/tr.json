@@ -473,6 +473,22 @@
       "description": "\"{name}\" müşterisini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
       "confirm": "Sil",
       "cancel": "İptal"
+    },
+    "export": {
+      "csv": "CSV Dışa Aktar",
+      "success": "Müşteriler dışa aktarıldı",
+      "error": "Dışa aktarma başarısız"
+    },
+    "import": {
+      "title": "Müşteri İçe Aktar",
+      "description": "CSV dosyası yükleyin veya CSV içeriğini yapıştırın. İlk satır başlık olabilir (Ad, E-posta, Telefon, ...).",
+      "csv": "CSV İçe Aktar",
+      "uploadOrPaste": "Dosya yükleyin veya aşağıya CSV yapıştırın",
+      "selectFile": "CSV dosyası seçin",
+      "success": "{created} eklendi, {skipped} atlandı",
+      "successOnlyCreated": "{created} müşteri içe aktarıldı",
+      "error": "İçe aktarma başarısız",
+      "rowError": "Satır {row}: {message}"
     }
   },
   "settings": {

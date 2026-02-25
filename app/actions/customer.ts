@@ -7,6 +7,10 @@ import type { Customer } from "@/types";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
 import { verifyAccess } from "@/lib/auth/rbac";
 import {
+  parseCustomerCSV,
+  mapCSVRowToCustomer,
+} from "@/lib/export/customer-export";
+import {
   ErrorCode,
   type ActionResult,
   type SimpleResult,
@@ -19,6 +23,12 @@ import {
   isUniqueConstraintError,
   getUniqueConstraintField,
 } from "@/lib/errors";
+
+export type ImportCustomersResult = {
+  created: number;
+  skipped: number;
+  errors: { row: number; message: string }[];
+};
 
 const customerSchema = z.object({
   name: z.string().min(2).max(100),
@@ -235,7 +245,6 @@ export async function searchCustomers(
   query: string
 ): Promise<Customer[]> {
   try {
-    // All members can read/search customers
     await verifyAccess(organizationId, "read");
 
     const customers = await prisma.customer.findMany({
@@ -254,5 +263,60 @@ export async function searchCustomers(
     return customers;
   } catch {
     return [];
+  }
+}
+
+export async function importCustomersFromCSV(
+  organizationId: string,
+  csvContent: string
+): Promise<ActionResult<ImportCustomersResult>> {
+  try {
+    await verifyAccess(organizationId, "create");
+
+    const rows = parseCustomerCSV(csvContent);
+    const result: ImportCustomersResult = {
+      created: 0,
+      skipped: 0,
+      errors: [],
+    };
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNum = i + 1;
+      const record = mapCSVRowToCustomer(row);
+      const isEmpty = Object.values(record).every((v) => !v.trim());
+      if (isEmpty) continue;
+
+      const parseResult = customerSchema.safeParse(record);
+      if (!parseResult.success) {
+        const firstError = parseResult.error.errors[0];
+        result.errors.push({
+          row: rowNum,
+          message: firstError?.message ?? "Validation failed",
+        });
+        continue;
+      }
+
+      const createResult = await createCustomer(organizationId, parseResult.data);
+      if (createResult?.error) {
+        if (createResult.error === ErrorCode.EMAIL_EXISTS) {
+          result.skipped++;
+        } else {
+          result.errors.push({
+            row: rowNum,
+            message: createResult.message ?? "Create failed",
+          });
+        }
+      } else {
+        result.created++;
+      }
+    }
+
+    revalidatePath("/");
+    return actionSuccess(result);
+  } catch (error) {
+    return handleActionError(error, "importCustomersFromCSV", {
+      organizationId,
+    });
   }
 }
