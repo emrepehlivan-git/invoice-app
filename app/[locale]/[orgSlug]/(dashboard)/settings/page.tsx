@@ -9,5 +9,5 @@ export default async function SettingsPage({ params }: Props) {
   const { locale, orgSlug } = await params;
   setRequestLocale(locale);
 
-  redirect(`/${orgSlug}/settings/organization`);
+  redirect({ href: `/${orgSlug}/settings/organization`, locale });
 }
