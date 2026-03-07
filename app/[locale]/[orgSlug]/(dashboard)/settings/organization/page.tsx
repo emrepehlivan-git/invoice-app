@@ -14,6 +14,8 @@ import {
 import { CurrencySettingsForm } from "@/components/settings/currency-settings-form";
 import { ExchangeRatesForm } from "@/components/settings/exchange-rates-form";
 import { InvoiceNumberFormatForm } from "@/components/settings/invoice-number-format-form";
+import { OrganizationLogoUpload } from "@/components/settings/organization-logo-upload";
+import { OrganizationInfoForm } from "@/components/settings/organization-info-form";
 import { SettingsNav } from "@/components/settings/settings-nav";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -72,6 +74,41 @@ export default async function OrganizationSettingsPage({ params }: Props) {
 
         {isAdmin ? (
           <>
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("organization.logo.title")}</CardTitle>
+                <CardDescription>
+                  {t("organization.logo.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <OrganizationLogoUpload
+                  organizationId={organization.id}
+                  currentLogoUrl={organization.logo}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("organization.contactInfo.title")}</CardTitle>
+                <CardDescription>
+                  {t("organization.contactInfo.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <OrganizationInfoForm
+                  organizationId={organization.id}
+                  initialValues={{
+                    email: organization.email,
+                    phone: organization.phone,
+                    address: organization.address,
+                    taxNumber: organization.taxNumber,
+                  }}
+                />
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>{t("currency.title")}</CardTitle>

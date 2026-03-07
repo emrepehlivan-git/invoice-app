@@ -3,12 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
-import { InvoiceStatus, DiscountType } from "@/types";
+import { AuditAction, InvoiceStatus, DiscountType } from "@/types";
 import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
 import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { auditCreate, auditUpdate, auditDelete, auditStatusChange } from "@/lib/audit";
 import { verifyAccess } from "@/lib/auth/rbac";
+import { canTransition } from "@/lib/invoice-status-rules";
 import { getExchangeRatesMap } from "./exchange-rate";
 import {
   ErrorCode,
@@ -374,7 +375,10 @@ export async function updateInvoiceStatus(
     });
     assertExists(existingInvoice, "Invoice", invoiceId);
 
-    // Only admins can update invoice status
+    if (!canTransition(existingInvoice.status, status)) {
+      return actionError(ErrorCode.INVALID_STATUS_TRANSITION);
+    }
+
     await verifyAccess(existingInvoice.organizationId, "update");
 
     const invoice = await prisma.invoice.update({
@@ -473,6 +477,42 @@ export async function getInvoice(
   } catch {
     return null;
   }
+}
+
+export type InvoiceStatusHistoryEntry = {
+  fromStatus: string;
+  toStatus: string;
+  createdAt: Date;
+  userId: string | null;
+};
+
+export async function getInvoiceStatusHistory(
+  invoiceId: string,
+  organizationId: string
+): Promise<InvoiceStatusHistoryEntry[]> {
+  await verifyAccess(organizationId, "read");
+
+  const logs = await prisma.auditLog.findMany({
+    where: {
+      entityType: "Invoice",
+      entityId: invoiceId,
+      organizationId,
+      action: AuditAction.STATUS_CHANGE,
+    },
+    orderBy: { createdAt: "desc" },
+    select: { oldData: true, newData: true, createdAt: true, userId: true },
+  });
+
+  return logs.map((log) => {
+    const oldData = log.oldData as { status?: string } | null;
+    const newData = log.newData as { status?: string } | null;
+    return {
+      fromStatus: oldData?.status ?? "",
+      toStatus: newData?.status ?? "",
+      createdAt: log.createdAt,
+      userId: log.userId,
+    };
+  });
 }
 
 /**

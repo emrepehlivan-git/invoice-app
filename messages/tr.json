@@ -291,7 +291,8 @@
       "billTo": "Fatura Adresi",
       "invoiceInfo": "Fatura Bilgileri",
       "itemsTitle": "Kalemler",
-      "summary": "Özet"
+      "summary": "Özet",
+      "statusHistory": "Durum Geçmişi"
     },
     "messages": {
       "createSuccess": "Fatura başarıyla oluşturuldu",
@@ -311,7 +312,8 @@
       "cannotEdit": "Sadece taslak faturalar düzenlenebilir",
       "cannotDelete": "Sadece taslak veya iptal edilmiş faturalar silinebilir",
       "customerNotFound": "Müşteri bulunamadı",
-      "customerNoEmail": "Müşterinin e-posta adresi bulunmuyor"
+      "customerNoEmail": "Müşterinin e-posta adresi bulunmuyor",
+      "invalidStatusTransition": "Bu durum geçişi geçerli değil"
     },
     "validation": {
       "customerRequired": "Müşteri seçimi zorunludur",
@@ -509,7 +511,37 @@
       "infoDescription": "Organizasyonunuzun temel bilgileri",
       "name": "Organizasyon Adı",
       "adminOnly": "Yönetici Yetkisi Gerekli",
-      "adminOnlyDescription": "Bu ayarları değiştirmek için yönetici yetkisine sahip olmanız gerekiyor"
+      "adminOnlyDescription": "Bu ayarları değiştirmek için yönetici yetkisine sahip olmanız gerekiyor",
+      "logo": {
+        "title": "Logo",
+        "description": "Fatura ve yazdırma görünümünde kullanılacak logo",
+        "upload": "Logo Yükle",
+        "change": "Değiştir",
+        "remove": "Kaldır",
+        "hint": "PNG, JPG veya WebP. Maksimum 500 KB.",
+        "invalidType": "Geçerli bir resim dosyası seçin (PNG, JPG, WebP)",
+        "tooLarge": "Dosya 500 KB'dan büyük olamaz",
+        "uploadSuccess": "Logo güncellendi",
+        "uploadError": "Logo yüklenemedi",
+        "removeSuccess": "Logo kaldırıldı",
+        "removeError": "Logo kaldırılamadı"
+      },
+      "contactInfo": {
+        "title": "İletişim ve Adres Bilgileri",
+        "description": "Fatura PDF ve yazdırma görünümünde gösterilir",
+        "email": "E-posta",
+        "emailPlaceholder": "ornek@sirket.com",
+        "phone": "Telefon",
+        "phonePlaceholder": "+90 555 000 00 00",
+        "address": "Adres",
+        "addressPlaceholder": "Tam adres",
+        "taxNumber": "Vergi Numarası",
+        "taxNumberPlaceholder": "Vergi numarası",
+        "success": "Bilgiler güncellendi",
+        "error": "Bilgiler güncellenemedi",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor..."
+      }
     },
     "account": {
       "title": "Hesap Ayarları",

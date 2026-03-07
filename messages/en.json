@@ -291,7 +291,8 @@
       "billTo": "Bill To",
       "invoiceInfo": "Invoice Information",
       "itemsTitle": "Items",
-      "summary": "Summary"
+      "summary": "Summary",
+      "statusHistory": "Status History"
     },
     "messages": {
       "createSuccess": "Invoice created successfully",
@@ -311,7 +312,8 @@
       "cannotEdit": "Only draft invoices can be edited",
       "cannotDelete": "Only draft or cancelled invoices can be deleted",
       "customerNotFound": "Customer not found",
-      "customerNoEmail": "Customer does not have an email address"
+      "customerNoEmail": "Customer does not have an email address",
+      "invalidStatusTransition": "This status transition is not allowed"
     },
     "validation": {
       "customerRequired": "Customer selection is required",
@@ -509,7 +511,37 @@
       "infoDescription": "Basic information about your organization",
       "name": "Organization Name",
       "adminOnly": "Admin Access Required",
-      "adminOnlyDescription": "You need admin privileges to change these settings"
+      "adminOnlyDescription": "You need admin privileges to change these settings",
+      "logo": {
+        "title": "Logo",
+        "description": "Logo used on invoices and print view",
+        "upload": "Upload Logo",
+        "change": "Change",
+        "remove": "Remove",
+        "hint": "PNG, JPG or WebP. Max 500 KB.",
+        "invalidType": "Please select a valid image file (PNG, JPG, WebP)",
+        "tooLarge": "File must be 500 KB or smaller",
+        "uploadSuccess": "Logo updated",
+        "uploadError": "Failed to upload logo",
+        "removeSuccess": "Logo removed",
+        "removeError": "Failed to remove logo"
+      },
+      "contactInfo": {
+        "title": "Contact & Address",
+        "description": "Shown on invoice PDF and print view",
+        "email": "Email",
+        "emailPlaceholder": "contact@company.com",
+        "phone": "Phone",
+        "phonePlaceholder": "+1 555 000 0000",
+        "address": "Address",
+        "addressPlaceholder": "Full address",
+        "taxNumber": "Tax Number",
+        "taxNumberPlaceholder": "Tax number",
+        "success": "Information updated",
+        "error": "Failed to update information",
+        "save": "Save",
+        "saving": "Saving..."
+      }
     },
     "account": {
       "title": "Account Settings",

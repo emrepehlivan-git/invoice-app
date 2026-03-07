@@ -190,6 +190,108 @@ export async function updateInvoiceNumberFormat(
   }
 }
 
+const LOGO_MAX_BYTES = 500 * 1024;
+
+export async function updateOrganizationLogo(
+  organizationId: string,
+  logoDataUrl: string
+): Promise<ActionResult<Organization>> {
+  try {
+    await requireAdminAccess(organizationId);
+
+    if (!logoDataUrl?.trim()) {
+      return actionError(ErrorCode.INVALID_INPUT);
+    }
+
+    const trimmed = logoDataUrl.trim();
+    if (!trimmed.startsWith("data:image/")) {
+      return actionError(ErrorCode.INVALID_INPUT);
+    }
+
+    const base64Match = trimmed.match(/^data:image\/\w+;base64,(.+)$/);
+    if (!base64Match) {
+      return actionError(ErrorCode.INVALID_INPUT);
+    }
+
+    const base64Length = base64Match[1].length;
+    const estimatedBytes = (base64Length * 3) / 4;
+    if (estimatedBytes > LOGO_MAX_BYTES) {
+      return actionError(ErrorCode.INVALID_INPUT);
+    }
+
+    const organization = await prisma.organization.update({
+      where: { id: organizationId },
+      data: { logo: trimmed },
+    });
+
+    revalidatePath("/");
+    return actionSuccess(organization);
+  } catch (error) {
+    return handleActionError(error, "updateOrganizationLogo", { organizationId });
+  }
+}
+
+export async function removeOrganizationLogo(
+  organizationId: string
+): Promise<ActionResult<Organization>> {
+  try {
+    await requireAdminAccess(organizationId);
+
+    const organization = await prisma.organization.update({
+      where: { id: organizationId },
+      data: { logo: null },
+    });
+
+    revalidatePath("/");
+    return actionSuccess(organization);
+  } catch (error) {
+    return handleActionError(error, "removeOrganizationLogo", { organizationId });
+  }
+}
+
+const organizationInfoSchema = z.object({
+  email: z.union([z.string().email(), z.literal("")]),
+  phone: z.string().max(50).optional(),
+  address: z.string().max(500).optional(),
+  taxNumber: z.string().max(50).optional(),
+});
+
+export async function updateOrganizationInfo(
+  organizationId: string,
+  data: {
+    email?: string;
+    phone?: string;
+    address?: string;
+    taxNumber?: string;
+  }
+): Promise<ActionResult<Organization>> {
+  try {
+    await requireAdminAccess(organizationId);
+
+    const validated = organizationInfoSchema.parse({
+      email: data.email ?? "",
+      phone: data.phone ?? "",
+      address: data.address ?? "",
+      taxNumber: data.taxNumber ?? "",
+    });
+
+    const organization = await prisma.organization.update({
+      where: { id: organizationId },
+      data: {
+        email: validated.email || null,
+        phone: validated.phone || null,
+        address: validated.address || null,
+        taxNumber: validated.taxNumber || null,
+      },
+    });
+
+    revalidatePath("/");
+    return actionSuccess(organization);
+  } catch (error) {
+    return handleActionError(error, "updateOrganizationInfo", { organizationId, data });
+  }
+}
+
 /**
  * Get all members of an organization
  */

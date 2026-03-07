@@ -67,6 +67,29 @@ export function generateInvoicePdf(
   doc.text(invoice.organization.name, nameX, nameY);
   y = logoDataUrl ? 38 : 30;
 
+  doc.setFontSize(9);
+  const org = invoice.organization;
+  if (org.email) {
+    doc.text(org.email, nameX, y);
+    y += 5;
+  }
+  if (org.phone) {
+    doc.text(org.phone, nameX, y);
+    y += 5;
+  }
+  if (org.address) {
+    const lines = doc.splitTextToSize(org.address, 85);
+    doc.text(lines, nameX, y);
+    y += 5 * lines.length;
+  }
+  if (org.taxNumber) {
+    doc.text(`${labels.taxNumber}: ${org.taxNumber}`, nameX, y);
+    y += 5;
+  }
+  if (org.email || org.phone || org.address || org.taxNumber) {
+    y += 3;
+  }
+
   doc.setFontSize(12);
   doc.text(`${labels.invoiceNumber}: ${invoice.invoiceNumber}`, margin, y);
   doc.text(

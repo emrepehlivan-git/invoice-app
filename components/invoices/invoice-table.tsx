@@ -132,7 +132,11 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
       );
 
       if (result?.error) {
-        toast.error(t("invoices.messages.statusUpdateError"));
+        toast.error(
+          result.error === ErrorCode.INVALID_STATUS_TRANSITION
+            ? t("invoices.errors.invalidStatusTransition")
+            : t("invoices.messages.statusUpdateError")
+        );
         return;
       }
 

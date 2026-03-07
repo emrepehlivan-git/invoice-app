@@ -58,6 +58,29 @@ export function InvoicePrintView({ invoice, locale, labels, statusLabel }: Props
           <h1 className="text-xl font-bold text-black">
             {invoice.organization.name}
           </h1>
+          {(invoice.organization.email ||
+            invoice.organization.phone ||
+            invoice.organization.address ||
+            invoice.organization.taxNumber) && (
+            <div className="text-sm text-black/80 mt-2 space-y-0.5">
+              {invoice.organization.email && (
+                <p>{invoice.organization.email}</p>
+              )}
+              {invoice.organization.phone && (
+                <p>{invoice.organization.phone}</p>
+              )}
+              {invoice.organization.address && (
+                <p className="whitespace-pre-line">
+                  {invoice.organization.address}
+                </p>
+              )}
+              {invoice.organization.taxNumber && (
+                <p>
+                  {labels.taxNumber}: {invoice.organization.taxNumber}
+                </p>
+              )}
+            </div>
+          )}
         </div>
         <div className="text-right">
           <h2 className="text-2xl font-bold text-black mb-4">

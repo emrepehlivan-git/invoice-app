@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import { getOrganizationBySlug } from "@/app/actions/organization";
-import { getInvoice } from "@/app/actions/invoice";
+import { getInvoice, getInvoiceStatusHistory } from "@/app/actions/invoice";
 import { redirect, Link } from "@/i18n/navigation";
 import {
   Card,
@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { InvoiceStatus, DiscountType } from "@/types";
 import { SendEmailButton } from "@/components/invoices/send-email-button";
+import { InvoiceStatusHistory } from "@/components/invoices/invoice-status-history";
 import { PaymentSection } from "@/components/invoices/payment-section";
 import { PrintInvoiceButton } from "@/components/invoices/print-invoice-button";
 import {
@@ -66,7 +67,10 @@ export default async function InvoiceDetailPage({ params }: Props) {
     notFound();
   }
 
-  const invoice = await getInvoice(invoiceId, organization.id);
+  const [invoice, statusHistory] = await Promise.all([
+    getInvoice(invoiceId, organization.id),
+    getInvoiceStatusHistory(invoiceId, organization.id).catch(() => []),
+  ]);
 
   if (!invoice) {
     notFound();
@@ -337,6 +341,11 @@ export default async function InvoiceDetailPage({ params }: Props) {
         locale={locale}
         payments={invoice.payments || []}
         customerEmail={invoice.customer.email}
+      />
+
+      <InvoiceStatusHistory
+        entries={statusHistory}
+        dateLocale={dateLocale}
       />
 
       {invoice.notes && (

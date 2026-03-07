@@ -6730,6 +6730,10 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     logo: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    taxNumber: string | null
     baseCurrency: string | null
     invoiceNumberPrefix: string | null
     invoiceNumberPadding: number | null
@@ -6743,6 +6747,10 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     logo: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    taxNumber: string | null
     baseCurrency: string | null
     invoiceNumberPrefix: string | null
     invoiceNumberPadding: number | null
@@ -6756,6 +6764,10 @@ export namespace Prisma {
     name: number
     slug: number
     logo: number
+    email: number
+    phone: number
+    address: number
+    taxNumber: number
     baseCurrency: number
     invoiceNumberPrefix: number
     invoiceNumberPadding: number
@@ -6779,6 +6791,10 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    email?: true
+    phone?: true
+    address?: true
+    taxNumber?: true
     baseCurrency?: true
     invoiceNumberPrefix?: true
     invoiceNumberPadding?: true
@@ -6792,6 +6808,10 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    email?: true
+    phone?: true
+    address?: true
+    taxNumber?: true
     baseCurrency?: true
     invoiceNumberPrefix?: true
     invoiceNumberPadding?: true
@@ -6805,6 +6825,10 @@ export namespace Prisma {
     name?: true
     slug?: true
     logo?: true
+    email?: true
+    phone?: true
+    address?: true
+    taxNumber?: true
     baseCurrency?: true
     invoiceNumberPrefix?: true
     invoiceNumberPadding?: true
@@ -6905,6 +6929,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    taxNumber: string | null
     baseCurrency: string
     invoiceNumberPrefix: string
     invoiceNumberPadding: number
@@ -6937,6 +6965,10 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    taxNumber?: boolean
     baseCurrency?: boolean
     invoiceNumberPrefix?: boolean
     invoiceNumberPadding?: boolean
@@ -6957,6 +6989,10 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    taxNumber?: boolean
     baseCurrency?: boolean
     invoiceNumberPrefix?: boolean
     invoiceNumberPadding?: boolean
@@ -6970,6 +7006,10 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    taxNumber?: boolean
     baseCurrency?: boolean
     invoiceNumberPrefix?: boolean
     invoiceNumberPadding?: boolean
@@ -6983,6 +7023,10 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     logo?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    taxNumber?: boolean
     baseCurrency?: boolean
     invoiceNumberPrefix?: boolean
     invoiceNumberPadding?: boolean
@@ -6991,7 +7035,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "baseCurrency" | "invoiceNumberPrefix" | "invoiceNumberPadding" | "invoiceNumberIncludeYear" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logo" | "email" | "phone" | "address" | "taxNumber" | "baseCurrency" | "invoiceNumberPrefix" | "invoiceNumberPadding" | "invoiceNumberIncludeYear" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     members?: boolean | Organization$membersArgs<ExtArgs>
     customers?: boolean | Organization$customersArgs<ExtArgs>
@@ -7019,6 +7063,10 @@ export namespace Prisma {
       name: string
       slug: string
       logo: string | null
+      email: string | null
+      phone: string | null
+      address: string | null
+      taxNumber: string | null
       baseCurrency: string
       invoiceNumberPrefix: string
       invoiceNumberPadding: number
@@ -7458,6 +7506,10 @@ export namespace Prisma {
     readonly name: FieldRef<"Organization", 'String'>
     readonly slug: FieldRef<"Organization", 'String'>
     readonly logo: FieldRef<"Organization", 'String'>
+    readonly email: FieldRef<"Organization", 'String'>
+    readonly phone: FieldRef<"Organization", 'String'>
+    readonly address: FieldRef<"Organization", 'String'>
+    readonly taxNumber: FieldRef<"Organization", 'String'>
     readonly baseCurrency: FieldRef<"Organization", 'String'>
     readonly invoiceNumberPrefix: FieldRef<"Organization", 'String'>
     readonly invoiceNumberPadding: FieldRef<"Organization", 'Int'>
@@ -17388,6 +17440,10 @@ export namespace Prisma {
     name: 'name',
     slug: 'slug',
     logo: 'logo',
+    email: 'email',
+    phone: 'phone',
+    address: 'address',
+    taxNumber: 'taxNumber',
     baseCurrency: 'baseCurrency',
     invoiceNumberPrefix: 'invoiceNumberPrefix',
     invoiceNumberPadding: 'invoiceNumberPadding',
@@ -18067,6 +18123,10 @@ export namespace Prisma {
     name?: StringFilter<"Organization"> | string
     slug?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
+    email?: StringNullableFilter<"Organization"> | string | null
+    phone?: StringNullableFilter<"Organization"> | string | null
+    address?: StringNullableFilter<"Organization"> | string | null
+    taxNumber?: StringNullableFilter<"Organization"> | string | null
     baseCurrency?: StringFilter<"Organization"> | string
     invoiceNumberPrefix?: StringFilter<"Organization"> | string
     invoiceNumberPadding?: IntFilter<"Organization"> | number
@@ -18086,6 +18146,10 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    taxNumber?: SortOrderInput | SortOrder
     baseCurrency?: SortOrder
     invoiceNumberPrefix?: SortOrder
     invoiceNumberPadding?: SortOrder
@@ -18108,6 +18172,10 @@ export namespace Prisma {
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
     name?: StringFilter<"Organization"> | string
     logo?: StringNullableFilter<"Organization"> | string | null
+    email?: StringNullableFilter<"Organization"> | string | null
+    phone?: StringNullableFilter<"Organization"> | string | null
+    address?: StringNullableFilter<"Organization"> | string | null
+    taxNumber?: StringNullableFilter<"Organization"> | string | null
     baseCurrency?: StringFilter<"Organization"> | string
     invoiceNumberPrefix?: StringFilter<"Organization"> | string
     invoiceNumberPadding?: IntFilter<"Organization"> | number
@@ -18127,6 +18195,10 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    taxNumber?: SortOrderInput | SortOrder
     baseCurrency?: SortOrder
     invoiceNumberPrefix?: SortOrder
     invoiceNumberPadding?: SortOrder
@@ -18148,6 +18220,10 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Organization"> | string
     slug?: StringWithAggregatesFilter<"Organization"> | string
     logo?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    email?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    address?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    taxNumber?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     baseCurrency?: StringWithAggregatesFilter<"Organization"> | string
     invoiceNumberPrefix?: StringWithAggregatesFilter<"Organization"> | string
     invoiceNumberPadding?: IntWithAggregatesFilter<"Organization"> | number
@@ -19210,6 +19286,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -19229,6 +19309,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -19248,6 +19332,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -19267,6 +19355,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -19286,6 +19378,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -19299,6 +19395,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -19312,6 +19412,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -20474,6 +20578,10 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    taxNumber?: SortOrder
     baseCurrency?: SortOrder
     invoiceNumberPrefix?: SortOrder
     invoiceNumberPadding?: SortOrder
@@ -20491,6 +20599,10 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    taxNumber?: SortOrder
     baseCurrency?: SortOrder
     invoiceNumberPrefix?: SortOrder
     invoiceNumberPadding?: SortOrder
@@ -20504,6 +20616,10 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     logo?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    taxNumber?: SortOrder
     baseCurrency?: SortOrder
     invoiceNumberPrefix?: SortOrder
     invoiceNumberPadding?: SortOrder
@@ -23126,6 +23242,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23144,6 +23264,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23178,6 +23302,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23196,6 +23324,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23247,6 +23379,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23265,6 +23401,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23338,6 +23478,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23356,6 +23500,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23374,6 +23522,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23392,6 +23544,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23459,6 +23615,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23477,6 +23637,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23534,6 +23698,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23552,6 +23720,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23646,6 +23818,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23664,6 +23840,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23698,6 +23878,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23716,6 +23900,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -23851,6 +24039,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -23869,6 +24061,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -24145,6 +24341,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -24163,6 +24363,10 @@ export namespace Prisma {
     name: string
     slug: string
     logo?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxNumber?: string | null
     baseCurrency?: string
     invoiceNumberPrefix?: string
     invoiceNumberPadding?: number
@@ -24258,6 +24462,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number
@@ -24276,6 +24484,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxNumber?: NullableStringFieldUpdateOperationsInput | string | null
     baseCurrency?: StringFieldUpdateOperationsInput | string
     invoiceNumberPrefix?: StringFieldUpdateOperationsInput | string
     invoiceNumberPadding?: IntFieldUpdateOperationsInput | number

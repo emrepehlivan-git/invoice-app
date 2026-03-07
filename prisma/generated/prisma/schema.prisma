@@ -109,6 +109,10 @@ model Organization {
   name                     String
   slug                     String   @unique
   logo                     String?
+  email                    String?
+  phone                    String?
+  address                  String?
+  taxNumber                String?
   baseCurrency             String   @default("TRY") // ISO 4217 - reporting currency
   invoiceNumberPrefix      String   @default("INV")
   invoiceNumberPadding     Int      @default(4)
