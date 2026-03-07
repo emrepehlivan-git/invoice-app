@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { PaymentMethod, InvoiceStatus } from "@/types";
@@ -18,7 +18,7 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 
 const paymentSchema = z.object({
   invoiceId: z.string().min(1),
@@ -116,7 +116,7 @@ export async function createPayment(
     }
 
     revalidatePath("/");
-    revalidateTag(`org-${organizationId}`);
+    updateTag(`org-${organizationId}`);
 
     await auditCreate(
       "Payment",
@@ -197,7 +197,7 @@ export async function deletePayment(paymentId: string): Promise<SimpleResult> {
     }
 
     revalidatePath("/");
-    revalidateTag(`org-${payment.organizationId}`);
+    updateTag(`org-${payment.organizationId}`);
 
     await auditDelete(
       "Payment",

@@ -10,7 +10,7 @@ import {
   actionSuccess,
   assertExists,
   ErrorCode,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 import { isPaddleSandbox } from "@/lib/paddle/client";
 import { createInvoiceCheckout } from "@/lib/paddle/service";
 

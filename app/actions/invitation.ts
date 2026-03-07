@@ -17,7 +17,7 @@ import {
   actionSuccess,
   simpleSuccess,
   simpleError,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 import { getEmailService, getAppBaseUrl } from "@/lib/email";
 import { locales, defaultLocale } from "@/i18n/config";
 

@@ -18,7 +18,7 @@ import {
   simpleError,
   isUniqueConstraintError,
   getUniqueConstraintField,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 
 export type OrganizationMemberWithUser = OrganizationMember & {
   user: Pick<User, "id" | "name" | "email" | "image">;

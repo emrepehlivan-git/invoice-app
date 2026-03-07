@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, updateTag, unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
 import type { Prisma } from "@/prisma/generated/prisma";
 import { z } from "zod";
@@ -22,7 +22,7 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 import { getEmailService } from "@/lib/email/service";
 import { generateInvoicePdf } from "@/lib/pdf/invoice-pdf";
 import { getInvoicePdfLabels } from "@/lib/pdf/labels";
@@ -256,7 +256,7 @@ export async function createInvoice(
       status: invoice.status,
     }, organizationId);
 
-    revalidateTag(`org-${organizationId}`);
+    updateTag(`org-${organizationId}`);
     return actionSuccess(invoice);
   } catch (error) {
     return handleActionError(error, "createInvoice", { organizationId, data });
@@ -348,7 +348,7 @@ export async function updateInvoice(
     });
 
     revalidatePath("/");
-    revalidateTag(`org-${existingInvoice.organizationId}`);
+    updateTag(`org-${existingInvoice.organizationId}`);
 
     await auditUpdate("Invoice", invoice.id, {
       invoiceNumber: existingInvoice.invoiceNumber,
@@ -395,7 +395,7 @@ export async function updateInvoiceStatus(
     });
 
     revalidatePath("/");
-    revalidateTag(`org-${existingInvoice.organizationId}`);
+    updateTag(`org-${existingInvoice.organizationId}`);
 
     await auditStatusChange(
       "Invoice",
@@ -434,7 +434,7 @@ export async function deleteInvoice(invoiceId: string): Promise<SimpleResult> {
     });
 
     revalidatePath("/");
-    revalidateTag(`org-${existingInvoice.organizationId}`);
+    updateTag(`org-${existingInvoice.organizationId}`);
 
     await auditDelete("Invoice", invoiceId, {
       invoiceNumber: existingInvoice.invoiceNumber,
@@ -688,18 +688,15 @@ async function fetchInvoiceStatsInner(
     baseWhere.customerId = filters.customerId;
   }
 
-  const paidWhere = { ...baseWhere, status: InvoiceStatus.PAID };
-  if (filters?.status) {
-    paidWhere.status = filters.status;
-  }
+  const paidWhere = {
+    ...baseWhere,
+    status: filters?.status ?? InvoiceStatus.PAID,
+  };
 
   const outstandingWhere = {
     ...baseWhere,
-    status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] as const },
+    status: filters?.status ?? { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] },
   };
-  if (filters?.status) {
-    outstandingWhere.status = filters.status;
-  }
 
   const [totalCount, draftCount, sentCount, paidCount, overdueCount, paidInvoices, outstandingInvoices] =
     await Promise.all([
@@ -1162,7 +1159,7 @@ export async function sendInvoiceEmail(
       );
 
       revalidatePath("/");
-      revalidateTag(`org-${invoice.organizationId}`);
+      updateTag(`org-${invoice.organizationId}`);
     }
 
     logger.info(`Invoice ${invoice.invoiceNumber} sent to ${invoice.customer.email}`);

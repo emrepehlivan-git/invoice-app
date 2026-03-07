@@ -22,7 +22,7 @@ import {
   assertExists,
   isUniqueConstraintError,
   getUniqueConstraintField,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 
 export type ImportCustomersResult = {
   created: number;
@@ -289,7 +289,7 @@ export async function importCustomersFromCSV(
 
       const parseResult = customerSchema.safeParse(record);
       if (!parseResult.success) {
-        const firstError = parseResult.error.errors[0];
+        const firstError = parseResult.error.issues[0];
         result.errors.push({
           row: rowNum,
           message: firstError?.message ?? "Validation failed",

@@ -16,7 +16,7 @@ import {
   simpleSuccess,
   simpleError,
   assertExists,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 
 const exchangeRateSchema = z.object({
   fromCurrency: z.string().length(3),

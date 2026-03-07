@@ -11,7 +11,7 @@ import {
   handleActionError,
   simpleSuccess,
   simpleError,
-} from "@/lib/errors";
+} from "@/lib/errors/server";
 
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100),

@@ -51,13 +51,7 @@ export function setFormErrorsFromActionError<TFieldValues extends Record<string,
   const fieldErrors = getAllFieldErrors(error);
 
   for (const [field, message] of Object.entries(fieldErrors)) {
-    const errorMessage = message || getFieldErrorMessage(field, error, (key, values) => {
-      try {
-        return t(key, values as Record<string, string | number | Date>);
-      } catch {
-        return message || "Validation error";
-      }
-    }) || "Validation error";
+    const errorMessage = message || getFieldErrorMessage(field, error) || "Validation error";
     
     try {
       setError(field as Path<TFieldValues>, {
