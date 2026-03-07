@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getUserProfile } from "@/app/actions/user";
 import { redirect } from "@/i18n/navigation";
 import {
@@ -32,7 +32,7 @@ export default async function UserSettingsPage({ params }: Props) {
     redirect({ href: "/login", locale });
   }
 
-  const organization = await getOrganizationBySlug(orgSlug);
+  const organization = await getCachedOrganizationBySlug(orgSlug);
 
   if (!organization) {
     notFound();

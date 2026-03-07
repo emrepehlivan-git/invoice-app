@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getInvoice, getInvoiceStatusHistory } from "@/app/actions/invoice";
 import { redirect, Link } from "@/i18n/navigation";
 import {
@@ -61,7 +61,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
     redirect({ href: "/login", locale });
   }
 
-  const organization = await getOrganizationBySlug(orgSlug);
+  const organization = await getCachedOrganizationBySlug(orgSlug);
 
   if (!organization) {
     notFound();
@@ -116,248 +116,248 @@ export default async function InvoiceDetailPage({ params }: Props) {
         />
       </div>
       <div className="no-print space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/${orgSlug}/invoices`}>
-              <ArrowLeft className="size-4" />
-            </Link>
-          </Button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">{invoice.invoiceNumber}</h1>
-              <Badge className={statusColors[invoice.status]} variant="secondary">
-                {t(`invoices.status.${invoice.status}`)}
-              </Badge>
-            </div>
-            <p className="text-muted-foreground">
-              {t("invoices.detail.title")}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <SendEmailButton
-            invoiceId={invoiceId}
-            locale={locale}
-            customerEmail={invoice.customer.email}
-            disabled={invoice.status === InvoiceStatus.CANCELLED}
-          />
-          <PrintInvoiceButton />
-          <Button variant="outline" asChild>
-            <a
-              href={`/api/invoices/${invoiceId}/pdf?locale=${locale}`}
-              download={`${invoice.invoiceNumber}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FileDown className="mr-2 size-4" />
-              {t("invoices.actions.download")}
-            </a>
-          </Button>
-          {invoice.status === InvoiceStatus.DRAFT && (
-            <Button asChild>
-              <Link href={`/${orgSlug}/invoices/${invoiceId}/edit`}>
-                <Pencil className="mr-2 size-4" />
-                {t("invoices.edit")}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href={`/${orgSlug}/invoices`}>
+                <ArrowLeft className="size-4" />
               </Link>
             </Button>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("invoices.detail.billTo")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="font-medium">{invoice.customer.name}</p>
-            {invoice.customer.email && (
-              <p className="text-sm text-muted-foreground">
-                {invoice.customer.email}
-              </p>
-            )}
-            {invoice.customer.phone && (
-              <p className="text-sm text-muted-foreground">
-                {invoice.customer.phone}
-              </p>
-            )}
-            {invoice.customer.address && (
-              <p className="text-sm text-muted-foreground">
-                {invoice.customer.address}
-              </p>
-            )}
-            {(invoice.customer.city || invoice.customer.postalCode) && (
-              <p className="text-sm text-muted-foreground">
-                {[invoice.customer.city, invoice.customer.postalCode]
-                  .filter(Boolean)
-                  .join(" ")}
-              </p>
-            )}
-            {invoice.customer.country && (
-              <p className="text-sm text-muted-foreground">
-                {invoice.customer.country}
-              </p>
-            )}
-            {invoice.customer.taxNumber && (
-              <p className="text-sm text-muted-foreground">
-                {t("customers.fields.taxNumber")}: {invoice.customer.taxNumber}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("invoices.detail.invoiceInfo")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("invoices.fields.invoiceNumber")}
-                </p>
-                <p className="text-sm">{invoice.invoiceNumber}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("invoices.fields.status")}
-                </p>
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-bold">{invoice.invoiceNumber}</h1>
                 <Badge className={statusColors[invoice.status]} variant="secondary">
                   {t(`invoices.status.${invoice.status}`)}
                 </Badge>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("invoices.fields.issueDate")}
-                </p>
-                <p className="text-sm">
-                  {format(new Date(invoice.issueDate), "PPP", {
-                    locale: dateLocale,
-                  })}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t("invoices.fields.dueDate")}
-                </p>
-                <p className="text-sm">
-                  {format(new Date(invoice.dueDate), "PPP", {
-                    locale: dateLocale,
-                  })}
-                </p>
-              </div>
+              <p className="text-muted-foreground">
+                {t("invoices.detail.title")}
+              </p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <SendEmailButton
+              invoiceId={invoiceId}
+              locale={locale}
+              customerEmail={invoice.customer.email}
+              disabled={invoice.status === InvoiceStatus.CANCELLED}
+            />
+            <PrintInvoiceButton />
+            <Button variant="outline" asChild>
+              <Link
+                href={`/api/invoices/${invoiceId}/pdf?locale=${locale}`}
+                download={`${invoice.invoiceNumber}.pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FileDown className="mr-2 size-4" />
+                {t("invoices.actions.download")}
+              </Link>
+            </Button>
+            {invoice.status === InvoiceStatus.DRAFT && (
+              <Button asChild>
+                <Link href={`/${orgSlug}/invoices/${invoiceId}/edit`}>
+                  <Pencil className="mr-2 size-4" />
+                  {t("invoices.edit")}
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("invoices.detail.itemsTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50%]">
-                  {t("invoices.items.description")}
-                </TableHead>
-                <TableHead className="text-right">
-                  {t("invoices.items.quantity")}
-                </TableHead>
-                <TableHead className="text-right">
-                  {t("invoices.items.unitPrice")}
-                </TableHead>
-                <TableHead className="text-right">
-                  {t("invoices.items.total")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoice.items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell className="text-right">
-                    {Number(item.quantity)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(Number(item.unitPrice))}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(Number(item.total))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3} className="text-right font-medium">
-                  {t("invoices.fields.subtotal")}
-                </TableCell>
-                <TableCell className="text-right">
-                  {formatCurrency(Number(invoice.subtotal))}
-                </TableCell>
-              </TableRow>
-              {invoice.discountAmount && Number(invoice.discountAmount) > 0 && (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-right font-medium text-green-600 dark:text-green-400">
-                    {t("invoices.fields.discount")}
-                    {invoice.discountType === DiscountType.PERCENTAGE &&
-                      ` (${Number(invoice.discountValue)}%)`}
-                  </TableCell>
-                  <TableCell className="text-right text-green-600 dark:text-green-400">
-                    -{formatCurrency(Number(invoice.discountAmount))}
-                  </TableCell>
-                </TableRow>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("invoices.detail.billTo")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="font-medium">{invoice.customer.name}</p>
+              {invoice.customer.email && (
+                <p className="text-sm text-muted-foreground">
+                  {invoice.customer.email}
+                </p>
               )}
-              <TableRow>
-                <TableCell colSpan={3} className="text-right font-medium">
-                  {t("invoices.fields.taxAmount")} ({Number(invoice.taxRate)}%)
-                </TableCell>
-                <TableCell className="text-right">
-                  {formatCurrency(Number(invoice.taxAmount))}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={3} className="text-right font-bold">
-                  {t("invoices.fields.total")}
-                </TableCell>
-                <TableCell className="text-right font-bold text-lg">
-                  {formatCurrency(Number(invoice.total))}
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </CardContent>
-      </Card>
+              {invoice.customer.phone && (
+                <p className="text-sm text-muted-foreground">
+                  {invoice.customer.phone}
+                </p>
+              )}
+              {invoice.customer.address && (
+                <p className="text-sm text-muted-foreground">
+                  {invoice.customer.address}
+                </p>
+              )}
+              {(invoice.customer.city || invoice.customer.postalCode) && (
+                <p className="text-sm text-muted-foreground">
+                  {[invoice.customer.city, invoice.customer.postalCode]
+                    .filter(Boolean)
+                    .join(" ")}
+                </p>
+              )}
+              {invoice.customer.country && (
+                <p className="text-sm text-muted-foreground">
+                  {invoice.customer.country}
+                </p>
+              )}
+              {invoice.customer.taxNumber && (
+                <p className="text-sm text-muted-foreground">
+                  {t("customers.fields.taxNumber")}: {invoice.customer.taxNumber}
+                </p>
+              )}
+            </CardContent>
+          </Card>
 
-      <PaymentSection
-        invoiceId={invoiceId}
-        organizationId={organization.id}
-        invoiceTotal={Number(invoice.total)}
-        invoiceStatus={invoice.status}
-        currency={invoice.currency}
-        locale={locale}
-        payments={invoice.payments || []}
-        customerEmail={invoice.customer.email}
-      />
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("invoices.detail.invoiceInfo")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t("invoices.fields.invoiceNumber")}
+                  </p>
+                  <p className="text-sm">{invoice.invoiceNumber}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t("invoices.fields.status")}
+                  </p>
+                  <Badge className={statusColors[invoice.status]} variant="secondary">
+                    {t(`invoices.status.${invoice.status}`)}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t("invoices.fields.issueDate")}
+                  </p>
+                  <p className="text-sm">
+                    {format(new Date(invoice.issueDate), "PPP", {
+                      locale: dateLocale,
+                    })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t("invoices.fields.dueDate")}
+                  </p>
+                  <p className="text-sm">
+                    {format(new Date(invoice.dueDate), "PPP", {
+                      locale: dateLocale,
+                    })}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      <InvoiceStatusHistory
-        entries={statusHistory}
-        dateLocale={dateLocale}
-      />
-
-      {invoice.notes && (
         <Card>
           <CardHeader>
-            <CardTitle>{t("invoices.fields.notes")}</CardTitle>
+            <CardTitle>{t("invoices.detail.itemsTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm whitespace-pre-wrap">{invoice.notes}</p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50%]">
+                    {t("invoices.items.description")}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t("invoices.items.quantity")}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t("invoices.items.unitPrice")}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t("invoices.items.total")}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoice.items.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell className="text-right">
+                      {Number(item.quantity)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(Number(item.unitPrice))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(Number(item.total))}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-medium">
+                    {t("invoices.fields.subtotal")}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(Number(invoice.subtotal))}
+                  </TableCell>
+                </TableRow>
+                {invoice.discountAmount && Number(invoice.discountAmount) > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-right font-medium text-green-600 dark:text-green-400">
+                      {t("invoices.fields.discount")}
+                      {invoice.discountType === DiscountType.PERCENTAGE &&
+                        ` (${Number(invoice.discountValue)}%)`}
+                    </TableCell>
+                    <TableCell className="text-right text-green-600 dark:text-green-400">
+                      -{formatCurrency(Number(invoice.discountAmount))}
+                    </TableCell>
+                  </TableRow>
+                )}
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-medium">
+                    {t("invoices.fields.taxAmount")} ({Number(invoice.taxRate)}%)
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(Number(invoice.taxAmount))}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-bold">
+                    {t("invoices.fields.total")}
+                  </TableCell>
+                  <TableCell className="text-right font-bold text-lg">
+                    {formatCurrency(Number(invoice.total))}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
           </CardContent>
         </Card>
-      )}
+
+        <PaymentSection
+          invoiceId={invoiceId}
+          organizationId={organization.id}
+          invoiceTotal={Number(invoice.total)}
+          invoiceStatus={invoice.status}
+          currency={invoice.currency}
+          locale={locale}
+          payments={invoice.payments || []}
+          customerEmail={invoice.customer.email}
+        />
+
+        <InvoiceStatusHistory
+          entries={statusHistory}
+          dateLocale={dateLocale}
+        />
+
+        {invoice.notes && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("invoices.fields.notes")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm whitespace-pre-wrap">{invoice.notes}</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </>
   );

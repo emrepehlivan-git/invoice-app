@@ -1,11 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { PaymentMethod, InvoiceStatus } from "@/types";
 import type { Payment } from "@/types";
-import logger from "@/lib/logger";
 import { Decimal } from "@/prisma/generated/prisma/runtime/library";
 import { auditCreate, auditDelete, auditStatusChange } from "@/lib/audit";
 import { verifyAccess } from "@/lib/auth/rbac";
@@ -117,6 +116,7 @@ export async function createPayment(
     }
 
     revalidatePath("/");
+    revalidateTag(`org-${organizationId}`);
 
     await auditCreate(
       "Payment",
@@ -197,6 +197,7 @@ export async function deletePayment(paymentId: string): Promise<SimpleResult> {
     }
 
     revalidatePath("/");
+    revalidateTag(`org-${payment.organizationId}`);
 
     await auditDelete(
       "Payment",

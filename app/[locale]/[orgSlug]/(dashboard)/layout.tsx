@@ -3,9 +3,9 @@ import { redirect } from "@/i18n/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
 import {
-  getOrganizationBySlug,
-  getUserOrganizations,
-} from "@/app/actions/organization";
+  getCachedOrganizationBySlug,
+  getCachedUserOrganizations,
+} from "@/lib/cached-queries";
 import { DashboardSidebar } from "@/components/common/dashboard-sidebar";
 import { DashboardHeader } from "@/components/common/dashboard-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -27,8 +27,8 @@ export default async function DashboardLayout({ children, params }: Props) {
   const user = sessionUser as NonNullable<typeof sessionUser>;
 
   const [organization, organizations] = await Promise.all([
-    getOrganizationBySlug(orgSlug),
-    getUserOrganizations(),
+    getCachedOrganizationBySlug(orgSlug),
+    getCachedUserOrganizations(),
   ]);
 
   if (!organization) {

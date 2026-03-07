@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw, Home } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 interface GlobalErrorProps {
   error: Error & { digest?: string };
@@ -59,13 +60,13 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Try Again
                 </button>
-                <a
+                <Link
                   href="/"
                   className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   <Home className="mr-2 h-4 w-4" />
                   Go to Home
-                </a>
+                </Link>
               </div>
             </div>
           </div>

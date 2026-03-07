@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@/prisma/generated/prisma";
 import { z } from "zod";
 import { AuditAction, InvoiceStatus, DiscountType } from "@/types";
 import type { InvoiceWithCustomer, InvoiceWithRelations } from "@/types";
@@ -255,6 +256,7 @@ export async function createInvoice(
       status: invoice.status,
     }, organizationId);
 
+    revalidateTag(`org-${organizationId}`);
     return actionSuccess(invoice);
   } catch (error) {
     return handleActionError(error, "createInvoice", { organizationId, data });
@@ -346,6 +348,7 @@ export async function updateInvoice(
     });
 
     revalidatePath("/");
+    revalidateTag(`org-${existingInvoice.organizationId}`);
 
     await auditUpdate("Invoice", invoice.id, {
       invoiceNumber: existingInvoice.invoiceNumber,
@@ -392,6 +395,7 @@ export async function updateInvoiceStatus(
     });
 
     revalidatePath("/");
+    revalidateTag(`org-${existingInvoice.organizationId}`);
 
     await auditStatusChange(
       "Invoice",
@@ -430,6 +434,7 @@ export async function deleteInvoice(invoiceId: string): Promise<SimpleResult> {
     });
 
     revalidatePath("/");
+    revalidateTag(`org-${existingInvoice.organizationId}`);
 
     await auditDelete("Invoice", invoiceId, {
       invoiceNumber: existingInvoice.invoiceNumber,
@@ -610,7 +615,7 @@ export async function getInvoices(
     // All members can read invoices
     await verifyAccess(organizationId, "read");
 
-    const where: any = { organizationId };
+    const where: Prisma.InvoiceWhereInput = { organizationId };
 
     if (filters?.dateRange) {
       where.issueDate = {
@@ -658,146 +663,149 @@ export type InvoiceStats = {
   missingHistoricalRates: string[];
 };
 
+async function fetchInvoiceStatsInner(
+  organizationId: string,
+  filters?: InvoiceFilters
+): Promise<InvoiceStats | null> {
+  const organization = await prisma.organization.findUnique({
+    where: { id: organizationId },
+    select: { baseCurrency: true },
+  });
+
+  if (!organization) {
+    return null;
+  }
+
+  const baseCurrency = organization.baseCurrency;
+  const baseWhere: Record<string, unknown> = { organizationId };
+  if (filters?.dateRange) {
+    baseWhere.issueDate = {
+      gte: filters.dateRange.from,
+      lte: filters.dateRange.to,
+    };
+  }
+  if (filters?.customerId) {
+    baseWhere.customerId = filters.customerId;
+  }
+
+  const paidWhere = { ...baseWhere, status: InvoiceStatus.PAID };
+  if (filters?.status) {
+    paidWhere.status = filters.status;
+  }
+
+  const outstandingWhere = {
+    ...baseWhere,
+    status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] as const },
+  };
+  if (filters?.status) {
+    outstandingWhere.status = filters.status;
+  }
+
+  const [totalCount, draftCount, sentCount, paidCount, overdueCount, paidInvoices, outstandingInvoices] =
+    await Promise.all([
+      prisma.invoice.count({ where: baseWhere }),
+      prisma.invoice.count({
+        where: { ...baseWhere, status: InvoiceStatus.DRAFT },
+      }),
+      prisma.invoice.count({
+        where: { ...baseWhere, status: InvoiceStatus.SENT },
+      }),
+      prisma.invoice.count({
+        where: { ...baseWhere, status: InvoiceStatus.PAID },
+      }),
+      prisma.invoice.count({
+        where: { ...baseWhere, status: InvoiceStatus.OVERDUE },
+      }),
+      prisma.invoice.findMany({
+        where: paidWhere,
+        select: {
+          currency: true,
+          total: true,
+          totalInBaseCurrency: true,
+          exchangeRateToBase: true,
+        },
+      }),
+      prisma.invoice.findMany({
+        where: outstandingWhere,
+        select: {
+          currency: true,
+          total: true,
+          totalInBaseCurrency: true,
+          exchangeRateToBase: true,
+        },
+      }),
+    ]);
+
+  const revenueByCurrency: CurrencyTotal = {};
+  let revenueInBaseCurrency = 0;
+  const missingHistoricalRates: string[] = [];
+
+  for (const invoice of paidInvoices) {
+    const currency = invoice.currency;
+    const amount = Number(invoice.total);
+    revenueByCurrency[currency] = (revenueByCurrency[currency] ?? 0) + amount;
+    if (invoice.totalInBaseCurrency !== null) {
+      revenueInBaseCurrency += Number(invoice.totalInBaseCurrency);
+    } else if (currency === baseCurrency) {
+      revenueInBaseCurrency += amount;
+    } else if (!missingHistoricalRates.includes(currency)) {
+      missingHistoricalRates.push(currency);
+    }
+  }
+
+  const outstandingByCurrency: CurrencyTotal = {};
+  let outstandingInBaseCurrency = 0;
+
+  for (const invoice of outstandingInvoices) {
+    const currency = invoice.currency;
+    const amount = Number(invoice.total);
+    outstandingByCurrency[currency] = (outstandingByCurrency[currency] ?? 0) + amount;
+    if (invoice.totalInBaseCurrency !== null) {
+      outstandingInBaseCurrency += Number(invoice.totalInBaseCurrency);
+    } else if (currency === baseCurrency) {
+      outstandingInBaseCurrency += amount;
+    } else if (!missingHistoricalRates.includes(currency)) {
+      missingHistoricalRates.push(currency);
+    }
+  }
+
+  return {
+    totalCount,
+    draftCount,
+    sentCount,
+    paidCount,
+    overdueCount,
+    revenueByCurrency,
+    outstandingByCurrency,
+    revenueInBaseCurrency,
+    outstandingInBaseCurrency,
+    missingHistoricalRates,
+  };
+}
+
+const STATS_CACHE_REVALIDATE_SECONDS = 60;
+
 export async function getInvoiceStats(
   organizationId: string,
   filters?: InvoiceFilters
 ): Promise<InvoiceStats | null> {
   try {
-    // All members can view stats
     await verifyAccess(organizationId, "read");
 
-    const organization = await prisma.organization.findUnique({
-      where: { id: organizationId },
-      select: { baseCurrency: true },
-    });
-
-    if (!organization) {
-      return null;
-    }
-
-    const baseCurrency = organization.baseCurrency;
-
-    const baseWhere: any = { organizationId };
-    if (filters?.dateRange) {
-      baseWhere.issueDate = {
-        gte: filters.dateRange.from,
-        lte: filters.dateRange.to,
-      };
-    }
-    if (filters?.customerId) {
-      baseWhere.customerId = filters.customerId;
-    }
-
-    const paidWhere = {
-      ...baseWhere,
-      status: InvoiceStatus.PAID,
-    };
-    if (filters?.status) {
-      paidWhere.status = filters.status;
-    }
-
-    const outstandingWhere = {
-      ...baseWhere,
-      status: { in: [InvoiceStatus.SENT, InvoiceStatus.OVERDUE] },
-    };
-    if (filters?.status) {
-      outstandingWhere.status = filters.status;
-    }
-
-    const [totalCount, draftCount, sentCount, paidCount, overdueCount, paidInvoices, outstandingInvoices] =
-      await Promise.all([
-        prisma.invoice.count({ where: baseWhere }),
-        prisma.invoice.count({
-          where: { ...baseWhere, status: InvoiceStatus.DRAFT },
-        }),
-        prisma.invoice.count({
-          where: { ...baseWhere, status: InvoiceStatus.SENT },
-        }),
-        prisma.invoice.count({
-          where: { ...baseWhere, status: InvoiceStatus.PAID },
-        }),
-        prisma.invoice.count({
-          where: { ...baseWhere, status: InvoiceStatus.OVERDUE },
-        }),
-        prisma.invoice.findMany({
-          where: paidWhere,
-          select: {
-            currency: true,
-            total: true,
-            totalInBaseCurrency: true,
-            exchangeRateToBase: true,
-          },
-        }),
-        prisma.invoice.findMany({
-          where: outstandingWhere,
-          select: {
-            currency: true,
-            total: true,
-            totalInBaseCurrency: true,
-            exchangeRateToBase: true,
-          },
-        }),
-      ]);
-
-    // Group revenue by currency (for breakdown display)
-    const revenueByCurrency: CurrencyTotal = {};
-    let revenueInBaseCurrency = 0;
-    const missingHistoricalRates: string[] = [];
-
-    for (const invoice of paidInvoices) {
-      const currency = invoice.currency;
-      const amount = Number(invoice.total);
-      revenueByCurrency[currency] = (revenueByCurrency[currency] ?? 0) + amount;
-
-      // Use stored totalInBaseCurrency if available (historical rate)
-      if (invoice.totalInBaseCurrency !== null) {
-        revenueInBaseCurrency += Number(invoice.totalInBaseCurrency);
-      } else if (currency === baseCurrency) {
-        // Same currency, no conversion needed
-        revenueInBaseCurrency += amount;
-      } else {
-        // No historical rate stored - mark as missing
-        if (!missingHistoricalRates.includes(currency)) {
-          missingHistoricalRates.push(currency);
-        }
+    const cacheKey = [
+      "invoice-stats",
+      organizationId,
+      filters ? JSON.stringify(filters) : "",
+    ];
+    const cached = unstable_cache(
+      () => fetchInvoiceStatsInner(organizationId, filters),
+      cacheKey,
+      {
+        revalidate: STATS_CACHE_REVALIDATE_SECONDS,
+        tags: [`org-${organizationId}`],
       }
-    }
-
-    // Group outstanding by currency (for breakdown display)
-    const outstandingByCurrency: CurrencyTotal = {};
-    let outstandingInBaseCurrency = 0;
-
-    for (const invoice of outstandingInvoices) {
-      const currency = invoice.currency;
-      const amount = Number(invoice.total);
-      outstandingByCurrency[currency] = (outstandingByCurrency[currency] ?? 0) + amount;
-
-      // Use stored totalInBaseCurrency if available (historical rate)
-      if (invoice.totalInBaseCurrency !== null) {
-        outstandingInBaseCurrency += Number(invoice.totalInBaseCurrency);
-      } else if (currency === baseCurrency) {
-        // Same currency, no conversion needed
-        outstandingInBaseCurrency += amount;
-      } else {
-        // No historical rate stored - mark as missing
-        if (!missingHistoricalRates.includes(currency)) {
-          missingHistoricalRates.push(currency);
-        }
-      }
-    }
-
-    return {
-      totalCount,
-      draftCount,
-      sentCount,
-      paidCount,
-      overdueCount,
-      revenueByCurrency,
-      outstandingByCurrency,
-      revenueInBaseCurrency,
-      outstandingInBaseCurrency,
-      missingHistoricalRates,
-    };
+    );
+    return await cached();
   } catch {
     return null;
   }
@@ -857,7 +865,7 @@ export async function getMonthlyRevenueStats(
       startDate.setHours(0, 0, 0, 0);
     }
 
-    const where: any = {
+    const where: Prisma.InvoiceWhereInput = {
       organizationId,
       issueDate: {
         gte: startDate,
@@ -994,7 +1002,7 @@ export async function getYearlyRevenueStats(
       endDate = new Date();
     }
 
-    const where: any = {
+    const where: Prisma.InvoiceWhereInput = {
       organizationId,
       issueDate: {
         gte: startDate,
@@ -1154,6 +1162,7 @@ export async function sendInvoiceEmail(
       );
 
       revalidatePath("/");
+      revalidateTag(`org-${invoice.organizationId}`);
     }
 
     logger.info(`Invoice ${invoice.invoiceNumber} sent to ${invoice.customer.email}`);

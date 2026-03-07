@@ -88,7 +88,11 @@ export function OrganizationLogoUpload({
           <img
             src={currentLogoUrl}
             alt=""
+            width={200}
+            height={64}
             className="h-16 w-auto max-w-[200px] object-contain rounded border bg-muted/30"
+            loading="lazy"
+            decoding="async"
           />
           <div className="flex flex-col gap-2">
             <input

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug, getOrganizationMembers } from "@/app/actions/organization";
+import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
+import { getOrganizationMembers } from "@/app/actions/organization";
 import { getOrganizationInvitations } from "@/app/actions/invitation";
 import { redirect } from "@/i18n/navigation";
 import {
@@ -34,7 +35,7 @@ export default async function MembersSettingsPage({ params }: Props) {
   }
 
   const user = session.user;
-  const organization = await getOrganizationBySlug(orgSlug);
+  const organization = await getCachedOrganizationBySlug(orgSlug);
 
   if (!organization) {
     notFound();

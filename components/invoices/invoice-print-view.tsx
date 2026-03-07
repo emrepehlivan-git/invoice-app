@@ -52,7 +52,11 @@ export function InvoicePrintView({ invoice, locale, labels, statusLabel }: Props
             <img
               src={invoice.organization.logo}
               alt={invoice.organization.name}
+              width={192}
+              height={48}
               className="h-12 w-auto object-contain mb-4 print-logo"
+              loading="eager"
+              decoding="async"
             />
           )}
           <h1 className="text-xl font-bold text-black">

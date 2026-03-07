@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getInvoiceStats, getInvoices, getMonthlyRevenueStats, getYearlyRevenueStats } from "@/app/actions/invoice";
 import { getCustomers } from "@/app/actions/customer";
 import { redirect } from "@/i18n/navigation";
@@ -21,7 +21,7 @@ export default async function DashboardPage({ params }: Props) {
     redirect({ href: "/login", locale });
   }
 
-  const organization = await getOrganizationBySlug(orgSlug);
+  const organization = await getCachedOrganizationBySlug(orgSlug);
 
   if (!organization) {
     notFound();

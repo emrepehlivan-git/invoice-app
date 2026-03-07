@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
-import { getOrganizationBySlug } from "@/app/actions/organization";
+import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getInvoice } from "@/app/actions/invoice";
 import { getCustomers } from "@/app/actions/customer";
 import { redirect, Link } from "@/i18n/navigation";
@@ -31,7 +31,7 @@ export default async function EditInvoicePage({ params }: Props) {
     redirect({ href: "/login", locale });
   }
 
-  const organization = await getOrganizationBySlug(orgSlug);
+  const organization = await getCachedOrganizationBySlug(orgSlug);
 
   if (!organization) {
     notFound();

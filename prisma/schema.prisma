@@ -242,6 +242,8 @@ model Invoice {
 
   @@unique([organizationId, invoiceNumber])
   @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([organizationId, issueDate])
   @@index([customerId])
   @@index([status])
   @@index([issueDate])
