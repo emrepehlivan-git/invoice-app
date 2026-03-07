@@ -4,21 +4,11 @@ import { getSession } from "@/lib/auth/session";
 import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getExchangeRates } from "@/app/actions/exchange-rate";
 import { redirect } from "@/i18n/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { CurrencySettingsForm } from "@/components/settings/currency-settings-form";
-import { ExchangeRatesForm } from "@/components/settings/exchange-rates-form";
-import { InvoiceNumberFormatForm } from "@/components/settings/invoice-number-format-form";
-import { OrganizationLogoUpload } from "@/components/settings/organization-logo-upload";
-import { OrganizationInfoForm } from "@/components/settings/organization-info-form";
 import { SettingsNav } from "@/components/settings/settings-nav";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { OrganizationSettingsHeader } from "@/components/settings/organization-settings-header";
+import { OrganizationNameCard } from "@/components/settings/organization-name-card";
+import { OrganizationSettingsAdminSection } from "@/components/settings/organization-settings-admin-section";
+import { AdminOnlyAlert } from "@/components/settings/admin-only-alert";
 import { Role } from "@/types";
 
 type Props = {
@@ -48,123 +38,23 @@ export default async function OrganizationSettingsPage({ params }: Props) {
   return (
     <div className="space-y-6">
       <SettingsNav orgSlug={orgSlug} />
-
-      <div>
-        <h1 className="text-3xl font-bold">{t("nav.organization")}</h1>
-        <p className="text-muted-foreground">{t("organization.description")}</p>
-      </div>
+      <OrganizationSettingsHeader t={t} />
 
       <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("organization.info")}</CardTitle>
-            <CardDescription>{t("organization.infoDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium">{t("organization.name")}</p>
-                <p className="text-sm text-muted-foreground">
-                  {organization.name}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <OrganizationNameCard
+          organizationName={organization.name}
+          t={t}
+        />
 
         {isAdmin ? (
-          <>
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("organization.logo.title")}</CardTitle>
-                <CardDescription>
-                  {t("organization.logo.description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <OrganizationLogoUpload
-                  organizationId={organization.id}
-                  currentLogoUrl={organization.logo}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("organization.contactInfo.title")}</CardTitle>
-                <CardDescription>
-                  {t("organization.contactInfo.description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <OrganizationInfoForm
-                  organizationId={organization.id}
-                  initialValues={{
-                    email: organization.email,
-                    phone: organization.phone,
-                    address: organization.address,
-                    taxNumber: organization.taxNumber,
-                  }}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("currency.title")}</CardTitle>
-                <CardDescription>{t("currency.description")}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CurrencySettingsForm
-                  organizationId={organization.id}
-                  currentBaseCurrency={organization.baseCurrency}
-                  locale={locale}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("exchangeRates.title")}</CardTitle>
-                <CardDescription>
-                  {t("exchangeRates.description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ExchangeRatesForm
-                  organizationId={organization.id}
-                  baseCurrency={organization.baseCurrency}
-                  exchangeRates={exchangeRates}
-                  locale={locale}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("invoiceNumberFormat.title")}</CardTitle>
-                <CardDescription>
-                  {t("invoiceNumberFormat.description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <InvoiceNumberFormatForm
-                  organizationId={organization.id}
-                  currentPrefix={organization.invoiceNumberPrefix}
-                  currentPadding={organization.invoiceNumberPadding}
-                  currentIncludeYear={organization.invoiceNumberIncludeYear}
-                />
-              </CardContent>
-            </Card>
-          </>
+          <OrganizationSettingsAdminSection
+            organization={organization}
+            exchangeRates={exchangeRates}
+            locale={locale}
+            t={t}
+          />
         ) : (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>{t("organization.adminOnly")}</AlertTitle>
-            <AlertDescription>
-              {t("organization.adminOnlyDescription")}
-            </AlertDescription>
-          </Alert>
+          <AdminOnlyAlert t={t} />
         )}
       </div>
     </div>
