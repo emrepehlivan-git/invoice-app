@@ -83,7 +83,6 @@ export function CreateOrganizationForm() {
       }
 
       toast.success(t("organization.create.success"));
-      // Navigate to the new organization's dashboard
       router.push(`/${result.data.slug}`);
     } catch {
       toast.error(t("common.error"));
