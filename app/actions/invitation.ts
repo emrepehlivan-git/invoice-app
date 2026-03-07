@@ -19,8 +19,16 @@ import {
   simpleError,
 } from "@/lib/errors";
 import { getEmailService, getAppBaseUrl } from "@/lib/email";
+import { locales, defaultLocale } from "@/i18n/config";
 
 const INVITATION_EXPIRY_DAYS = 7;
+
+function getEmailLocale(userLocale: string | null | undefined): string {
+  if (userLocale && locales.includes(userLocale as (typeof locales)[number])) {
+    return userLocale;
+  }
+  return defaultLocale;
+}
 
 const createInvitationSchema = z.object({
   email: z.string().email(),
@@ -78,7 +86,7 @@ export async function createInvitation(
       }),
       prisma.user.findUnique({
         where: { id: access.userId },
-        select: { name: true, email: true },
+        select: { name: true, email: true, locale: true },
       }),
     ]);
 
@@ -105,7 +113,7 @@ export async function createInvitation(
         role: validated.role,
         acceptUrl,
         expiresAt,
-        locale: "en", // TODO: Get from user preference or request
+        locale: getEmailLocale(inviter?.locale),
       });
     } catch (emailError) {
       // Log but don't fail the invitation creation
@@ -225,7 +233,7 @@ export async function resendInvitation(
       }),
       prisma.user.findUnique({
         where: { id: access.userId },
-        select: { name: true, email: true },
+        select: { name: true, email: true, locale: true },
       }),
     ]);
 
@@ -242,7 +250,7 @@ export async function resendInvitation(
         role: invitation.role,
         acceptUrl,
         expiresAt,
-        locale: "en", // TODO: Get from user preference or request
+        locale: getEmailLocale(resender?.locale),
       });
     } catch (emailError) {
       // Log but don't fail the resend operation
