@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
-import type { ExchangeRate } from "@/prisma/generated/prisma";
+import type { ExchangeRate } from "@/types";
 import { auditCreate, auditUpdate, auditDelete } from "@/lib/audit";
 import { verifyAccess, requireAdminAccess } from "@/lib/auth/rbac";
 import {

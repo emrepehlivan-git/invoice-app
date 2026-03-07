@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { getSession } from "@/lib/auth/session";
 
 type Props = {
@@ -13,8 +13,8 @@ export default async function Home({ params }: Props) {
   const session = await getSession();
 
   if (session?.user) {
-    redirect(`/${locale}/onboarding`);
+    redirect("/onboarding");
   }
 
-  redirect(`/${locale}/login`);
+  redirect("/login");
 }

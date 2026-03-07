@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import { upsertExchangeRate, deleteExchangeRate } from "@/app/actions/exchange-rate";
-import type { ExchangeRate } from "@/prisma/generated/prisma";
+import type { ExchangeRate } from "@/types";
 import { ErrorCode } from "@/lib/errors/types";
 
 const formSchema = z.object({

@@ -1,8 +1,7 @@
-import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { getUserOrganizations } from "@/app/actions/organization";
-import { Link } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,7 +24,7 @@ export default async function OnboardingPage({ params }: Props) {
   const organizations = await getUserOrganizations();
 
   if (organizations.length === 1) {
-    redirect(`/${locale}/${organizations[0].slug}`);
+    redirect(`/${organizations[0].slug}`);
   }
 
   return (

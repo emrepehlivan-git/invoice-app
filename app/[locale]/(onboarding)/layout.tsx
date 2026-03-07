@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { getSession } from "@/lib/auth/session";
 import { LanguageSwitcher } from "@/components/common/language-switcher";
 
@@ -15,7 +15,7 @@ export default async function OnboardingLayout({ children, params }: Props) {
   const session = await getSession();
 
   if (!session?.user) {
-    redirect(`/${locale}/login`);
+    redirect("/login");
   }
 
   return (

@@ -15,6 +15,7 @@ export type {
   Payment,
   AuditLog,
   Invitation,
+  ExchangeRate,
 } from "./prisma";
 export { Role, InvoiceStatus, AuditAction, InvitationStatus, DiscountType, PaymentMethod } from "./prisma";
 
