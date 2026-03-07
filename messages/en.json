@@ -50,7 +50,8 @@
     "invitationAlreadyMember": "User is already a member of this organization",
     "constraintViolation": "Data constraint violation",
     "uniqueConstraint": "A record with this value already exists",
-    "externalServiceError": "External service error occurred"
+    "externalServiceError": "External service error occurred",
+    "errorId": "Error ID"
   },
   "auth": {
     "login": {

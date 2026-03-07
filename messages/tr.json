@@ -50,7 +50,8 @@
     "invitationAlreadyMember": "Kullanıcı zaten bu organizasyonun üyesi",
     "constraintViolation": "Veri kısıtlaması ihlali",
     "uniqueConstraint": "Bu değere sahip bir kayıt zaten mevcut",
-    "externalServiceError": "Harici servis hatası oluştu"
+    "externalServiceError": "Harici servis hatası oluştu",
+    "errorId": "Hata Kodu"
   },
   "auth": {
     "login": {
