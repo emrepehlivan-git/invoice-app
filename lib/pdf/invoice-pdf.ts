@@ -99,7 +99,6 @@ export function generateInvoicePdf(
   );
   y += 15;
 
-  const col1End = pageWidth / 2 - 10;
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.text(labels.billTo, margin, y);

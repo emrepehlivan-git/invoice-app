@@ -47,7 +47,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { createInvoice, updateInvoice } from "@/app/actions/invoice";
 import { createInvoiceSchema, type InvoiceInput } from "@/lib/validators/invoice";
-import { ErrorCode, isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors/client-public";
+import { isActionError, handleActionErrorToast, setFormErrorsFromActionError } from "@/lib/errors/client-public";
 import { SUPPORTED_CURRENCIES, formatCurrency } from "@/lib/currency";
 import type { Customer, InvoiceWithRelations, Organization } from "@/types";
 import { DiscountType } from "@/types";
@@ -114,7 +114,6 @@ export function InvoiceForm({
     return sum + (item.quantity || 0) * (item.unitPrice || 0);
   }, 0);
 
-  // Calculate discount amount
   let discountAmount = 0;
   if (watchDiscountType && watchDiscountValue && watchDiscountValue > 0) {
     if (watchDiscountType === DiscountType.PERCENTAGE) {
@@ -531,7 +530,7 @@ export function InvoiceForm({
                       <TableCell className="text-right">
                         {formatCurrency(
                           (watchItems[index]?.quantity || 0) *
-                            (watchItems[index]?.unitPrice || 0),
+                          (watchItems[index]?.unitPrice || 0),
                           watchCurrency
                         )}
                       </TableCell>

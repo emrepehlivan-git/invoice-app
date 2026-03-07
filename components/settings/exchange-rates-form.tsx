@@ -68,7 +68,6 @@ export function ExchangeRatesForm({
   organizationId,
   baseCurrency,
   exchangeRates,
-  locale,
 }: Props) {
   const t = useTranslations();
   const router = useRouter();
@@ -77,7 +76,6 @@ export function ExchangeRatesForm({
   const [rateToDelete, setRateToDelete] = useState<ExchangeRate | null>(null);
   const [editingRate, setEditingRate] = useState<ExchangeRate | null>(null);
 
-  // Filter out base currency from options
   const availableCurrencies = SUPPORTED_CURRENCIES.filter(
     (c) => c.code !== baseCurrency
   );
@@ -161,7 +159,6 @@ export function ExchangeRatesForm({
 
   return (
     <div className="space-y-6">
-      {/* Current rates */}
       {exchangeRates.length > 0 && (
         <div>
           <h4 className="text-sm font-medium mb-3">
@@ -229,7 +226,6 @@ export function ExchangeRatesForm({
         </div>
       )}
 
-      {/* Add/Update rate form */}
       <div>
         <h4 className="text-sm font-medium mb-3">
           {editingRate
@@ -313,7 +309,6 @@ export function ExchangeRatesForm({
         </p>
       </div>
 
-      {/* Delete confirmation dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import type { InvoiceWithRelations } from "@/types";
 import { DiscountType } from "@/types";
+import Image from "next/image";
 
 export type InvoicePrintLabels = {
   billTo: string;
@@ -49,7 +50,7 @@ export function InvoicePrintView({ invoice, locale, labels, statusLabel }: Props
       <div className="flex justify-between items-start gap-8 mb-8">
         <div>
           {invoice.organization.logo && (
-            <img
+            <Image
               src={invoice.organization.logo}
               alt={invoice.organization.name}
               width={192}
@@ -66,25 +67,25 @@ export function InvoicePrintView({ invoice, locale, labels, statusLabel }: Props
             invoice.organization.phone ||
             invoice.organization.address ||
             invoice.organization.taxNumber) && (
-            <div className="text-sm text-black/80 mt-2 space-y-0.5">
-              {invoice.organization.email && (
-                <p>{invoice.organization.email}</p>
-              )}
-              {invoice.organization.phone && (
-                <p>{invoice.organization.phone}</p>
-              )}
-              {invoice.organization.address && (
-                <p className="whitespace-pre-line">
-                  {invoice.organization.address}
-                </p>
-              )}
-              {invoice.organization.taxNumber && (
-                <p>
-                  {labels.taxNumber}: {invoice.organization.taxNumber}
-                </p>
-              )}
-            </div>
-          )}
+              <div className="text-sm text-black/80 mt-2 space-y-0.5">
+                {invoice.organization.email && (
+                  <p>{invoice.organization.email}</p>
+                )}
+                {invoice.organization.phone && (
+                  <p>{invoice.organization.phone}</p>
+                )}
+                {invoice.organization.address && (
+                  <p className="whitespace-pre-line">
+                    {invoice.organization.address}
+                  </p>
+                )}
+                {invoice.organization.taxNumber && (
+                  <p>
+                    {labels.taxNumber}: {invoice.organization.taxNumber}
+                  </p>
+                )}
+              </div>
+            )}
         </div>
         <div className="text-right">
           <h2 className="text-2xl font-bold text-black mb-4">

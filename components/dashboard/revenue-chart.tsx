@@ -27,17 +27,6 @@ type RevenueChartProps = {
   locale: string;
 };
 
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--chart-1))",
-  },
-  outstanding: {
-    label: "Outstanding",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
-
 function getMonthName(monthNumber: number, locale: string): string {
   const date = new Date(2024, monthNumber - 1, 1);
   return date.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US", {
@@ -53,7 +42,6 @@ export function RevenueChart({
 }: RevenueChartProps) {
   const t = useTranslations();
 
-  // Transform data for the chart
   const chartData = data.map((item) => {
     if (period === "monthly") {
       const monthlyItem = item as MonthlyRevenueData;
@@ -74,23 +62,8 @@ export function RevenueChart({
     }
   });
 
-  // Calculate totals for the description
   const totalRevenue = chartData.reduce((sum, item) => sum + item.revenue, 0);
-  const totalOutstanding = chartData.reduce(
-    (sum, item) => sum + item.outstanding,
-    0
-  );
 
-  // Custom tooltip formatter
-  const tooltipFormatter = (value: number, name: string) => {
-    const label =
-      name === "revenue"
-        ? t("dashboard.chart.revenue")
-        : t("dashboard.chart.outstanding");
-    return [formatCurrency(value, baseCurrency), label];
-  };
-
-  // Localized chart config
   const localizedConfig: ChartConfig = {
     revenue: {
       label: t("dashboard.chart.revenue"),

@@ -81,7 +81,6 @@ function getDefaultErrorMessage(code: ErrorCodeType): string {
 export function getFieldErrorMessage(
   field: string,
   error: ActionError,
-  t?: TranslationFunction
 ): string | undefined {
   if (error.metadata?.details && typeof error.metadata.details === "object") {
     const fieldErrors = error.metadata.details as Record<string, string | string[]>;

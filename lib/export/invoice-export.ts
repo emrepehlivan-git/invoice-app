@@ -1,7 +1,6 @@
 import type { InvoiceWithCustomer } from "@/types";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
-import { formatCurrency } from "@/lib/currency";
 
 export function exportInvoicesToCSV(
   invoices: InvoiceWithCustomer[],

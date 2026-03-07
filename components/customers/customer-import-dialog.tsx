@@ -64,12 +64,12 @@ export function CustomerImportDialog({
         const msg =
           data.skipped > 0
             ? t("customers.import.success", {
-                created: data.created,
-                skipped: data.skipped,
-              })
+              created: data.created,
+              skipped: data.skipped,
+            })
             : t("customers.import.successOnlyCreated", {
-                created: data.created,
-              });
+              created: data.created,
+            });
         toast.success(msg);
       }
 

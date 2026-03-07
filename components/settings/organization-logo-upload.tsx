@@ -7,6 +7,8 @@ import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { updateOrganizationLogo, removeOrganizationLogo } from "@/app/actions/organization";
 import { Upload, Trash2, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
 
 const ACCEPT = "image/png,image/jpeg,image/jpg,image/webp";
 const MAX_SIZE_BYTES = 500 * 1024;
@@ -85,7 +87,7 @@ export function OrganizationLogoUpload({
     <div className="space-y-4">
       {currentLogoUrl ? (
         <div className="flex items-center gap-4">
-          <img
+          <Image
             src={currentLogoUrl}
             alt=""
             width={200}
@@ -95,7 +97,7 @@ export function OrganizationLogoUpload({
             decoding="async"
           />
           <div className="flex flex-col gap-2">
-            <input
+            <Input
               ref={inputRef}
               type="file"
               accept={ACCEPT}
@@ -136,7 +138,7 @@ export function OrganizationLogoUpload({
         </div>
       ) : (
         <div>
-          <input
+          <Input
             ref={inputRef}
             type="file"
             accept={ACCEPT}
