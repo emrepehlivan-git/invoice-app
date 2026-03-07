@@ -24,7 +24,7 @@ export default async function OnboardingPage({ params }: Props) {
   const organizations = await getUserOrganizations();
 
   if (organizations.length === 1) {
-    redirect(`/${organizations[0].slug}`);
+    redirect({ href: `/${organizations[0].slug}`, locale });
   }
 
   return (

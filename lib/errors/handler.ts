@@ -290,7 +290,7 @@ export function isRedirectError(error: unknown): boolean {
  * ```ts
  * try {
  *   // ... create resource
- *   redirect("/success");
+ *   redirect({ href: "/success", locale });
  * } catch (error) {
  *   rethrowRedirectError(error);
  *   return handleActionError(error, "createResource");

@@ -13,8 +13,8 @@ export default async function Home({ params }: Props) {
   const session = await getSession();
 
   if (session?.user) {
-    redirect("/onboarding");
+    redirect({ href: "/onboarding", locale });
   }
 
-  redirect("/login");
+  redirect({ href: "/login", locale });
 }

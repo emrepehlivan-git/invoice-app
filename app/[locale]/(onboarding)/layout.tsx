@@ -15,7 +15,7 @@ export default async function OnboardingLayout({ children, params }: Props) {
   const session = await getSession();
 
   if (!session?.user) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
   }
 
   return (
