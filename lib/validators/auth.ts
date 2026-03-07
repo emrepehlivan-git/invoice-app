@@ -34,5 +34,30 @@ export function createRegisterSchema(t: TranslationFunction) {
     });
 }
 
+export function createForgotPasswordSchema(t: TranslationFunction) {
+  return z.object({
+    email: z.string().min(1, t("validation.required")).email(t("validation.email")),
+  });
+}
+
+export function createResetPasswordSchema(t: TranslationFunction) {
+  return z
+    .object({
+      password: z
+        .string()
+        .min(1, t("validation.required"))
+        .min(8, t("validation.minLength", { min: 8 }))
+        .max(128, t("validation.maxLength", { max: 128 }))
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, t("validation.passwordStrength")),
+      confirmPassword: z.string().min(1, t("validation.required")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordMatch"),
+      path: ["confirmPassword"],
+    });
+}
+
 export type LoginInput = z.infer<ReturnType<typeof createLoginSchema>>;
 export type RegisterInput = z.infer<ReturnType<typeof createRegisterSchema>>;
+export type ForgotPasswordInput = z.infer<ReturnType<typeof createForgotPasswordSchema>>;
+export type ResetPasswordInput = z.infer<ReturnType<typeof createResetPasswordSchema>>;

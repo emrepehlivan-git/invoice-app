@@ -60,6 +60,25 @@ try {
       enabled: true,
       minPasswordLength: 8,
       maxPasswordLength: 128,
+      sendResetPassword: async ({ user, url }) => {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { locale: true },
+          });
+          const locale = dbUser?.locale ?? defaultLocale;
+          const { getEmailService } = await import("@/lib/email");
+          const emailService = await getEmailService();
+          void emailService.sendPasswordReset({
+            recipientEmail: user.email,
+            recipientName: user.name ?? user.email,
+            resetUrl: url,
+            locale,
+          });
+        } catch (err) {
+          logger.error("Failed to send password reset email", { error: err });
+        }
+      },
     },
     databaseHooks: {
       user: {

@@ -101,6 +101,27 @@
       "errorDescription": "E-posta adresinizi doğrulayamadık. Bağlantı geçersiz olabilir.",
       "expiredDescription": "Bu doğrulama bağlantısının süresi dolmuş. Lütfen yeni bir bağlantı isteyin.",
       "backToLogin": "Giriş Sayfasına Dön"
+    },
+    "forgotPassword": {
+      "title": "Şifremi Unuttum",
+      "description": "E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.",
+      "submit": "Sıfırlama Bağlantısı Gönder",
+      "checkEmail": "E-postanızı kontrol edin",
+      "checkEmailDescription": "Bu e-posta adresi sistemimizde kayıtlıysa, şifre sıfırlama bağlantısı gönderdik.",
+      "backToLogin": "Giriş sayfasına dön",
+      "success": "Şifre sıfırlama bağlantısı gönderildi",
+      "error": "Şifre sıfırlama isteği gönderilemedi"
+    },
+    "resetPassword": {
+      "title": "Yeni Şifre Belirleyin",
+      "description": "Hesabınız için yeni bir şifre girin.",
+      "submit": "Şifreyi Güncelle",
+      "success": "Şifreniz güncellendi. Giriş yapabilirsiniz.",
+      "error": "Şifre güncellenemedi",
+      "errorTitle": "Bağlantı Geçersiz",
+      "invalidOrExpired": "Bu şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş.",
+      "requestNewLink": "Yeni bağlantı iste",
+      "invalidToken": "Geçersiz veya eksik sıfırlama bağlantısı"
     }
   },
   "organization": {
