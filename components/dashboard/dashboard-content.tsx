@@ -16,6 +16,7 @@ import { FileText, Users, DollarSign, TrendingUp } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { InvoiceStatus } from "@/types";
 import { formatCurrency, formatMultiCurrencyTotal } from "@/lib/currency";
+import logger from "@/lib/logger/client";
 import { RevenueBreakdown } from "./revenue-breakdown";
 import { DashboardFilters } from "./dashboard-filters";
 import type { InvoiceStats, MonthlyRevenueData, YearlyRevenueData, InvoiceFilters } from "@/app/actions/invoice";
@@ -86,7 +87,7 @@ export function DashboardContent({
       setMonthlyData(newMonthlyData);
       setYearlyData(newYearlyData);
     } catch (error) {
-      console.error("Failed to update dashboard filters:", error);
+      logger.error("Failed to update dashboard filters", { error });
     } finally {
       setIsLoading(false);
     }

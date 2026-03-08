@@ -18,6 +18,7 @@ import {
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { exportInvoicesToCSV, downloadCSV } from "@/lib/export/invoice-export";
+import logger from "@/lib/logger/client";
 
 import {
   Table,
@@ -158,7 +159,7 @@ export function InvoiceTable({ invoices, orgSlug, locale }: InvoiceTableProps) {
       downloadCSV(csvContent, filename);
       toast.success(t("invoices.export.success"));
     } catch (error) {
-      console.error("Export failed:", error);
+      logger.error("Export failed", { error });
       toast.error(t("invoices.export.error"));
     }
   }

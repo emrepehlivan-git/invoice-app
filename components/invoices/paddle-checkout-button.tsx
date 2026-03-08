@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { createPaddleTransaction } from "@/app/actions/paddle";
 import { useRouter } from "@/i18n/navigation";
 import { isActionError, handleActionErrorToast } from "@/lib/errors/client-public";
+import logger from "@/lib/logger/client";
 
 interface PaddleCheckoutButtonProps {
   invoiceId: string;
@@ -33,7 +34,7 @@ export function PaddleCheckoutButton({
   useEffect(() => {
     const clientToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN?.trim();
     if (!clientToken) {
-      console.error(
+      logger.warn(
         "Paddle: NEXT_PUBLIC_PADDLE_CLIENT_TOKEN is missing. Add it to .env and restart the dev server (bun run dev)."
       );
       return;
@@ -59,7 +60,7 @@ export function PaddleCheckoutButton({
             detail === "transaction_default_checkout_url_not_set"
               ? t("errors.paddleDefaultCheckoutUrlNotSet")
               : err?.message ?? err?.code ?? "Checkout error";
-          console.error("Paddle checkout.error:", err ?? event);
+          logger.error("Paddle checkout.error", { error: err ?? event });
           toast.error(message);
         }
       },
@@ -70,7 +71,7 @@ export function PaddleCheckoutButton({
         }
       })
       .catch((err) => {
-        console.error("Paddle initialization failed:", err);
+        logger.error("Paddle initialization failed", { error: err });
         toast.error(t("errors.paddleNotConfigured"));
       });
   }, [t, router]);

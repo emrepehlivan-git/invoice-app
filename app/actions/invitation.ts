@@ -20,6 +20,7 @@ import {
 } from "@/lib/errors/server";
 import { getEmailService, getAppBaseUrl } from "@/lib/email";
 import { locales, defaultLocale } from "@/i18n/config";
+import logger from "@/lib/logger";
 
 const INVITATION_EXPIRY_DAYS = 7;
 
@@ -116,8 +117,11 @@ export async function createInvitation(
         locale: getEmailLocale(inviter?.locale),
       });
     } catch (emailError) {
-      // Log but don't fail the invitation creation
-      console.error("[Invitation] Failed to send invitation email:", emailError);
+      logger.error("Invitation: failed to send invitation email", {
+        error: emailError,
+        organizationId,
+        email: data.email,
+      });
     }
 
     revalidatePath("/");
@@ -253,8 +257,10 @@ export async function resendInvitation(
         locale: getEmailLocale(resender?.locale),
       });
     } catch (emailError) {
-      // Log but don't fail the resend operation
-      console.error("[Invitation] Failed to resend invitation email:", emailError);
+      logger.error("Invitation: failed to resend invitation email", {
+        error: emailError,
+        invitationId,
+      });
     }
 
     revalidatePath("/");
