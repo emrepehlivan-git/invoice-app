@@ -1,7 +1,11 @@
+import { validateEnv } from "@/lib/env";
+
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") {
     return;
   }
+
+  validateEnv();
 
   const cron = await import("node-cron");
   const { markOverdueInvoicesSystem } = await import("@/app/actions/invoice");
