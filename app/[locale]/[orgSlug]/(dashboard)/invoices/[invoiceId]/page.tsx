@@ -5,7 +5,6 @@ import { getCachedOrganizationBySlug } from "@/lib/cached-queries";
 import { getInvoice, getInvoiceStatusHistory } from "@/app/actions/invoice";
 import { redirect } from "@/i18n/navigation";
 import { InvoiceStatus } from "@/types";
-import { tr, enUS } from "date-fns/locale";
 import {
   InvoiceDetailHeader,
   InvoiceBillToCard,
@@ -50,7 +49,6 @@ export default async function InvoiceDetailPage({ params }: Props) {
   }
 
   const t = await getTranslations();
-  const dateLocale = locale === "tr" ? tr : enUS;
 
   const printLabels: InvoicePrintLabels = {
     billTo: t("invoices.detail.billTo"),
@@ -109,7 +107,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
             statusLabel={t(`invoices.status.${invoice.status}`)}
             issueDate={new Date(invoice.issueDate)}
             dueDate={new Date(invoice.dueDate)}
-            dateLocale={dateLocale}
+            locale={locale}
             labels={{
               title: t("invoices.detail.invoiceInfo"),
               invoiceNumber: t("invoices.fields.invoiceNumber"),
@@ -156,7 +154,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
 
         <InvoiceStatusHistory
           entries={statusHistory}
-          dateLocale={dateLocale}
+          locale={locale}
         />
 
         {invoice.notes && (

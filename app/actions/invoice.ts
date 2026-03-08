@@ -677,6 +677,20 @@ async function fetchInvoiceStatsInner(
   }
 
   const baseCurrency = organization.baseCurrency;
+  const ratesRows = await prisma.exchangeRate.findMany({
+    where: {
+      organizationId,
+      toCurrency: baseCurrency,
+    },
+    orderBy: { effectiveDate: "desc" },
+    select: { fromCurrency: true, rate: true },
+  });
+  const ratesMap: Record<string, number> = {};
+  for (const row of ratesRows) {
+    if (ratesMap[row.fromCurrency] === undefined) {
+      ratesMap[row.fromCurrency] = Number(row.rate);
+    }
+  }
   const baseWhere: Record<string, unknown> = { organizationId };
   if (filters?.dateRange) {
     baseWhere.issueDate = {
@@ -745,8 +759,13 @@ async function fetchInvoiceStatsInner(
       revenueInBaseCurrency += Number(invoice.totalInBaseCurrency);
     } else if (currency === baseCurrency) {
       revenueInBaseCurrency += amount;
-    } else if (!missingHistoricalRates.includes(currency)) {
-      missingHistoricalRates.push(currency);
+    } else {
+      const currentRate = ratesMap[currency];
+      if (currentRate != null) {
+        revenueInBaseCurrency += amount * currentRate;
+      } else if (!missingHistoricalRates.includes(currency)) {
+        missingHistoricalRates.push(currency);
+      }
     }
   }
 
@@ -761,8 +780,13 @@ async function fetchInvoiceStatsInner(
       outstandingInBaseCurrency += Number(invoice.totalInBaseCurrency);
     } else if (currency === baseCurrency) {
       outstandingInBaseCurrency += amount;
-    } else if (!missingHistoricalRates.includes(currency)) {
-      missingHistoricalRates.push(currency);
+    } else {
+      const currentRate = ratesMap[currency];
+      if (currentRate != null) {
+        outstandingInBaseCurrency += amount * currentRate;
+      } else if (!missingHistoricalRates.includes(currency)) {
+        missingHistoricalRates.push(currency);
+      }
     }
   }
 

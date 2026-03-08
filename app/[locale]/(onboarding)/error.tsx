@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
-import logger from "@/lib/logger";
+import logger from "@/lib/logger/client";
 
 interface ErrorProps {
   error: Error & { digest?: string };

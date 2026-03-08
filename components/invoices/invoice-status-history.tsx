@@ -10,19 +10,20 @@ import {
 import { Badge } from "@/components/ui/badge";
 import type { InvoiceStatusHistoryEntry } from "@/app/actions/invoice";
 import { format } from "date-fns";
-import type { Locale } from "date-fns";
+import { tr, enUS } from "date-fns/locale";
 import { History } from "lucide-react";
 
 interface InvoiceStatusHistoryProps {
   entries: InvoiceStatusHistoryEntry[];
-  dateLocale: Locale;
+  locale: string;
 }
 
 export function InvoiceStatusHistory({
   entries,
-  dateLocale,
+  locale,
 }: InvoiceStatusHistoryProps) {
   const t = useTranslations("invoices");
+  const dateLocale = locale === "tr" ? tr : enUS;
 
   if (entries.length === 0) return null;
 

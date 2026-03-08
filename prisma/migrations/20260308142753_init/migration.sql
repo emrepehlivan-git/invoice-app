@@ -11,6 +11,9 @@ CREATE TYPE "InvoiceStatus" AS ENUM ('DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCEL
 CREATE TYPE "DiscountType" AS ENUM ('PERCENTAGE', 'FIXED');
 
 -- CreateEnum
+CREATE TYPE "PaymentMethod" AS ENUM ('CASH', 'BANK_TRANSFER', 'CREDIT_CARD', 'CHECK', 'PADDLE', 'OTHER');
+
+-- CreateEnum
 CREATE TYPE "AuditAction" AS ENUM ('CREATE', 'UPDATE', 'DELETE', 'STATUS_CHANGE');
 
 -- CreateTable
@@ -20,6 +23,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "image" TEXT,
+    "locale" TEXT NOT NULL DEFAULT 'en',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -77,7 +81,14 @@ CREATE TABLE "Organization" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logo" TEXT,
+    "email" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "taxNumber" TEXT,
     "baseCurrency" TEXT NOT NULL DEFAULT 'TRY',
+    "invoiceNumberPrefix" TEXT NOT NULL DEFAULT 'INV',
+    "invoiceNumberPadding" INTEGER NOT NULL DEFAULT 4,
+    "invoiceNumberIncludeYear" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -165,6 +176,7 @@ CREATE TABLE "Invoice" (
     "exchangeRateToBase" DECIMAL(12,6),
     "totalInBaseCurrency" DECIMAL(12,2),
     "notes" TEXT,
+    "lastReminderSentAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -181,6 +193,24 @@ CREATE TABLE "InvoiceItem" (
     "total" DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT "InvoiceItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "invoiceId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "amount" DECIMAL(10,2) NOT NULL,
+    "paymentDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "method" "PaymentMethod" NOT NULL DEFAULT 'BANK_TRANSFER',
+    "reference" TEXT,
+    "paddleTransactionId" TEXT,
+    "paddleCustomerId" TEXT,
+    "notes" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -267,6 +297,12 @@ CREATE UNIQUE INDEX "Customer_organizationId_email_key" ON "Customer"("organizat
 CREATE INDEX "Invoice_organizationId_idx" ON "Invoice"("organizationId");
 
 -- CreateIndex
+CREATE INDEX "Invoice_organizationId_status_idx" ON "Invoice"("organizationId", "status");
+
+-- CreateIndex
+CREATE INDEX "Invoice_organizationId_issueDate_idx" ON "Invoice"("organizationId", "issueDate");
+
+-- CreateIndex
 CREATE INDEX "Invoice_customerId_idx" ON "Invoice"("customerId");
 
 -- CreateIndex
@@ -283,6 +319,21 @@ CREATE UNIQUE INDEX "Invoice_organizationId_invoiceNumber_key" ON "Invoice"("org
 
 -- CreateIndex
 CREATE INDEX "InvoiceItem_invoiceId_idx" ON "InvoiceItem"("invoiceId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Payment_paddleTransactionId_key" ON "Payment"("paddleTransactionId");
+
+-- CreateIndex
+CREATE INDEX "Payment_invoiceId_idx" ON "Payment"("invoiceId");
+
+-- CreateIndex
+CREATE INDEX "Payment_organizationId_idx" ON "Payment"("organizationId");
+
+-- CreateIndex
+CREATE INDEX "Payment_paymentDate_idx" ON "Payment"("paymentDate");
+
+-- CreateIndex
+CREATE INDEX "Payment_paddleTransactionId_idx" ON "Payment"("paddleTransactionId");
 
 -- CreateIndex
 CREATE INDEX "AuditLog_entityType_entityId_idx" ON "AuditLog"("entityType", "entityId");
@@ -328,3 +379,9 @@ ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_customerId_fkey" FOREIGN KEY ("cus
 
 -- AddForeignKey
 ALTER TABLE "InvoiceItem" ADD CONSTRAINT "InvoiceItem_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;

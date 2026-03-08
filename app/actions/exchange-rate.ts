@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import type { ExchangeRate } from "@/types";
@@ -157,6 +157,7 @@ export async function upsertExchangeRate(
     });
 
     revalidatePath("/");
+    updateTag(`org-${organizationId}`);
 
     // Audit log
     if (existingRate) {
@@ -224,6 +225,7 @@ export async function deleteExchangeRate(
     });
 
     revalidatePath("/");
+    updateTag(`org-${exchangeRate.organizationId}`);
 
     await auditDelete("ExchangeRate", exchangeRateId, {
       fromCurrency: exchangeRate.fromCurrency,

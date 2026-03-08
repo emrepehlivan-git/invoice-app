@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import type { Locale } from "date-fns";
+import { tr, enUS } from "date-fns/locale";
 import { INVOICE_STATUS_COLORS } from "./constants";
 import type { InvoiceStatus } from "@/types";
 
@@ -16,7 +16,7 @@ interface InvoiceInfoCardProps {
   statusLabel: string;
   issueDate: Date;
   dueDate: Date;
-  dateLocale: Locale;
+  locale: string;
   labels: {
     title: string;
     invoiceNumber: string;
@@ -32,9 +32,10 @@ export function InvoiceInfoCard({
   statusLabel,
   issueDate,
   dueDate,
-  dateLocale,
+  locale,
   labels,
 }: InvoiceInfoCardProps) {
+  const dateLocale = locale === "tr" ? tr : enUS;
   return (
     <Card>
       <CardHeader>
