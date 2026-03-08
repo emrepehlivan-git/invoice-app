@@ -2,6 +2,13 @@
  * Paddle Webhook Handler
  *
  * Receives and processes Paddle webhook events for payment notifications.
+ * Signature is verified via paddle.webhooks.unmarshal before processing.
+ *
+ * Error response behaviour: This handler intentionally returns HTTP 200 even
+ * when processing fails (e.g. invalid body, signature mismatch, or internal error).
+ * Paddle retries delivery on 5xx responses; returning 200 avoids retries for
+ * permanent failures (bad request, invalid signature) and keeps retry traffic low.
+ * Errors are always logged for debugging.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -118,9 +125,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
     logger.error("Paddle webhook error", { error });
-    // Return 200 to prevent retries for validation errors
-    // Paddle will retry on 5xx errors
-    return NextResponse.json({ error: "Webhook error logged" }, { status: 200 });
+    return NextResponse.json(
+      { error: "Webhook error logged" },
+      { status: 200 }
+    );
   }
 }
 
