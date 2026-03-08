@@ -740,6 +740,7 @@
       "description": "Organizasyonunuzdaki işlem ve değişiklikleri görüntüleyin",
       "adminOnly": "Yönetici Yetkisi Gerekli",
       "adminOnlyDescription": "Denetim günlüğünü yalnızca yöneticiler görüntüleyebilir",
+      "errorLoading": "Denetim günlüğü yüklenemedi",
       "cardTitle": "İşlem Günlüğü",
       "cardDescription": "Son işlemler ve değişiklikler. Sonuçları daraltmak için filtreleri kullanın.",
       "filters": {

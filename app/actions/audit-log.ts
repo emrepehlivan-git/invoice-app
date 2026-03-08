@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireAdminAccess } from "@/lib/auth/rbac";
 import type { AuditLog } from "@/types";
 import { AuditAction } from "@/prisma/generated/prisma";
+import type { ActionResult } from "@/lib/errors/types";
+import { actionSuccess, handleActionError } from "@/lib/errors/handler";
 
 export type AuditLogFilters = {
   action?: AuditAction;
@@ -26,7 +28,7 @@ export async function getAuditLogs(
   organizationId: string,
   filters?: AuditLogFilters,
   pagination?: { page?: number; pageSize?: number }
-): Promise<AuditLogsResult | null> {
+): Promise<ActionResult<AuditLogsResult>> {
   try {
     await requireAdminAccess(organizationId);
 
@@ -78,16 +80,16 @@ export async function getAuditLogs(
       prisma.auditLog.count({ where }),
     ]);
 
-    return { logs, totalCount };
-  } catch {
-    return null;
+    return actionSuccess({ logs, totalCount });
+  } catch (error) {
+    return handleActionError(error, "getAuditLogs", { organizationId });
   }
 }
 
 export async function getAuditLogsForExport(
   organizationId: string,
   filters?: AuditLogFilters
-): Promise<AuditLog[]> {
+): Promise<ActionResult<AuditLog[]>> {
   try {
     await requireAdminAccess(organizationId);
 
@@ -128,8 +130,8 @@ export async function getAuditLogsForExport(
       take: EXPORT_MAX_ROWS,
     });
 
-    return logs;
-  } catch {
-    return [];
+    return actionSuccess(logs);
+  } catch (error) {
+    return handleActionError(error, "getAuditLogsForExport", { organizationId });
   }
 }

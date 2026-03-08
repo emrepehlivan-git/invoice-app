@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
+import { toast } from "sonner";
 import { CalendarIcon, Download, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import {
@@ -28,6 +29,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { type AuditLog, AuditAction } from "@/types";
 import { getAuditLogs, getAuditLogsForExport, type AuditLogFilters } from "@/app/actions/audit-log";
+import { isActionError, getErrorMessage } from "@/lib/errors";
 import { exportAuditLogsToCSV } from "@/lib/export/audit-log-export";
 import { downloadCSV } from "@/lib/export/invoice-export";
 
@@ -48,6 +50,7 @@ export function AuditLogSection({
   locale,
 }: AuditLogSectionProps) {
   const t = useTranslations("settings.auditLog");
+  const tRoot = useTranslations();
   const dateLocale = locale === "tr" ? tr : enUS;
 
   const [logs, setLogs] = useState(initialLogs);
@@ -85,13 +88,17 @@ export function AuditLogSection({
         page: pageNum,
         pageSize: PAGE_SIZE,
       });
-      if (result) {
-        setLogs(result.logs);
-        setTotalCount(result.totalCount);
+      if (isActionError(result)) {
+        toast.error(getErrorMessage(result, (key) => tRoot(key)));
+        return;
+      }
+      if (result.data) {
+        setLogs(result.data.logs);
+        setTotalCount(result.data.totalCount);
         setPage(pageNum);
       }
     } catch {
-      // keep current state
+      toast.error(t("errorLoading") ?? "Could not load audit log");
     } finally {
       setIsLoading(false);
     }
@@ -123,11 +130,15 @@ export function AuditLogSection({
       }
 
       const exportLogs = await getAuditLogsForExport(organizationId, filters);
-      const csv = exportAuditLogsToCSV(exportLogs, locale);
+      if (isActionError(exportLogs)) {
+        toast.error(getErrorMessage(exportLogs, (key) => tRoot(key)));
+        return;
+      }
+      const csv = exportAuditLogsToCSV(exportLogs.data, locale);
       const filename = `audit-log-${format(new Date(), "yyyy-MM-dd-HHmm")}.csv`;
       downloadCSV(csv, filename);
     } catch {
-      // ignore
+      toast.error(t("errorLoading") ?? "Could not export");
     } finally {
       setIsExporting(false);
     }

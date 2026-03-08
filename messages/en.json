@@ -740,6 +740,7 @@
       "description": "View activity and changes in your organization",
       "adminOnly": "Admin Access Required",
       "adminOnlyDescription": "Only administrators can view the audit log",
+      "errorLoading": "Could not load audit log",
       "cardTitle": "Activity Log",
       "cardDescription": "Recent actions and changes. Use filters to narrow results.",
       "filters": {
