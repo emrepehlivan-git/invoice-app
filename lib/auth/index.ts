@@ -131,6 +131,11 @@ try {
       expiresIn: 60 * 60 * 24 * 7,
       updateAge: 60 * 60 * 24,
     },
+    rateLimit: {
+      enabled: true,
+      window: 60,
+      max: 100,
+    },
   });
 } catch (error) {
   logger.error("Failed to initialize auth", { error });

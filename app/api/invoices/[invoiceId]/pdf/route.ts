@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth/session";
 import { generateInvoicePdf } from "@/lib/pdf/invoice-pdf";
 import { getInvoicePdfLabels } from "@/lib/pdf/labels";
 import { resolveLogoToDataUrl } from "@/lib/pdf/logo-resolver";
+import { rateLimitPdf } from "@/lib/rate-limit";
 import en from "@/messages/en.json";
 import tr from "@/messages/tr.json";
 import logger from "@/lib/logger";
@@ -21,6 +22,13 @@ export async function GET(
     const session = await getSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { success, reset } = await rateLimitPdf.limit(session.user.id);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429, headers: { "Retry-After": String(reset) } }
+      );
     }
 
     const { invoiceId } = await context.params;

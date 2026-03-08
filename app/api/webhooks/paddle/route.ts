@@ -8,9 +8,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventName } from "@paddle/paddle-node-sdk";
 import { getPaddleClient, getPaddleWebhookSecret } from "@/lib/paddle/client";
 import { processCompletedTransaction } from "@/lib/paddle/service";
+import { getClientIp, rateLimitWebhook } from "@/lib/rate-limit";
 import logger from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  const { success, reset } = await rateLimitWebhook.limit(ip);
+  if (!success) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": String(reset) } }
+    );
+  }
   try {
     const signature = request.headers.get("paddle-signature");
     const rawBody = await request.text();

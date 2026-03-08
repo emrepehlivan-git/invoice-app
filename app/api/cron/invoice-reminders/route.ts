@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runInvoiceReminders } from "@/app/actions/invoice-reminder";
+import { getClientIp, rateLimitCron } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -13,6 +14,14 @@ function isAuthorized(request: NextRequest): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const ip = getClientIp(request);
+  const { success, reset } = await rateLimitCron.limit(ip);
+  if (!success) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": String(reset) } }
+    );
+  }
   if (!isAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
