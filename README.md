@@ -49,6 +49,10 @@ A modern, secure, and scalable invoice management application built with Next.js
 - **Winston** for logging
 - **date-fns** for date manipulation
 - **Sonner** for toast notifications
+- **node-cron** for scheduled jobs (overdue invoices)
+- **Paddle** (optional) for subscriptions
+- **Nodemailer** (optional) for transactional email
+- **jsPDF** for PDF invoice export
 
 ## Prerequisites
 
@@ -73,14 +77,14 @@ A modern, secure, and scalable invoice management application built with Next.js
    
    Edit `.env` file with your configuration:
    ```env
+   # App
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   
    # Database
    POSTGRES_USER=postgres
    POSTGRES_PASSWORD=your_password
    POSTGRES_DB=invoice_app
-   
-   # Next.js
-   NEXTAUTH_SECRET=your_secret_key
-   NEXTAUTH_URL=http://localhost:3000
+   DATABASE_URL=postgresql://postgres:password@localhost:5432/invoice_app
    
    # Better Auth
    BETTER_AUTH_SECRET=your_auth_secret
@@ -121,9 +125,8 @@ A modern, secure, and scalable invoice management application built with Next.js
 2. **Set up environment variables**
    Create a `.env` file in the root directory:
    ```env
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
    DATABASE_URL="postgresql://user:password@localhost:5432/invoice_app"
-   NEXTAUTH_SECRET=your_secret_key
-   NEXTAUTH_URL=http://localhost:3000
    BETTER_AUTH_SECRET=your_auth_secret
    BETTER_AUTH_URL=http://localhost:3000
    GOOGLE_CLIENT_ID=your_google_client_id
@@ -181,24 +184,41 @@ invoice-app/
 │   ├── [locale]/                 # Internationalized routes
 │   │   ├── (auth)/               # Authentication routes
 │   │   │   ├── login/
-│   │   │   └── register/
-│   │   ├── (dashboard)/          # Dashboard routes
-│   │   │   ├── customers/
-│   │   │   ├── invoices/
-│   │   │   └── settings/
-│   │   └── [orgSlug]/            # Organization-scoped routes
+│   │   │   ├── register/
+│   │   │   ├── forgot-password/
+│   │   │   ├── reset-password/
+│   │   │   ├── verify-email/
+│   │   │   └── invitation/[token]/
+│   │   ├── (onboarding)/         # Onboarding (org creation)
+│   │   │   └── onboarding/
+│   │   ├── (dashboard)/          # Dashboard (error, etc.)
+│   │   └── [orgSlug]/(dashboard)/ # Organization-scoped dashboard
+│   │       ├── customers/
+│   │       ├── invoices/
+│   │       ├── settings/
+│   │       └── page.tsx (dashboard home)
 │   ├── actions/                  # Server Actions
 │   │   ├── customer.ts
 │   │   ├── invoice.ts
 │   │   ├── organization.ts
-│   │   └── user.ts
+│   │   ├── user.ts
+│   │   ├── invitation.ts
+│   │   ├── audit-log.ts
+│   │   ├── exchange-rate.ts
+│   │   ├── payment.ts
+│   │   ├── paddle.ts
+│   │   └── invoice-reminder.ts
 │   └── api/                      # API routes
-│       └── auth/
+│       ├── auth/[...all]/
+│       ├── cron/invoice-reminders/
+│       ├── webhooks/paddle/
+│       └── invoices/[invoiceId]/pdf/
 ├── components/                   # React components
 │   ├── ui/                       # shadcn/ui components
 │   ├── common/                   # Shared components
 │   ├── customers/
 │   ├── invoices/
+│   ├── dashboard/
 │   └── settings/
 ├── lib/                          # Utility libraries
 │   ├── auth/                     # Better Auth configuration
@@ -206,7 +226,13 @@ invoice-app/
 │   ├── validators/               # Zod schemas
 │   ├── errors/                   # Error handling
 │   ├── logger/                   # Winston logger
-│   └── audit/                    # Audit logging
+│   ├── audit/                    # Audit logging
+│   ├── email/                    # Email (SMTP, templates)
+│   ├── pdf/                      # PDF generation (jsPDF)
+│   ├── paddle/                   # Paddle billing
+│   ├── export/                   # Data export
+│   ├── currency.ts
+│   └── env.ts                    # Env validation
 ├── instrumentation.ts            # Next.js instrumentation (node-cron: overdue invoices daily)
 ├── i18n/                         # Internationalization
 │   ├── config.ts
@@ -261,24 +287,25 @@ To add a new language:
 
 ## Environment Variables
 
-Required environment variables:
+Required environment variables (see `.env.example` for the full list):
 
 ```env
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
 # Database
 DATABASE_URL=postgresql://user:password@host:5432/database
 
-# Authentication
+# Better Auth
 BETTER_AUTH_SECRET=your_secret_key
 BETTER_AUTH_URL=http://localhost:3000
 
 # OAuth (Optional)
 GOOGLE_CLIENT_ID=your_client_id
 GOOGLE_CLIENT_SECRET=your_client_secret
-
-# Next.js
-NEXTAUTH_SECRET=your_secret_key
-NEXTAUTH_URL=http://localhost:3000
 ```
+
+Optional: Paddle (subscriptions), Email (SMTP), Cron secret for secured cron endpoints. Copy `.env.example` and fill as needed.
 
 ## Development Guidelines
 
@@ -345,10 +372,10 @@ The application is configured for Docker deployment with a multi-stage Dockerfil
 Overdue invoice marking runs as a **scheduled job** via `node-cron` and Next.js `instrumentation.ts`:
 
 - **Schedule:** Daily at 00:00 (server local time)
-- **Behavior:** Faturaların vadesi geçmiş ve status `SENT` olan kayıtlar otomatik `OVERDUE` yapılır
-- **Gereksinim:** Uygulama uzun süre çalışan bir Node süreci olarak çalışmalı (`next start` veya Docker); serverless (Vercel vb.) ortamda bu job çalışmaz, sadece fatura listesi sayfası açıldığında güncelleme yapılır
+- **Behavior:** Invoices past due date with status `SENT` are automatically updated to `OVERDUE`.
+- **Requirement:** The app must run as a long-lived Node process (`next start` or Docker). On serverless (e.g. Vercel) this job does not run; overdue status is only updated when the invoice list page is opened.
 
-Ek cron kütüphanesi veya harici servis gerekmez; self-hosted veya Docker deploy'da otomatik devreye girer.
+No extra cron service is required; the job runs automatically when self-hosted or deployed with Docker.
 
 ## Security Features
 
