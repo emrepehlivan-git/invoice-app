@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
@@ -14,6 +15,13 @@ import { Role } from "@/types";
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("settings");
+  return { title: t("nav.organization") };
+}
 
 export default async function OrganizationSettingsPage({ params }: Props) {
   const { locale, orgSlug } = await params;

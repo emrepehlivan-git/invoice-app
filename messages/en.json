@@ -88,6 +88,7 @@
       "confirmPassword": "Confirm Password"
     },
     "emailVerification": {
+      "title": "Verify Email",
       "required": "Please verify your email address before signing in. Check your inbox for the verification link.",
       "resend": "Resend verification email",
       "resendDescription": "Your email is not verified. Click below to receive a new verification link.",

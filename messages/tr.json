@@ -88,6 +88,7 @@
       "confirmPassword": "Şifre Tekrar"
     },
     "emailVerification": {
+      "title": "E-postayı Doğrula",
       "required": "Giriş yapmadan önce e-posta adresinizi doğrulayın. Doğrulama bağlantısı için gelen kutunuzu kontrol edin.",
       "resend": "Doğrulama e-postasını tekrar gönder",
       "resendDescription": "E-posta adresiniz doğrulanmamış. Yeni bir doğrulama bağlantısı almak için tıklayın.",
