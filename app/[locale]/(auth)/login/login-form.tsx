@@ -85,7 +85,8 @@ export function LoginForm() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
+      <h1 className="sr-only">{t("auth.login.title")}</h1>
+      <CardHeader className="text-center" aria-hidden="true">
         <CardTitle className="text-2xl">{t("auth.login.title")}</CardTitle>
         <CardDescription>{t("auth.login.description")}</CardDescription>
       </CardHeader>
@@ -133,7 +134,11 @@ export function LoginForm() {
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            aria-label={t("auth.login.title")}
+          >
             <FormField
               control={form.control}
               name="email"

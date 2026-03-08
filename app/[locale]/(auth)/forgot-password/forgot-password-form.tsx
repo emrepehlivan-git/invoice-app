@@ -98,7 +98,8 @@ export function ForgotPasswordForm() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
+      <h1 className="sr-only">{t("auth.forgotPassword.title")}</h1>
+      <CardHeader className="text-center" aria-hidden="true">
         <CardTitle className="text-2xl">
           {t("auth.forgotPassword.title")}
         </CardTitle>
@@ -108,7 +109,11 @@ export function ForgotPasswordForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            aria-label={t("auth.forgotPassword.title")}
+          >
             <FormField
               control={form.control}
               name="email"

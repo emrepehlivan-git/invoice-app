@@ -9,7 +9,7 @@ import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Invoice App",
+  title: { default: "Invoice App", template: "%s | Invoice App" },
   description: "Invoice App",
 };
 

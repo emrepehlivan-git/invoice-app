@@ -15,7 +15,9 @@ export default async function AuthLayout({ children, params }: Props) {
       <div className="absolute right-4 top-4">
         <LanguageSwitcher />
       </div>
-      <div className="w-full max-w-md">{children}</div>
+      <main id="main-content" role="main" className="w-full max-w-md">
+        {children}
+      </main>
     </div>
   );
 }

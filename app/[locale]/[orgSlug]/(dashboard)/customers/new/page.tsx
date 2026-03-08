@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
@@ -17,6 +18,13 @@ import { CustomerForm } from "@/components/customers/customer-form";
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("customers.form");
+  return { title: t("createTitle") };
+}
 
 export default async function NewCustomerPage({ params }: Props) {
   const { locale, orgSlug } = await params;
@@ -40,8 +48,8 @@ export default async function NewCustomerPage({ params }: Props) {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href={`/${orgSlug}/customers`}>
-            <ArrowLeft className="size-4" />
+          <Link href={`/${orgSlug}/customers`} aria-label={t("common.back")}>
+            <ArrowLeft className="size-4" aria-hidden />
           </Link>
         </Button>
         <div>

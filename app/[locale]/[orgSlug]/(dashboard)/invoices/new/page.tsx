@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth/session";
@@ -18,6 +19,13 @@ import { InvoiceForm } from "@/components/invoices/invoice-form";
 type Props = {
   params: Promise<{ locale: string; orgSlug: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("invoices.form");
+  return { title: t("createTitle") };
+}
 
 export default async function NewInvoicePage({ params }: Props) {
   const { locale, orgSlug } = await params;
@@ -43,8 +51,8 @@ export default async function NewInvoicePage({ params }: Props) {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href={`/${orgSlug}/invoices`}>
-            <ArrowLeft className="size-4" />
+          <Link href={`/${orgSlug}/invoices`} aria-label={t("common.back")}>
+            <ArrowLeft className="size-4" aria-hidden />
           </Link>
         </Button>
         <div>

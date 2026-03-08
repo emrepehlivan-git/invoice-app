@@ -8,6 +8,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventName } from "@paddle/paddle-node-sdk";
 import { getPaddleClient, getPaddleWebhookSecret } from "@/lib/paddle/client";
 import { processCompletedTransaction } from "@/lib/paddle/service";
+import {
+  isPaddleTransactionCompletedData,
+  isPaddleTransactionPaymentFailedData,
+  isPaddleTransactionUpdatedData,
+} from "@/lib/paddle/webhook-types";
 import { getClientIp, rateLimitWebhook } from "@/lib/rate-limit";
 import logger from "@/lib/logger";
 
@@ -44,33 +49,29 @@ export async function POST(request: NextRequest) {
       eventId: eventData.eventId,
     });
 
-    // Process different event types
+    const payload = eventData.data as unknown;
+
     switch (eventData.eventType) {
       case EventName.TransactionCompleted: {
-        const transaction = eventData.data as {
-          id: string;
-          customerId?: string | null;
-          customer_id?: string | null;
-          details?: {
-            totals?: { total?: string; grand_total?: string };
-          };
-          customData?: Record<string, unknown>;
-          custom_data?: Record<string, unknown>;
-        };
+        if (!isPaddleTransactionCompletedData(payload)) {
+          logger.warn("Paddle webhook: invalid TransactionCompleted payload", {
+            eventId: eventData.eventId,
+          });
+          break;
+        }
         const customData =
-          (transaction.customData ?? transaction.custom_data) ?? {};
-        const totals = transaction.details?.totals;
-        const amount =
-          totals?.total ?? totals?.grand_total ?? "0";
+          (payload.customData ?? payload.custom_data) ?? {};
+        const totals = payload.details?.totals;
+        const amount = totals?.total ?? totals?.grand_total ?? "0";
         logger.info("Transaction completed", {
-          transactionId: transaction.id,
+          transactionId: payload.id,
           customDataKeys: Object.keys(customData),
           amount,
         });
 
         await processCompletedTransaction(
-          transaction.id,
-          transaction.customerId ?? transaction.customer_id ?? null,
+          payload.id,
+          payload.customerId ?? payload.customer_id ?? null,
           amount,
           customData
         );
@@ -78,20 +79,30 @@ export async function POST(request: NextRequest) {
       }
 
       case EventName.TransactionPaymentFailed: {
-        const transaction = eventData.data;
+        if (!isPaddleTransactionPaymentFailedData(payload)) {
+          logger.warn(
+            "Paddle webhook: invalid TransactionPaymentFailed payload",
+            { eventId: eventData.eventId }
+          );
+          break;
+        }
         logger.warn("Transaction payment failed", {
-          transactionId: transaction.id,
-          customData: transaction.customData,
+          transactionId: payload.id,
+          customData: payload.customData,
         });
-        // Could send notification email here
         break;
       }
 
       case EventName.TransactionUpdated: {
-        const transaction = eventData.data;
+        if (!isPaddleTransactionUpdatedData(payload)) {
+          logger.warn("Paddle webhook: invalid TransactionUpdated payload", {
+            eventId: eventData.eventId,
+          });
+          break;
+        }
         logger.info("Transaction updated", {
-          transactionId: transaction.id,
-          status: transaction.status,
+          transactionId: payload.id,
+          status: payload.status,
         });
         break;
       }
